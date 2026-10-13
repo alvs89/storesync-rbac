@@ -117,6 +117,19 @@ Password: admin123
 Branch: Manggahan
 ```
 
+The prototype includes clearly labeled demonstration records for both branches:
+inventory catalog items, sales, purchases, stock movements, replenishment
+requests, users, and audit activity. These records are stored only in the
+browser's `localStorage` and are not actual company records.
+
+Additional demo accounts use `admin123`:
+
+```text
+salesencoder / admin123       Sales Encoder, Manggahan
+inventorystaff / admin123     Inventory Staff, San Rafael
+branchstaff / admin123        Sales Encoder + Inventory Staff, San Rafael
+```
+
 To reset the demonstration data, open the browser developer console and run:
 
 ```js
