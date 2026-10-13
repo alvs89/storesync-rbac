@@ -344,6 +344,108 @@ const adapter = async config => {
     const requests = userIsSuperAdmin(currentUser) ? data.requests : data.requests.filter(item => item.branch === branch);
     return response(config, { requests });
   }
+  if (path === '/sales' && method === 'post') {
+    const saleId = `sale-${Date.now()}`;
+    const salesNumber = `SO-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
+    const createdAt = body.actual_transaction_at || new Date().toISOString();
+    const isPendingPayment = body.payment_method === 'bank_transfer' && !body.payment_confirmed;
+    const items = (body.items || []).map((item, index) => {
+      const product = data.products.find(candidate => String(candidate.id) === String(item.inventory_id) && candidate.branch === branch);
+      const quantity = Math.max(0, Number(item.quantity || 0));
+      const unitPrice = Math.max(0, Number(item.unit_price || 0));
+      const previousQuantity = product ? Number(product.stock_level || 0) : null;
+      const newQuantity = product ? Math.max(0, previousQuantity - quantity) : null;
+      if (product && !isPendingPayment) {
+        product.stock_level = newQuantity;
+        product.status = newQuantity <= Number(product.min_stock_level || 0) ? 'Low Stock' : 'In Stock';
+        product.last_updated = new Date().toISOString();
+      }
+      if (product && quantity > 0 && !isPendingPayment) {
+        data.movements.push({
+          movement_id: `${saleId}-movement-${index + 1}`,
+          inventory_id: product.id,
+          item_name: product.name,
+          category: product.category,
+          branch,
+          action: 'STOCK_OUT',
+          quantity_changed: -quantity,
+          previous_quantity: previousQuantity,
+          new_quantity: newQuantity,
+          reason: 'Customer sale',
+          note: salesNumber,
+          actor_id: currentUser?.id || '',
+          actor_name: currentUser?.full_name || 'Prototype User',
+          created_at: createdAt
+        });
+      }
+      return {
+        sales_item_id: `${saleId}-item-${index + 1}`,
+        inventory_id: product?.id || item.inventory_id || null,
+        item_name: item.item_name || product?.name || 'Manual item',
+        category: item.category || product?.category || '',
+        category_note: item.category_note || '',
+        branch,
+        quantity_sold: quantity,
+        unit_price: unitPrice,
+        unit_cost_at_sale: Number(product?.cost_price || 0),
+        subtotal: quantity * unitPrice,
+        cost_subtotal: quantity * Number(product?.cost_price || 0),
+        gross_profit: quantity * (unitPrice - Number(product?.cost_price || 0)),
+        previous_quantity: isPendingPayment ? null : previousQuantity,
+        new_quantity: isPendingPayment ? null : newQuantity
+      };
+    });
+    const subtotalAmount = items.reduce((sum, item) => sum + item.subtotal, 0);
+    const discountAmount = Math.max(0, Number(body.discount_amount || 0));
+    const deliveryCharge = Math.max(0, Number(body.delivery_charge || 0));
+    const totalAmount = Math.max(0, subtotalAmount - discountAmount + deliveryCharge);
+    const amountReceived = body.amount_received === undefined || body.amount_received === null
+      ? totalAmount
+      : Number(body.amount_received || 0);
+    const sale = {
+      sales_transaction_id: saleId,
+      sales_number: salesNumber,
+      official_invoice_number: body.official_invoice_number || '',
+      branch,
+      customer_type: body.customer_type || 'walk_in',
+      customer_name: body.customer_name || 'C',
+      customer_tin: body.customer_tin || '',
+      customer_address: body.customer_address || 'C',
+      total_quantity: items.reduce((sum, item) => sum + item.quantity_sold, 0),
+      subtotal_amount: subtotalAmount,
+      discount_amount: discountAmount,
+      delivery_charge: deliveryCharge,
+      total_amount: totalAmount,
+      payment_method: body.payment_method || 'cash',
+      amount_received: amountReceived,
+      change_amount: Math.max(0, amountReceived - totalAmount),
+      payment_reference: body.payment_reference || '',
+      payment_confirmed: Boolean(body.payment_confirmed),
+      status: isPendingPayment ? 'pending_payment' : 'completed',
+      transaction_type: 'sale',
+      sold_by: currentUser?.id || '',
+      sold_by_name: currentUser?.full_name || 'Prototype User',
+      remarks: body.remarks || '',
+      created_at: createdAt,
+      encoded_at: new Date().toISOString(),
+      items
+    };
+    data.sales.unshift(sale);
+    data.auditLogs.unshift({
+      id: `${saleId}-audit`,
+      actor_id: currentUser?.id || '',
+      actor_name: currentUser?.full_name || 'Prototype User',
+      target_name: sale.sales_number,
+      target_type: 'sales_transaction',
+      action: 'RECORD_SALE',
+      reason: 'Prototype demonstration sale recorded.',
+      details: { totalAmount, itemCount: items.length },
+      branch,
+      created_at: new Date().toISOString()
+    });
+    writeData(data);
+    return response(config, { sale });
+  }
   if (path.startsWith('/maintenance/') && !userIsSuperAdmin(currentUser)) {
     return errorResponse(config, 'Super Admin access required', 403);
   }
