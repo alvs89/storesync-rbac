@@ -2,6 +2,7 @@ import axios from 'axios';
 
 const STORAGE_KEY = 'storesync_prototype_data_v1';
 const TOKEN = 'storesync-prototype-token';
+const normalizeBranch = branch => branch === 'Main Branch' ? 'Manggahan' : branch;
 
 const seedData = () => ({
   users: [{
@@ -109,6 +110,7 @@ const readData = () => {
       }
 
       stored.users.forEach(user => {
+        user.branch = normalizeBranch(user.branch);
         if (String(user.status).toLowerCase() === 'active') user.status = 'Active';
         if (String(user.status).toLowerCase() === 'inactive') user.status = 'Inactive';
         if (String(user.status).toLowerCase() === 'pending') user.status = 'Pending';
@@ -128,8 +130,29 @@ const readData = () => {
       }
 
       stored.products.forEach(product => {
-        if (product.branch === 'Main Branch') product.branch = 'Manggahan';
+        product.branch = normalizeBranch(product.branch);
       });
+
+      ['auditLogs', 'sales', 'purchases', 'movements', 'requests', 'archived', 'systemEvents'].forEach(collection => {
+        if (Array.isArray(stored[collection])) {
+          stored[collection].forEach(item => {
+            if (item && typeof item === 'object' && 'branch' in item) {
+              item.branch = normalizeBranch(item.branch);
+            }
+          });
+        }
+      });
+
+      const savedUser = (() => {
+        try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; }
+      })();
+      if (savedUser?.branch === 'Main Branch') {
+        savedUser.branch = 'Manggahan';
+        localStorage.setItem('user', JSON.stringify(savedUser));
+      }
+      if (localStorage.getItem('active_branch') === 'Main Branch') {
+        localStorage.setItem('active_branch', 'Manggahan');
+      }
 
       if (!Array.isArray(stored.auditLogs) || stored.auditLogs.length === 0) {
         stored.auditLogs = seedData().auditLogs;
@@ -189,7 +212,7 @@ const adapter = async config => {
   const currentUser = (() => { try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; } })();
   const branch = userIsSuperAdmin(currentUser)
     ? (localStorage.getItem('active_branch') || currentUser?.branch || 'Manggahan')
-    : (currentUser?.branch || 'Main Branch');
+    : (currentUser?.branch || 'Manggahan');
 
   if (path === '/auth/assigned-branch' && method === 'post') {
     const user = data.users.find(item => item.username === body.username && item.password === body.password);

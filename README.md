@@ -114,7 +114,7 @@ Prototype login:
 ```text
 Username: admin
 Password: admin123
-Branch: Main Branch
+Branch: Manggahan
 ```
 
 To reset the demonstration data, open the browser developer console and run:

@@ -123,7 +123,7 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           setAssignedBranchNotice(`Active branch: ${resolvedBranch}. Super Admin may switch branches.`);
           setIsBranchSelectionReady(true);
         } else if (assigned.branch || assigned.role) {
-          const resolvedBranch = assigned.branch || "Main Branch";
+          const resolvedBranch = assigned.branch || "Manggahan";
           setBranch(resolvedBranch);
           setAutoSelectedBranch(resolvedBranch);
           setIsAssignedBranchLocked(assigned.branchLocked);
@@ -248,7 +248,7 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           setIsAssignedBranchLocked(false);
           setAssignedBranchNotice(`Active branch: ${loginBranch}.`);
         } else if (assigned.branch || assigned.role) {
-          loginBranch = assigned.branch || "Main Branch";
+          loginBranch = assigned.branch || "Manggahan";
           setBranch(loginBranch);
           setAutoSelectedBranch(loginBranch);
           setIsAssignedBranchLocked(assigned.branchLocked);
@@ -772,7 +772,6 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
                       <SelectValue placeholder="Select branch" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Main Branch">Main Branch</SelectItem>
                       <SelectItem value="Manggahan">Manggahan</SelectItem>
                       <SelectItem value="San Rafael">San Rafael</SelectItem>
                     </SelectContent>
