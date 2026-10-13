@@ -13,7 +13,11 @@ import React, { useEffect, useState } from 'react';
  * @returns {string} Branch label or unavailable fallback.
  */
 const getLocationLabel = userBranch => {
-  if (userBranch) return `${userBranch} Branch`;
+  if (userBranch) {
+    return userBranch.toLowerCase().endsWith(' branch')
+      ? userBranch
+      : `${userBranch} Branch`;
+  }
   return 'Branch unavailable';
 };
 
@@ -103,9 +107,14 @@ export function HeaderTimeBadge({ userBranch }) {
           display: grid;
           gap: 0.2rem;
           max-width: min(100%, 42rem);
-          color: #172033;
+          padding: 0.65rem 0.9rem;
+          border: 1px solid rgba(255, 255, 255, 0.3);
+          border-radius: 0.75rem;
+          background: rgba(15, 42, 67, 0.72);
+          color: #ffffff;
           text-align: right;
-          text-shadow: 0 1px 1px rgba(255, 255, 255, 0.55);
+          text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+          box-shadow: 0 4px 12px rgba(15, 42, 67, 0.18);
         }
 
         .page-header-branch-label,
@@ -133,6 +142,7 @@ export function HeaderTimeBadge({ userBranch }) {
             width: 100%;
             max-width: 100%;
             text-align: left;
+            box-sizing: border-box;
           }
         }
 
@@ -196,14 +206,22 @@ export function PageHeader({
 
   return (
     <div className="mb-8">
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-600 via-red-500 to-yellow-500 p-8 shadow-xl">
-        <div className="absolute top-0 right-0 h-64 w-64 rounded-full bg-[#FFFF00] opacity-20 blur-3xl" />
+      <div
+        className="relative overflow-hidden rounded-2xl p-8 shadow-xl"
+        style={{
+          backgroundImage: 'linear-gradient(110deg, #0F2A43 0%, #1D4ED8 52%, #0F766E 100%)',
+        }}
+      >
+        <div
+          className="absolute top-0 right-0 h-64 w-64 rounded-full opacity-20 blur-3xl"
+          style={{ backgroundColor: '#2DD4BF' }}
+        />
         <div className="absolute bottom-0 left-0 h-64 w-64 rounded-full bg-white opacity-10 blur-3xl" />
         <div className="relative z-10">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex min-w-0 items-center">
               {icon && (
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-red-600 shadow-sm">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl bg-white text-[#1D4ED8] shadow-sm">
                   {icon}
                 </div>
               )}

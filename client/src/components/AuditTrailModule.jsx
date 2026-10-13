@@ -523,7 +523,7 @@ export function AuditTrailModule({ user }) {
           position: relative;
           overflow: hidden;
           border-radius: 16px;
-          background: linear-gradient(90deg, #EF0015 0%, #FF313D 38%, #FF7A1A 68%, #F7C600 100%);
+          background: linear-gradient(110deg, #0F2A43 0%, #1D4ED8 52%, #0F766E 100%);
           box-shadow: 0 18px 34px rgba(15, 23, 42, 0.14);
         }
 
@@ -532,7 +532,7 @@ export function AuditTrailModule({ user }) {
           position: absolute;
           inset: 0;
           background:
-            radial-gradient(circle at 92% 18%, rgba(255, 255, 0, 0.28), transparent 34%),
+            radial-gradient(circle at 92% 18%, rgba(45, 212, 191, 0.26), transparent 34%),
             radial-gradient(circle at 18% 90%, rgba(255, 255, 255, 0.14), transparent 30%);
           pointer-events: none;
         }
@@ -835,7 +835,7 @@ export function AuditTrailModule({ user }) {
       <section className="audit-hero mb-6">
         <div className="audit-hero-content relative z-10 flex items-center gap-6 p-8">
           <div className="audit-hero-main">
-          <div className="audit-hero-icon flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white text-red-600 shadow-sm">
+          <div className="audit-hero-icon flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-white text-blue-700 shadow-sm">
             <ShieldCheck className="h-10 w-10" />
           </div>
           <div className="min-w-0 text-white">

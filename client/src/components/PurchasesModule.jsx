@@ -233,7 +233,7 @@ const INVENTORY_STATUS_FILTER_OPTIONS = [
 // staff estimate what to receive from suppliers.
 const getPurchaseInventoryStatus = item => {
   if (item?.status) return item.status;
-  const quantity = Number(item?.quantity || 0);
+  const quantity = Number(item?.availableQuantity ?? item?.quantity ?? 0);
   const threshold = Number(item?.activeLowStockThreshold ?? item?.reorderLevel ?? 0);
   if (quantity <= 0) return 'Out of Stock';
   if (quantity <= threshold) return 'Low Stock';
@@ -249,12 +249,12 @@ const getPurchaseReorderInfo = item => {
     : Number(item.recommendedReorderPoint);
   const suggestedFromData = Number(item?.suggestedOrderQuantity || 0);
   const officialNeededQty = Math.max(Math.ceil(manualPoint - quantity), 0);
-  const recommendedNeededQty = Number.isFinite(estimatedPoint)
-    ? Math.max(Math.ceil(estimatedPoint - quantity), 0)
-    : 0;
-  const suggestedQty = Math.max(suggestedFromData, officialNeededQty, recommendedNeededQty);
+  const recommendedNeededQty = Number.isFinite(Number(item?.orderUpToLevel))
+    ? Math.max(Math.ceil(Number(item.orderUpToLevel) - quantity), 0)
+    : suggestedFromData;
+  const suggestedQty = Math.max(0, recommendedNeededQty);
   const needsOfficialReorder = status === 'Out of Stock' || status === 'Low Stock';
-  const needsRecommendationReview = !needsOfficialReorder && recommendedNeededQty > 0;
+  const needsRecommendationReview = Boolean(item?.needsReorder) && suggestedQty > 0;
 
   if (!needsOfficialReorder && !needsRecommendationReview) {
     return {

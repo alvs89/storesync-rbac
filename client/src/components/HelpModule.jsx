@@ -29,7 +29,7 @@ import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { PageHeader } from './PageHeader';
-import { getRoleLabel, isAdminRole, normalizeRole, ROLE_VALUES } from '../utils/roles';
+import { getRoleLabel, isAdministrativeRole, normalizeRole, ROLE_VALUES } from '../utils/roles';
 
 // Role groups keep help content aligned with the same access model used by the
 // dashboard, inventory, sales, reports, and maintenance modules.
@@ -54,7 +54,7 @@ const topicOptions = [
 const supportEmail = 'emcayetanotrading@gmail.com';
 const supportTelephone = '8285-9611';
 const supportCellphone = '(0918) 930-6300';
-const mailtoHref = `mailto:${supportEmail}?subject=${encodeURIComponent('Help Request - E.M. Cayetano Inventory System')}&body=${encodeURIComponent('Hello, I need assistance with the inventory system. Issue:\n')}`;
+const mailtoHref = `mailto:${supportEmail}?subject=${encodeURIComponent('Help Request - StoreSync Inventory System')}&body=${encodeURIComponent('Hello, I need assistance with the inventory system. Issue:\n')}`;
 const telephoneHref = `tel:${supportTelephone.replace(/\D/g, '')}`;
 const cellphoneHref = `tel:${supportCellphone.replace(/\D/g, '')}`;
 
@@ -790,7 +790,7 @@ const troubleshooting = [
 ];
 
 const manualIntroduction = {
-  purpose: 'This manual explains how to use the E.M. Cayetano Store Management System during daily store operations. It is written for non-technical users and focuses on the actions available to the signed-in role.',
+  purpose: 'This manual explains how to use the StoreSync retail inventory systemt System during daily store operations. It is written for non-technical users and focuses on the actions available to the signed-in role.',
   overview: [
     'Monitor branch inventory and stock status.',
     'Search products and review item details.',
@@ -1355,7 +1355,7 @@ function createUserManualPdf({
 
     doc.setFontSize(24);
     doc.setTextColor(...darkText);
-    doc.text('E.M. Cayetano Store', margin + 26, 156);
+    doc.text('StoreSync', margin + 26, 156);
     doc.text('Management System', margin + 26, 186);
 
     doc.setFontSize(16);
@@ -1364,7 +1364,7 @@ function createUserManualPdf({
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(10.5);
     doc.setTextColor(...mutedText);
-    doc.text('Prepared for E.M. Cayetano Trading daily store operations.', margin + 26, 258);
+    doc.text('Prepared for StoreSync daily store operations.', margin + 26, 258);
 
     y = 336;
     addText('This manual is role-based. It includes only the modules, instructions, workflows, and reminders that match the signed-in user role.', {
@@ -1376,8 +1376,8 @@ function createUserManualPdf({
 
     const metaRows = [
       ['Document', 'User Manual'],
-      ['System', 'E.M. Cayetano Store Management System'],
-      ['Business', 'E.M. Cayetano Trading'],
+      ['System', 'StoreSync Retail Inventory System'],
+      ['Business', 'StoreSync'],
       ['Role', roleLabel],
     ];
 
@@ -1473,7 +1473,7 @@ function createUserManualPdf({
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(18);
     doc.setTextColor(...darkText);
-    doc.text('E.M. Cayetano Store Management System', margin, y);
+    doc.text('StoreSync Retail Inventory System', margin, y);
     y += 24;
     doc.setFontSize(14);
     doc.text(`${roleLabel} User Manual`, margin, y);
@@ -1784,7 +1784,7 @@ export function HelpModule({ user }) {
   const normalizedRole = normalizeRole(user?.role) || ROLE_VALUES.INVENTORY_STAFF;
   const roleLabel = getRoleLabel(normalizedRole);
   const roleAccess = roleHelpAccess[normalizedRole] || roleFallback;
-  const isAdmin = isAdminRole(normalizedRole);
+  const isAdmin = isAdministrativeRole(normalizedRole);
   const normalizedQuery = query.trim().toLowerCase();
 
   // Memoized filters keep search responsive while avoiding repeated role/query
@@ -2798,7 +2798,7 @@ export function HelpModule({ user }) {
                     icon={<Headphones className="h-5 w-5" />}
                     tone="purple"
                     title="Contact Support"
-                    subtitle="Official support information for E.M. Cayetano Trading."
+                    subtitle="Official support information for StoreSync."
                     onShowAll={() => setFullView('contact')}
                   />
                   <SupportContactList />

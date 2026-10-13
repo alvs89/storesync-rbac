@@ -327,6 +327,19 @@ const getRecommendedReorderPoint = item => (
     ? null
     : Number(item.recommendedReorderPoint)
 );
+const getOrderUpToLevel = item => {
+  const sales = parsePlanningNumber(item?.averageDailySales);
+  const lead = parsePlanningNumber(item?.leadTimeDays);
+  const review = parsePlanningNumber(item?.reviewPeriodDays ?? 30);
+  const safety = parsePlanningNumber(item?.safetyStock) ?? 0;
+  if (sales === null || lead === null || review === null) return null;
+  return Math.ceil(Math.max(0, sales) * (Math.max(0, lead) + Math.max(0, review)) + Math.max(0, safety));
+};
+const getRecommendedOrderQuantity = item => {
+  const out = getOrderUpToLevel(item);
+  if (out === null) return 0;
+  return Math.max(0, out - Math.max(0, Number(item?.availableQuantity ?? item?.quantity ?? 0)));
+};
 const formatOptionalDays = value => {
   const days = Number(value);
   if (!Number.isFinite(days) || days <= 0) return "No supplier lead time set yet.";
@@ -467,7 +480,8 @@ export function InventoryModule({
     costPrice: "",
     reorderLevel: "",
     leadTimeDays: "",
-    safetyStock: ""
+    safetyStock: "",
+    reviewPeriodDays: "30"
   });
 
   // Sorting state controls both desktop and mobile inventory tables.
@@ -583,7 +597,8 @@ export function InventoryModule({
     quantity: "",
     reorderLevel: "10", // Default manual threshold
     leadTimeDays: "",
-    safetyStock: ""
+    safetyStock: "",
+    reviewPeriodDays: "30"
   });
   const inventoryDraftUserId = user?.id || user?.userId || user?.username || user?.name || "current-user";
   const inventoryDraftBranch = user?.branch || "current-branch";
@@ -1121,7 +1136,8 @@ export function InventoryModule({
       quantity: "",
       reorderLevel: "10",
       leadTimeDays: "",
-      safetyStock: ""
+      safetyStock: "",
+      reviewPeriodDays: "30"
     });
     setNewItemSupplierMode("listed");
     setArchivedDuplicatePrompt(null);
@@ -1322,7 +1338,8 @@ export function InventoryModule({
       String(editItem.costPrice || "") !== String(selectedItem.costPrice ?? "") ||
       String(editItem.reorderLevel) !== String(selectedItem.reorderLevel) ||
       String(editItem.leadTimeDays || "") !== String(selectedItem.leadTimeDays ?? "") ||
-      String(editItem.safetyStock || "") !== String(selectedItem.safetyStock ?? "");
+      String(editItem.safetyStock || "") !== String(selectedItem.safetyStock ?? "") ||
+      String(editItem.reviewPeriodDays || "") !== String(selectedItem.reviewPeriodDays ?? "");
   };
 
   const closeAddItemDialog = ({ clearDraft = true } = {}) => {
@@ -1371,7 +1388,8 @@ export function InventoryModule({
       reorderLevel: "",
       costPrice: "",
       leadTimeDays: "",
-      safetyStock: ""
+      safetyStock: "",
+      reviewPeriodDays: "30"
     });
     setEditItemSupplierMode("listed");
   };
@@ -3440,7 +3458,9 @@ export function InventoryModule({
     supplierName,
     averageDailySales,
     leadTimeDays,
-    safetyStock
+    safetyStock,
+    reviewPeriodDays = 30,
+    currentStock = 0
   }) => {
     const preview = getEstimatedReorderPreview({
       supplierName,
@@ -3451,6 +3471,13 @@ export function InventoryModule({
     const salesValue = parsePlanningNumber(averageDailySales);
     const leadTimeValue = parsePlanningNumber(leadTimeDays);
     const safetyStockValue = parsePlanningNumber(safetyStock) ?? 0;
+    const reviewPeriodValue = parsePlanningNumber(reviewPeriodDays) ?? 30;
+    const orderUpToLevel = salesValue === null || leadTimeValue === null
+      ? null
+      : Math.ceil(Math.max(0, salesValue) * (Math.max(0, leadTimeValue) + Math.max(1, reviewPeriodValue)) + Math.max(0, safetyStockValue));
+    const recommendedQuantity = orderUpToLevel === null
+      ? 0
+      : Math.max(0, orderUpToLevel - Math.max(0, Number(currentStock || 0)));
 
     return (
       <div
@@ -3468,38 +3495,55 @@ export function InventoryModule({
         <div className="inventory-reorder-summary-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "12px", flexWrap: "wrap" }}>
           <div>
             <p className="inventory-reorder-summary-label font-semibold text-slate-950" style={{ fontSize: "13px", lineHeight: "1.25" }}>
-              Suggested Reorder Point
+              Replenishment Preview
             </p>
             <p className="inventory-reorder-summary-value text-slate-950 font-bold" style={{ fontSize: "20px", lineHeight: "1.25", marginTop: "4px" }}>
-              {preview.value !== null ? `${preview.value} unit${preview.value === 1 ? "" : "s"}` : "Needs Sales Data"}
+              {recommendedQuantity > 0 ? `${recommendedQuantity} units to order` : "No order needed"}
             </p>
           </div>
         </div>
 
         <p className="inventory-reorder-summary-message text-slate-950 leading-relaxed" style={{ fontSize: "13px" }}>
           {preview.value !== null
-            ? "Stock status and alerts use the Manual Low-Stock Threshold."
+            ? "ROP is for alerting. OUT is the target level and recommended reorder quantity."
             : preview.message}
         </p>
+
+        <div style={{ borderTop: "1px solid #DBEAFE", marginTop: "2px" }} aria-hidden="true" />
 
         <div
           className="inventory-reorder-summary-metrics text-slate-700"
           style={{
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "8px",
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(170px, 1fr))",
+            columnGap: "18px",
+            rowGap: "12px",
             fontSize: "12px",
-            lineHeight: "1.25"
+            lineHeight: "1.4",
+            marginTop: "2px"
           }}
         >
           <span>Average Daily Sales: <strong className="text-slate-950">{`${salesValue ?? 0} units/day`}</strong></span>
           <span>Supplier Lead Time: <strong className="text-slate-950">{leadTimeValue ? `${leadTimeValue} day${leadTimeValue === 1 ? "" : "s"}` : "Not set"}</strong></span>
-          <span>Safety Stock: <strong className="text-slate-950">{safetyStockValue}</strong></span>
+          <span>Safety Stock: <strong className="text-slate-950">{safetyStockValue} units</strong></span>
+          <span>Review Period: <strong className="text-slate-950">{reviewPeriodValue} days</strong></span>
+          <span>ROP Alert Level: <strong className="text-slate-950">{preview.value ?? "—"} units</strong></span>
+          <span>Order-Up-To Level: <strong className="text-slate-950">{orderUpToLevel ?? "—"} units</strong></span>
         </div>
 
-        <p className="inventory-reorder-summary-formula text-slate-700 leading-relaxed" style={{ fontSize: "12px" }}>
-          Formula: Average Daily Sales x Supplier Lead Time + Safety Stock. Average Daily Sales is calculated from completed sales history.
-        </p>
+        <div style={{ borderTop: "1px solid #DBEAFE", marginTop: "2px" }} aria-hidden="true" />
+
+        <div
+          className="inventory-reorder-summary-formula text-slate-700 leading-relaxed"
+          style={{ fontSize: "12px", marginTop: "2px" }}
+        >
+          <p className="font-semibold text-slate-950" style={{ marginBottom: "6px" }}>Calculation rules</p>
+          <ul style={{ margin: 0, paddingLeft: "18px", display: "grid", gap: "5px" }}>
+            <li>ROP = (Average Daily Sales x Lead Time) + Safety Stock</li>
+            <li>OUT = Average Daily Sales x (Review Period + Lead Time) + Safety Stock</li>
+            <li>Recommended Qty = max(0, OUT - Available Stock)</li>
+          </ul>
+        </div>
       </div>
     );
   };
@@ -3594,7 +3638,8 @@ export function InventoryModule({
       costPrice: item.costPrice === null || item.costPrice === undefined || item.costPrice === "" ? "" : String(item.costPrice),
       reorderLevel: String(item.reorderLevel ?? 10),
       leadTimeDays: item.leadTimeDays === null || item.leadTimeDays === undefined || item.leadTimeDays === "" ? "" : String(item.leadTimeDays),
-      safetyStock: item.safetyStock === null || item.safetyStock === undefined || item.safetyStock === "" ? "" : String(item.safetyStock)
+      safetyStock: item.safetyStock === null || item.safetyStock === undefined || item.safetyStock === "" ? "" : String(item.safetyStock),
+      reviewPeriodDays: String(item.reviewPeriodDays ?? 30)
     });
     setEditItemSupplierMode(supplierName && !isListedSupplier(supplierName) ? "custom" : "listed");
     setIsEditDialogOpen(true);
@@ -3686,6 +3731,10 @@ export function InventoryModule({
     }
     if (newItem.safetyStock && (!isWholeNumberText(newItem.safetyStock) || Number(newItem.safetyStock) < 0)) {
       toast.error("Safety stock must be a whole number.");
+      return;
+    }
+    if (!isWholeNumberText(newItem.reviewPeriodDays) || Number(newItem.reviewPeriodDays) <= 0 || Number(newItem.reviewPeriodDays) > 365) {
+      toast.error("Review period must be a whole number from 1 to 365 days.");
       return;
     }
     const newItemDuplicateKey = [
@@ -3782,6 +3831,7 @@ export function InventoryModule({
       reorderLevel,
       leadTimeDays: newItem.leadTimeDays === "" ? "" : Number(newItem.leadTimeDays),
       safetyStock: newItem.safetyStock === "" ? "" : Number(newItem.safetyStock),
+      reviewPeriodDays: Number(newItem.reviewPeriodDays),
       averageDailySalesMode: "auto",
       manualAverageDailySales: "",
       averageDailySalesOverrideReason: "",
@@ -4248,6 +4298,10 @@ export function InventoryModule({
       toast.error("Safety stock must be a whole number.");
       return;
     }
+    if (!isWholeNumberText(editItem.reviewPeriodDays) || Number(editItem.reviewPeriodDays) <= 0 || Number(editItem.reviewPeriodDays) > 365) {
+      toast.error("Review period must be a whole number from 1 to 365 days.");
+      return;
+    }
 
     const editedItemDuplicateKey = [
       normalizeInventoryIdentityName(cleanName),
@@ -4359,6 +4413,7 @@ export function InventoryModule({
         reorderLevel,
         leadTimeDays: editItem.leadTimeDays === "" ? "" : Number(editItem.leadTimeDays),
         safetyStock: editItem.safetyStock === "" ? "" : Number(editItem.safetyStock),
+        reviewPeriodDays: Number(editItem.reviewPeriodDays),
         averageDailySalesMode: "auto",
         manualAverageDailySales: "",
         averageDailySalesOverrideReason: "",
@@ -4732,13 +4787,41 @@ export function InventoryModule({
             </p>
           </div>
 
+          <div className="inventory-add-field space-y-1.5">
+            <Label
+              htmlFor="edit-review-period-days"
+              className="font-semibold text-slate-950"
+              style={{ display: "block", marginBottom: "8px", fontSize: "14px", lineHeight: "1.25" }}
+            >
+              Review Period
+            </Label>
+            <Input
+              id="edit-review-period-days"
+              type="text"
+              inputMode="numeric"
+              value={editItem.reviewPeriodDays}
+              onChange={e => updateEditItemDraft(previous => ({
+                ...previous,
+                reviewPeriodDays: sanitizeWholeNumberInput(e.target.value, "Review Period", "edit-review-period-numbers-only")
+              }))}
+              placeholder="30"
+              className="border-slate-300 bg-white text-slate-950"
+              style={{ height: "42px", borderRadius: "10px", fontSize: "14px", padding: "0 14px" }}
+            />
+            <p className="text-slate-700" style={{ fontSize: "12px" }}>
+              Days between inventory reviews. Used to calculate the Order-Up-To target.
+            </p>
+          </div>
+
           {renderAverageDailySalesDisplay(selectedItem?.averageDailySales)}
 
           {renderEstimatedReorderSummary({
             supplierName: editItem.supplierName,
             averageDailySales: selectedItem?.averageDailySales,
             leadTimeDays: editItem.leadTimeDays,
-            safetyStock: editItem.safetyStock
+            safetyStock: editItem.safetyStock,
+            reviewPeriodDays: editItem.reviewPeriodDays,
+            currentStock: selectedItem?.availableQuantity ?? selectedItem?.quantity
           })}
 
         </div>
@@ -6603,11 +6686,38 @@ export function InventoryModule({
     style: {
       fontSize: "12px"
     }
-  }, "Optional buffer stock added to the suggested reorder point.")), renderAverageDailySalesDisplay(0), renderEstimatedReorderSummary({
+  }, "Optional buffer stock added to the suggested reorder point.")), /*#__PURE__*/React.createElement("div", {
+    className: "inventory-add-field space-y-1.5"
+  }, /*#__PURE__*/React.createElement(Label, {
+    htmlFor: "add-review-period-days",
+    className: "font-semibold text-slate-950",
+    style: {
+      display: "block",
+      marginBottom: "8px",
+      fontSize: "14px",
+      lineHeight: "1.25"
+    }
+  }, "Review Period"), /*#__PURE__*/React.createElement(Input, {
+    id: "add-review-period-days",
+    type: "text",
+    inputMode: "numeric",
+    value: newItem.reviewPeriodDays,
+    onChange: e => updateNewItemDraft(previous => ({
+      ...previous,
+      reviewPeriodDays: sanitizeWholeNumberInput(e.target.value, "Review Period", "add-review-period-numbers-only")
+    })),
+    placeholder: "30",
+    className: "border-slate-300 bg-white text-slate-950"
+  }), /*#__PURE__*/React.createElement("p", {
+    className: "text-slate-700",
+    style: { fontSize: "12px" }
+  }, "Days between inventory reviews. Used to calculate the Order-Up-To target.")), renderAverageDailySalesDisplay(0), renderEstimatedReorderSummary({
     supplierName: newItem.supplierName,
     averageDailySales: 0,
     leadTimeDays: newItem.leadTimeDays,
-    safetyStock: newItem.safetyStock
+    safetyStock: newItem.safetyStock,
+    reviewPeriodDays: newItem.reviewPeriodDays,
+    currentStock: newItem.quantity
   }), archivedDuplicatePrompt && /*#__PURE__*/React.createElement("div", {
     className: "inventory-add-field inventory-add-field-full text-slate-950",
     style: {

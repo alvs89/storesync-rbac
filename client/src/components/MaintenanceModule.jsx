@@ -32,7 +32,7 @@ import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { toast } from 'sonner';
 import { PageHeader } from './PageHeader';
-import { isAdminRole } from '../utils/roles';
+import { isSuperAdminRole } from '../utils/roles';
 import {
   AlertDialog,
   AlertDialogCancel,
@@ -257,7 +257,7 @@ export function MaintenanceModule({ user }) {
     databaseStatus: 'Checking...'
   });
 
-  const isAdmin = isAdminRole(user?.role);
+  const isAdmin = isSuperAdminRole(user?.role);
   const signedInBranch = user?.branch || '';
   const currentBranch = signedInBranch || 'All branches';
   const exportUsesBranch = exportDataset !== 'audit';

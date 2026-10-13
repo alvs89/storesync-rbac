@@ -1,6 +1,6 @@
-// Role helpers centralize screen access and role normalization so all
-// modules enforce the same owner-level admin, Sales Encoder, and Inventory Staff permissions.
+// Fixed-role helpers centralize screen access and privilege boundaries.
 export const ROLE_VALUES = {
+  SUPER_ADMIN: "Super Admin",
   ADMIN: "Admin",
   SALES_ENCODER: "Sales Encoder",
   INVENTORY_STAFF: "Inventory Staff",
@@ -10,9 +10,14 @@ export const ROLE_VALUES = {
 
 export const ROLE_OPTIONS = [
   {
+    value: ROLE_VALUES.SUPER_ADMIN,
+    label: "Super Admin",
+    description: "System-wide administrator with access to all branches, administrator accounts, maintenance, audit, and operational modules.",
+  },
+  {
     value: ROLE_VALUES.ADMIN,
-    label: "Admin / Owner",
-    description: "Business owner or authorized owner-level access for users, reports, audit trail, maintenance, and full inventory control.",
+    label: "Admin",
+    description: "Branch administrator responsible for users, inventory, sales, purchases, reports, approvals, and operations within the assigned branch.",
   },
   {
     value: ROLE_VALUES.SALES_ENCODER,
@@ -40,7 +45,7 @@ export const REPORT_TYPE_OPTIONS = [
   { value: "category", label: "Category Analysis", roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF] },
   { value: "purchases", label: "Purchases", roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF] },
   { value: "movements", label: "Stock Movement History", roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF] },
-  { value: "actual-earnings", label: "Actual Earnings", roles: [ROLE_VALUES.ADMIN] },
+  { value: "actual-earnings", label: "Actual Earnings", roles: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN] },
   { value: "sales-movements", label: "Sales-Based Stock Movement", roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_INVENTORY_STAFF] },
 ];
 
@@ -51,7 +56,8 @@ export function normalizeRole(role) {
 
 export function getRoleLabel(role) {
   const normalized = normalizeRole(role);
-  if (normalized === ROLE_VALUES.ADMIN) return "Admin / Owner";
+  if (normalized === ROLE_VALUES.SUPER_ADMIN) return "Super Admin";
+  if (normalized === ROLE_VALUES.ADMIN) return "Admin";
   if (normalized === ROLE_VALUES.SALES_ENCODER) return "Sales Encoder";
   if (normalized === ROLE_VALUES.INVENTORY_STAFF) return "Inventory Staff";
   if (normalized === ROLE_VALUES.SALES_INVENTORY_STAFF) return "Sales Encoder + Inventory Staff";
@@ -62,12 +68,31 @@ export function isAdminRole(role) {
   return normalizeRole(role) === ROLE_VALUES.ADMIN;
 }
 
+export function isSuperAdminRole(role) {
+  return normalizeRole(role) === ROLE_VALUES.SUPER_ADMIN;
+}
+
+export function isAdministrativeRole(role) {
+  return isSuperAdminRole(role) || isAdminRole(role);
+}
+
 export function canAccessScreen(role, screen) {
   const normalized = normalizeRole(role);
   const commonScreens = new Set(["dashboard", "search", "alerts", "help"]);
 
   if (commonScreens.has(screen)) return true;
-  if (normalized === ROLE_VALUES.ADMIN) return true;
+  if (normalized === ROLE_VALUES.SUPER_ADMIN) return true;
+  if (normalized === ROLE_VALUES.ADMIN) {
+    return [
+      "inventory",
+      "archive",
+      "reports",
+      "sales",
+      "purchases",
+      "user-management",
+      "audit-trail",
+    ].includes(screen);
+  }
 
   if (normalized === ROLE_VALUES.SALES_ENCODER) {
     return ["inventory", "sales"].includes(screen);
@@ -85,28 +110,30 @@ export function canAccessScreen(role, screen) {
 }
 
 export function canManageInventory(role) {
-  return normalizeRole(role) === ROLE_VALUES.ADMIN;
+  const normalized = normalizeRole(role);
+  return normalized === ROLE_VALUES.SUPER_ADMIN || normalized === ROLE_VALUES.ADMIN;
 }
 
 export function canRecordSales(role) {
   const normalized = normalizeRole(role);
-  return normalized === ROLE_VALUES.ADMIN || normalized === ROLE_VALUES.SALES_ENCODER || normalized === ROLE_VALUES.SALES_INVENTORY_STAFF;
+  return normalized === ROLE_VALUES.SUPER_ADMIN || normalized === ROLE_VALUES.ADMIN || normalized === ROLE_VALUES.SALES_ENCODER || normalized === ROLE_VALUES.SALES_INVENTORY_STAFF;
 }
 
 export function canPerformInventoryMovement(role) {
   const normalized = normalizeRole(role);
-  return normalized === ROLE_VALUES.ADMIN || normalized === ROLE_VALUES.INVENTORY_STAFF || normalized === ROLE_VALUES.SALES_INVENTORY_STAFF;
+  return normalized === ROLE_VALUES.SUPER_ADMIN || normalized === ROLE_VALUES.ADMIN || normalized === ROLE_VALUES.INVENTORY_STAFF || normalized === ROLE_VALUES.SALES_INVENTORY_STAFF;
 }
 
 export function getReportTypeOptionsForRole(role) {
   const normalized = normalizeRole(role);
+  if (normalized === ROLE_VALUES.SUPER_ADMIN) return REPORT_TYPE_OPTIONS;
   return REPORT_TYPE_OPTIONS.filter(option => option.roles.includes(normalized));
 }
 
 export function canAccessReportType(role, reportType) {
   const normalized = normalizeRole(role);
   const option = REPORT_TYPE_OPTIONS.find(item => item.value === reportType);
-  return Boolean(option && option.roles.includes(normalized));
+  return Boolean(option && (normalized === ROLE_VALUES.SUPER_ADMIN || option.roles.includes(normalized)));
 }
 
 export function getDefaultReportTypeForRole(role) {

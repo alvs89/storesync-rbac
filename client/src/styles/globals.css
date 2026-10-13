@@ -1,4 +1,4 @@
-/* Global design tokens and base styles for the E.M. Cayetano UI. */
+/* Global design tokens and base styles for the StoreSync UI. */
 @custom-variant dark (&:is(.dark *));
 
 :root {
@@ -25,18 +25,14 @@
   --switch-background: #d1d5db;
   --font-weight-medium: 500;
   --font-weight-normal: 400;
-  --ring: #FFFF00;
+  --ring: #2563eb;
   
-  /* EMC Brand Colors */
-  --emc-yellow: #FFFF00;
-  --emc-red: #FF0000;
-  --emc-yellow-hover: #e6e600;
-  --emc-red-hover: #cc0000;
-  --emc-interactive-yellow: #ffff00;
-  --emc-interactive-yellow-soft: rgba(255, 255, 0, 0.42);
-  --emc-interactive-yellow-wash: rgba(255, 255, 0, 0.12);
-  --emc-interactive-border: rgba(202, 138, 4, 0.42);
-  --emc-interactive-shadow: 0 8px 18px rgba(202, 138, 4, 0.08);
+  /* StoreSync accessible blue and teal palette */
+  --storesync-navy: #0f2a43;
+  --storesync-blue: #2563eb;
+  --storesync-teal: #0f766e;
+  --storesync-blue-soft: #eff6ff;
+  --storesync-border: #bfdbfe;
   
   --chart-1: #FFFF00;
   --chart-2: #FF0000;
@@ -51,7 +47,7 @@
   --sidebar-accent: #f9fafb;
   --sidebar-accent-foreground: #1a1a1a;
   --sidebar-border: #e5e7eb;
-  --sidebar-ring: #FFFF00;
+  --sidebar-ring: #2563eb;
 }
 
 .search-clear-button {
@@ -287,11 +283,11 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #fff7ed;
+  background-color: #eff6ff;
   background-image:
-    radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.36), transparent 24%),
-    radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.14), transparent 30%),
-    linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%);
+    radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+    radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 30%),
+    linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%);
   background-repeat: no-repeat;
   background-size: cover;
   background-attachment: fixed;
@@ -316,11 +312,11 @@ body {
   min-height: 100vh;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: #fff7ed !important;
+  background-color: #eff6ff !important;
   background-image:
-    radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.36), transparent 24%),
-    radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.14), transparent 30%),
-    linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+    radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+    radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 30%),
+    linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%) !important;
   background-repeat: no-repeat !important;
   background-size: cover !important;
   background-attachment: fixed !important;
@@ -369,11 +365,11 @@ body {
   inset: 0;
   z-index: -1;
   pointer-events: none;
-  background-color: #fff7ed;
+  background-color: #eff6ff;
   background-image:
-    radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.36), transparent 24%),
-    radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.14), transparent 30%),
-    linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%);
+    radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+    radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 30%),
+    linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%);
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -1395,7 +1391,7 @@ input.actual-transaction-part-input[data-slot="input"]:focus-visible {
 
 [data-sonner-toast][data-front="true"].remove-success-toast {
   border-color: #fed7aa !important;
-  background: #fff7ed !important;
+  background: #ecfdf5 !important;
   box-shadow: 0 16px 32px rgba(154, 52, 18, 0.14) !important;
 }
 

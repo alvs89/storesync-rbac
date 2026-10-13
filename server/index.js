@@ -81,7 +81,7 @@ const CORS_ALLOWED_ORIGINS = (process.env.CORS_ORIGIN || process.env.CLIENT_URL 
 const VERCEL_PROJECT_ORIGIN_PATTERN = /^https:\/\/em-cayetano-store-management-system(?:-[a-z0-9-]+)*\.vercel\.app$/i;
 const LOGIN_OTP_REQUIRED = process.env.REQUIRE_LOGIN_OTP !== 'false';
 const IS_PRODUCTION = process.env.NODE_ENV === 'production';
-const ALLOWED_ROLES = ['Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'];
+const ALLOWED_ROLES = ['Super Admin', 'Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'];
 const ALLOWED_BRANCHES = ['Manggahan', 'San Rafael'];
 const OFFICIAL_INVENTORY_CATEGORIES = [
   'Electricals',
@@ -376,7 +376,7 @@ async function ensureSchema() {
       username VARCHAR(50) UNIQUE NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
       password_hash VARCHAR(255) NOT NULL,
-        role VARCHAR(40) CHECK (role IN ('Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff')) NOT NULL,
+      role VARCHAR(40) CHECK (role IN ('Super Admin', 'Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff')) NOT NULL,
       branch VARCHAR(50),
       status VARCHAR(20) DEFAULT 'Active',
       must_change_password BOOLEAN DEFAULT false,
@@ -418,6 +418,7 @@ async function ensureSchema() {
       min_stock_level INTEGER DEFAULT 5,
       lead_time_days INTEGER,
       safety_stock INTEGER,
+      review_period_days INTEGER DEFAULT 30,
       average_daily_sales NUMERIC(10,2),
       average_daily_sales_mode VARCHAR(20) DEFAULT 'auto',
       manual_average_daily_sales NUMERIC(10,2),
@@ -583,6 +584,7 @@ async function ensureSchema() {
       min_stock_level INTEGER DEFAULT 5,
       lead_time_days INTEGER,
       safety_stock INTEGER,
+      review_period_days INTEGER DEFAULT 30,
       average_daily_sales NUMERIC(10,2),
       average_daily_sales_mode VARCHAR(20) DEFAULT 'auto',
       manual_average_daily_sales NUMERIC(10,2),
@@ -693,7 +695,36 @@ async function ensureSchema() {
   await pool.query(`
     ALTER TABLE users
     ADD CONSTRAINT users_role_check
-    CHECK (role IN ('Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'));
+    CHECK (role IN ('Super Admin', 'Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'));
+  `);
+
+  await pool.query(`
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM users WHERE role = 'Super Admin' AND status = 'Active') THEN
+        UPDATE users
+        SET role = 'Super Admin', token_version = COALESCE(token_version, 0) + 1
+        WHERE user_id = (
+          SELECT user_id
+          FROM users
+          WHERE username = 'admin' AND role = 'Admin' AND status = 'Active'
+          ORDER BY created_at ASC NULLS LAST, user_id ASC
+          LIMIT 1
+        );
+
+        IF NOT FOUND THEN
+          UPDATE users
+          SET role = 'Super Admin', token_version = COALESCE(token_version, 0) + 1
+          WHERE user_id = (
+            SELECT user_id
+            FROM users
+            WHERE role = 'Admin' AND status = 'Active'
+            ORDER BY created_at ASC NULLS LAST, user_id ASC
+            LIMIT 1
+          );
+        END IF;
+      END IF;
+    END $$;
   `);
 
   await pool.query(`
@@ -739,6 +770,11 @@ async function ensureSchema() {
   await pool.query(`
     ALTER TABLE branch_inventory
     ADD COLUMN IF NOT EXISTS safety_stock INTEGER;
+  `);
+
+  await pool.query(`
+    ALTER TABLE branch_inventory
+    ADD COLUMN IF NOT EXISTS review_period_days INTEGER DEFAULT 30;
   `);
 
   await pool.query(`
@@ -1453,6 +1489,11 @@ async function ensureSchema() {
 
   await pool.query(`
     ALTER TABLE archived_inventory
+    ADD COLUMN IF NOT EXISTS review_period_days INTEGER DEFAULT 30;
+  `);
+
+  await pool.query(`
+    ALTER TABLE archived_inventory
     ADD COLUMN IF NOT EXISTS average_daily_sales NUMERIC(10,2);
   `);
 
@@ -1496,6 +1537,11 @@ async function ensureSchema() {
   await pool.query(`
     ALTER TABLE audit_logs
     ADD COLUMN IF NOT EXISTS details JSONB DEFAULT '{}'::jsonb;
+  `);
+
+  await pool.query(`
+    ALTER TABLE audit_logs
+    ADD COLUMN IF NOT EXISTS branch VARCHAR(50);
   `);
 
   await pool.query(`
@@ -1874,11 +1920,7 @@ function hasReorderPlanningValue(value) {
 // Suggested reorder quantity follows a common inventory formula:
 // average daily sales x supplier lead time + safety stock.
 function computeReorderPoint({ averageDailySales = null, leadTimeDays = null, safetyStock = null } = {}) {
-  if (
-    !hasReorderPlanningValue(averageDailySales) ||
-    !hasReorderPlanningValue(leadTimeDays) ||
-    !hasReorderPlanningValue(safetyStock)
-  ) {
+  if (!hasReorderPlanningValue(averageDailySales) || !hasReorderPlanningValue(leadTimeDays)) {
     return null;
   }
 
@@ -1888,18 +1930,60 @@ function computeReorderPoint({ averageDailySales = null, leadTimeDays = null, sa
   );
 }
 
-function getEffectiveReorderThreshold(row = {}) {
-  return Number(row.min_stock_level ?? row.minStockLevel ?? 0);
+function computeOrderUpToLevel({
+  averageDailySales = null,
+  leadTimeDays = null,
+  reviewPeriodDays = null,
+  safetyStock = null
+} = {}) {
+  if (!hasReorderPlanningValue(averageDailySales) || !hasReorderPlanningValue(leadTimeDays) || !hasReorderPlanningValue(reviewPeriodDays)) {
+    return null;
+  }
+
+  return Math.ceil(
+    Math.max(0, Number(averageDailySales || 0)) *
+      (Math.max(0, Number(reviewPeriodDays || 0)) + Math.max(0, Number(leadTimeDays || 0))) +
+    Math.max(0, Number(safetyStock || 0))
+  );
 }
 
-function computeSuggestedOrderQuantity(row) {
+function getReplenishmentMetrics(row = {}) {
+  const effectiveStock = Math.max(
+    0,
+    Number(row.stock_level ?? row.stockLevel ?? 0) - Number(row.reserved_stock ?? row.reservedStock ?? 0)
+  );
   const reorderPoint = computeReorderPoint({
     averageDailySales: row.average_daily_sales ?? row.averageDailySales,
     leadTimeDays: row.lead_time_days ?? row.leadTimeDays,
     safetyStock: row.safety_stock ?? row.safetyStock
   });
-  const advisoryPlanningPoint = reorderPoint !== null ? reorderPoint : getEffectiveReorderThreshold(row);
-  return Math.max(0, advisoryPlanningPoint - Number(row.stock_level || 0));
+  const orderUpToLevel = computeOrderUpToLevel({
+    averageDailySales: row.average_daily_sales ?? row.averageDailySales,
+    leadTimeDays: row.lead_time_days ?? row.leadTimeDays,
+    reviewPeriodDays: row.review_period_days ?? row.reviewPeriodDays ?? 30,
+    safetyStock: row.safety_stock ?? row.safetyStock
+  });
+  const recommendedOrderQuantity = orderUpToLevel === null
+    ? Math.max(0, getEffectiveReorderThreshold(row) - effectiveStock)
+    : Math.max(0, orderUpToLevel - effectiveStock);
+
+  return {
+    reorderPoint,
+    orderUpToLevel,
+    recommendedOrderQuantity,
+    effectiveStock,
+    needsReorder: reorderPoint !== null
+      ? effectiveStock <= reorderPoint
+      : effectiveStock <= getEffectiveReorderThreshold(row)
+  };
+}
+
+function getEffectiveReorderThreshold(row = {}) {
+  return Number(row.min_stock_level ?? row.minStockLevel ?? 0);
+}
+
+function computeSuggestedOrderQuantity(row) {
+  return getReplenishmentMetrics(row).recommendedOrderQuantity;
 }
 
 function normalizeAverageDailySalesMode(value) {
@@ -2508,15 +2592,18 @@ function mapInventoryRow(row, options = {}) {
     min_stock_level: row.min_stock_level,
     lead_time_days: row.lead_time_days,
     safety_stock: row.safety_stock,
+    review_period_days: row.review_period_days ?? 30,
     average_daily_sales: row.average_daily_sales,
     average_daily_sales_mode: row.average_daily_sales_mode || 'auto',
     manual_average_daily_sales: row.manual_average_daily_sales,
     average_daily_sales_override_reason: row.average_daily_sales_override_reason,
-    recommended_reorder_point: computeReorderPoint(row),
+    recommended_reorder_point: getReplenishmentMetrics(row).reorderPoint,
+    order_up_to_level: getReplenishmentMetrics(row).orderUpToLevel,
     active_low_stock_threshold: getEffectiveReorderThreshold(row),
-    suggested_order_quantity: computeSuggestedOrderQuantity(row),
+    suggested_order_quantity: getReplenishmentMetrics(row).recommendedOrderQuantity,
+    needs_reorder: getReplenishmentMetrics(row).needsReorder,
     reserved_stock: Number(row.reserved_stock || 0),
-    available_stock: Math.max(0, Number(row.stock_level || 0) - Number(row.reserved_stock || 0)),
+    available_stock: getReplenishmentMetrics(row).effectiveStock,
     status: computeInventoryStatus(Number(row.stock_level || 0), getEffectiveReorderThreshold(row)),
     branch: row.branch,
     last_updated: row.last_updated
@@ -2561,13 +2648,16 @@ function mapArchivedInventoryRow(row, options = {}) {
     min_stock_level: row.min_stock_level,
     lead_time_days: row.lead_time_days,
     safety_stock: row.safety_stock,
+    review_period_days: row.review_period_days ?? 30,
     average_daily_sales: row.average_daily_sales,
     average_daily_sales_mode: row.average_daily_sales_mode || 'auto',
     manual_average_daily_sales: row.manual_average_daily_sales,
     average_daily_sales_override_reason: row.average_daily_sales_override_reason,
-    recommended_reorder_point: computeReorderPoint(row),
+    recommended_reorder_point: getReplenishmentMetrics(row).reorderPoint,
+    order_up_to_level: getReplenishmentMetrics(row).orderUpToLevel,
     active_low_stock_threshold: getEffectiveReorderThreshold(row),
-    suggested_order_quantity: computeSuggestedOrderQuantity(row),
+    suggested_order_quantity: getReplenishmentMetrics(row).recommendedOrderQuantity,
+    needs_reorder: getReplenishmentMetrics(row).needsReorder,
     status: computeInventoryStatus(Number(row.stock_level || 0), getEffectiveReorderThreshold(row)),
     branch: row.branch,
     last_updated: row.last_updated,
@@ -3119,6 +3209,7 @@ async function recordAuditLog(db, {
   targetId = null,
   targetName = null,
   targetType = null,
+  branch = null,
   action,
   reason = null,
   details = null
@@ -3131,8 +3222,8 @@ async function recordAuditLog(db, {
   const safeActorId = Number.isInteger(Number(actorId)) ? Number(actorId) : null;
 
   await db.query(
-    `INSERT INTO audit_logs (actor_id, actor_name, target_id, target_name, target_type, action, reason, details)
-     VALUES ($1, COALESCE($2, (SELECT full_name FROM users WHERE user_id = $1), 'Security Monitor'), $3, $4, $5, $6, $7, $8::jsonb)`,
+    `INSERT INTO audit_logs (actor_id, actor_name, target_id, target_name, target_type, action, reason, details, branch)
+     VALUES ($1, COALESCE($2, (SELECT full_name FROM users WHERE user_id = $1), 'Security Monitor'), $3, $4, $5, $6, $7, $8::jsonb, COALESCE($9, (SELECT branch FROM users WHERE user_id = $1)))`,
     [
       safeActorId,
       actorName || null,
@@ -3141,7 +3232,8 @@ async function recordAuditLog(db, {
       targetType || null,
       action,
       reason || null,
-      JSON.stringify(safeDetails)
+      JSON.stringify(safeDetails),
+      branch || null
     ]
   );
 }
@@ -3208,6 +3300,7 @@ function prepareInventoryPayload(payload, { currentRow = null, preserveCurrentQu
   );
   const leadTimeDays = getPayloadValue(payload, ['leadTimeDays', 'lead_time_days'], currentRow?.lead_time_days ?? null);
   const safetyStock = getPayloadValue(payload, ['safetyStock', 'safety_stock'], currentRow?.safety_stock ?? null);
+  const reviewPeriodDays = getPayloadValue(payload, ['reviewPeriodDays', 'review_period_days'], currentRow?.review_period_days ?? 30);
   const defaultSellingPrice = parseOptionalPositiveDecimal(
     getPayloadValue(payload, ['defaultSellingPrice', 'default_selling_price'], currentRow?.default_selling_price ?? null),
     'Default selling price',
@@ -3241,6 +3334,14 @@ function prepareInventoryPayload(payload, { currentRow = null, preserveCurrentQu
   const normalizedSafetyStock = safetyStock === '' || safetyStock === null || safetyStock === undefined
     ? null
     : parseOptionalNonNegativeInteger(safetyStock, 'Safety stock', { max: 100000 });
+  const normalizedReviewPeriodDays = reviewPeriodDays === '' || reviewPeriodDays === null || reviewPeriodDays === undefined
+    ? 30
+    : parseOptionalNonNegativeInteger(reviewPeriodDays, 'Review period', { max: 365 });
+  if (!Number.isInteger(normalizedReviewPeriodDays) || normalizedReviewPeriodDays <= 0) {
+    const error = new Error('Review period must be a positive whole number of days.');
+    error.statusCode = 400;
+    throw error;
+  }
   const averageDailySales = averageDailySalesMode === 'manual' ? manualAverageDailySales : null;
 
   return {
@@ -3252,6 +3353,7 @@ function prepareInventoryPayload(payload, { currentRow = null, preserveCurrentQu
     reorderLevel,
     leadTimeDays: normalizedLeadTimeDays,
     safetyStock: normalizedSafetyStock,
+    reviewPeriodDays: normalizedReviewPeriodDays,
     averageDailySales,
     averageDailySalesMode,
     manualAverageDailySales,
@@ -3323,13 +3425,14 @@ async function applyApprovedInventoryAddRequest(client, { request, actorId }) {
        min_stock_level,
        lead_time_days,
        safety_stock,
+       review_period_days,
        average_daily_sales,
        average_daily_sales_mode,
        manual_average_daily_sales,
        average_daily_sales_override_reason,
        status
      )
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
      RETURNING inventory_id`,
     [
       productId,
@@ -3338,6 +3441,7 @@ async function applyApprovedInventoryAddRequest(client, { request, actorId }) {
       values.reorderLevel,
       values.leadTimeDays,
       values.safetyStock,
+      values.reviewPeriodDays || 30,
       values.averageDailySales,
       values.averageDailySalesMode,
       values.manualAverageDailySales,
@@ -3360,6 +3464,7 @@ async function applyApprovedInventoryAddRequest(client, { request, actorId }) {
        bi.min_stock_level,
        bi.lead_time_days,
        bi.safety_stock,
+       bi.review_period_days,
        bi.average_daily_sales,
        bi.average_daily_sales_mode,
        bi.manual_average_daily_sales,
@@ -3434,6 +3539,7 @@ async function applyApprovedInventoryEditRequest(client, { request, actorId }) {
        bi.min_stock_level,
        bi.lead_time_days,
        bi.safety_stock,
+       bi.review_period_days,
        bi.average_daily_sales,
        bi.average_daily_sales_mode,
        bi.manual_average_daily_sales,
@@ -3489,6 +3595,7 @@ async function applyApprovedInventoryEditRequest(client, { request, actorId }) {
   const reorderPlanningChanged =
     normalizeNullableNumber(inventoryRow.lead_time_days) !== normalizeNullableNumber(values.leadTimeDays) ||
     normalizeNullableNumber(inventoryRow.safety_stock) !== normalizeNullableNumber(values.safetyStock) ||
+    normalizeNullableNumber(inventoryRow.review_period_days || 30) !== normalizeNullableNumber(values.reviewPeriodDays) ||
     normalizeNullableNumber(inventoryRow.average_daily_sales) !== normalizeNullableNumber(nextAverageDailySales) ||
     normalizeAverageDailySalesMode(inventoryRow.average_daily_sales_mode) !== values.averageDailySalesMode ||
     normalizeNullableNumber(inventoryRow.manual_average_daily_sales) !== normalizeNullableNumber(values.manualAverageDailySales) ||
@@ -3561,18 +3668,20 @@ async function applyApprovedInventoryEditRequest(client, { request, actorId }) {
          min_stock_level = $2,
          lead_time_days = $3,
          safety_stock = $4,
-         average_daily_sales = $5,
-         average_daily_sales_mode = $6,
-         manual_average_daily_sales = $7,
-         average_daily_sales_override_reason = $8,
-         status = $9,
-         last_updated = CASE WHEN $12 THEN ${PHILIPPINE_NOW_SQL} ELSE last_updated END
-     WHERE inventory_id = $10 AND branch = $11`,
+         review_period_days = $5,
+         average_daily_sales = $6,
+         average_daily_sales_mode = $7,
+         manual_average_daily_sales = $8,
+         average_daily_sales_override_reason = $9,
+         status = $10,
+         last_updated = CASE WHEN $13 THEN ${PHILIPPINE_NOW_SQL} ELSE last_updated END
+     WHERE inventory_id = $11 AND branch = $12`,
     [
       targetProductId,
       values.reorderLevel,
       values.leadTimeDays,
       values.safetyStock,
+      values.reviewPeriodDays,
       nextAverageDailySales,
       values.averageDailySalesMode,
       values.manualAverageDailySales,
@@ -3611,6 +3720,7 @@ async function applyApprovedInventoryEditRequest(client, { request, actorId }) {
        bi.min_stock_level,
        bi.lead_time_days,
        bi.safety_stock,
+       bi.review_period_days,
        bi.average_daily_sales,
        bi.average_daily_sales_mode,
        bi.manual_average_daily_sales,
@@ -3920,6 +4030,14 @@ function isAdmin(user) {
   return normalizeRole(user?.role) === 'Admin';
 }
 
+function isSuperAdmin(user) {
+  return normalizeRole(user?.role) === 'Super Admin';
+}
+
+function isAdministrativeRole(user) {
+  return isSuperAdmin(user) || isAdmin(user);
+}
+
 function normalizeRole(role) {
   if (role === 'Employee') return 'Inventory Staff';
   return role;
@@ -3941,7 +4059,8 @@ function canViewInventoryUnitCost(user) {
 
 function getRoleLabel(role) {
   const normalized = normalizeRole(role);
-  if (normalized === 'Admin') return 'Admin / Owner';
+  if (normalized === 'Super Admin') return 'Super Admin';
+  if (normalized === 'Admin') return 'Admin';
   if (normalized === 'Sales Encoder') return 'Sales Encoder';
   if (normalized === 'Inventory Staff') return 'Inventory Staff';
   if (normalized === 'Sales Encoder + Inventory Staff') return 'Sales Encoder + Inventory Staff';
@@ -4411,7 +4530,7 @@ async function authenticate(req, res, next) {
       fullName: dbUser.full_name,
       username: dbUser.username,
       role: dbUser.role,
-      branch: isAdmin(dbUser) && decoded.branch ? decoded.branch : dbUser.branch
+      branch: isSuperAdmin(dbUser) && decoded.branch ? normalizeBranch(decoded.branch) : dbUser.branch
     };
 
     return next();
@@ -4434,11 +4553,37 @@ async function authenticate(req, res, next) {
 }
 
 function requireAdmin(req, res, next) {
-  if (!isAdmin(req.user)) {
-    return res.status(403).json({ error: 'Admin / Owner access required' });
+  if (!isAdministrativeRole(req.user)) {
+    return res.status(403).json({ error: 'Administrator access required' });
   }
 
   return next();
+}
+
+function requireSuperAdmin(req, res, next) {
+  if (!isSuperAdmin(req.user)) {
+    return res.status(403).json({ error: 'Super Admin access required' });
+  }
+
+  return next();
+}
+
+function getEffectiveBranch(user, requestedBranch) {
+  if (isSuperAdmin(user)) {
+    const candidate = normalizeBranch(requestedBranch || user.branch);
+    return ALLOWED_BRANCHES.includes(candidate) ? candidate : null;
+  }
+
+  function canManageTarget(actor, target) {
+    if (isSuperAdmin(actor)) return true;
+    return Boolean(
+      isAdmin(actor)
+      && target
+      && target.branch === actor.branch
+      && !['Admin', 'Super Admin'].includes(normalizeRole(target.role))
+    );
+  }
+  return normalizeBranch(user?.branch);
 }
 
 app.get('/', (req, res) => {
@@ -4528,6 +4673,9 @@ app.post('/api/auth/login', async (req, res) => {
   const { username, password, branch } = req.body;
   const cleanLoginUsername = cleanUsername(username);
   const selectedBranch = normalizeBranch(branch);
+  if (selectedBranch && !ALLOWED_BRANCHES.includes(selectedBranch)) {
+    return res.status(400).json({ error: 'Invalid branch selection.' });
+  }
   const lockout = getLoginLockout(normalizeLoginAttemptKey(cleanLoginUsername, req));
 
   if (lockout.locked) {
@@ -4567,7 +4715,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ error: 'Branch selection is required.' });
     }
 
-    if (!isAdmin(user) && user.branch && user.branch !== selectedBranch) {
+    if (!isSuperAdmin(user) && user.branch && user.branch !== selectedBranch) {
       await recordSecurityEvidence({
         action: 'AUTH_BRANCH_MISMATCH',
         message: 'Login blocked because the selected branch did not match the assigned branch.',
@@ -4583,7 +4731,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     clearFailedLoginAttempts(cleanLoginUsername, req);
     if (!LOGIN_OTP_REQUIRED) {
-      const sessionBranch = isAdmin(user) && selectedBranch ? selectedBranch : user.branch;
+      const sessionBranch = isSuperAdmin(user) && selectedBranch ? selectedBranch : user.branch;
       const token = signToken(user, sessionBranch);
       await pool.query(
         'UPDATE users SET login_otp_code = NULL, login_otp_expires = NULL WHERE user_id = $1',
@@ -4701,8 +4849,8 @@ app.post('/api/auth/assigned-branch', async (req, res) => {
     // Branch lookup is a read-only login aid used while staff complete the form.
     // Only the explicit /api/auth/login submission mutates failed-attempt state.
     return res.json({
-      branch: isAdmin(user) ? '' : normalizeBranch(user.branch),
-      branchLocked: !isAdmin(user),
+      branch: isSuperAdmin(user) ? '' : normalizeBranch(user.branch),
+      branchLocked: !isSuperAdmin(user),
       role: user.role
     });
   } catch (err) {
@@ -4790,6 +4938,9 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   const username = cleanUsername(req.body.username);
   const code = String(req.body.code || '').replace(/\s+/g, '');
   const selectedBranch = normalizeBranch(req.body.branch);
+  if (selectedBranch && !ALLOWED_BRANCHES.includes(selectedBranch)) {
+    return res.status(400).json({ error: 'Invalid branch selection.' });
+  }
   const usernameError = validateUsername(username);
   if (usernameError) {
     return res.status(400).json({ error: usernameError });
@@ -4831,7 +4982,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       return res.status(400).json({ error: 'Code expired' });
     }
 
-    if (!isAdmin(user) && selectedBranch && selectedBranch !== user.branch) {
+    if (!isSuperAdmin(user) && selectedBranch && selectedBranch !== user.branch) {
       await recordSecurityEvidence({
         action: 'AUTH_OTP_BRANCH_MISMATCH',
         message: 'Two-factor verification blocked because the selected branch did not match the assigned branch.',
@@ -4848,7 +4999,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
       [user.user_id]
     );
 
-    const sessionBranch = isAdmin(user) && selectedBranch ? selectedBranch : user.branch;
+    const sessionBranch = isSuperAdmin(user) && selectedBranch ? selectedBranch : user.branch;
     const token = signToken(user, sessionBranch);
     await Promise.allSettled([
       recordAuditLog(pool, {
@@ -5152,12 +5303,13 @@ app.post('/api/auth/change-password', authenticate, async (req, res) => {
 
 app.get('/api/admin/users', authenticate, requireAdmin, async (req, res) => {
   try {
+    const branchFilter = isSuperAdmin(req.user) ? null : req.user.branch;
     const result = await pool.query(
       `SELECT user_id, full_name, username, email, role, branch, status, must_change_password, created_at
        FROM users
-       WHERE branch = $1
+       WHERE ($1::text IS NULL OR branch = $1)
        ORDER BY created_at DESC NULLS LAST`,
-      [req.user.branch]
+      [branchFilter]
     );
 
     return res.json({ users: result.rows });
@@ -5171,8 +5323,11 @@ app.post('/api/admin/users', authenticate, requireAdmin, async (req, res) => {
   const fullName = cleanPersonName(req.body.fullName || req.body.full_name);
   const username = cleanUsername(req.body.username);
   const email = String(req.body.email || '').trim().toLowerCase();
-  const role = ALLOWED_ROLES.includes(req.body.role) ? req.body.role : 'Inventory Staff';
-  const branch = normalizeBranch(req.body.branch || req.user.branch);
+  const requestedRole = String(req.body.role || 'Inventory Staff').trim();
+  const role = ALLOWED_ROLES.includes(requestedRole) ? requestedRole : 'Inventory Staff';
+  const branch = isSuperAdmin(req.user)
+    ? normalizeBranch(req.body.branch || req.user.branch)
+    : req.user.branch;
   const temporaryPassword = generateTemporaryPassword();
 
   if (!fullName || !username || !email) {
@@ -5196,6 +5351,9 @@ app.post('/api/admin/users', authenticate, requireAdmin, async (req, res) => {
 
   if (!ALLOWED_BRANCHES.includes(branch)) {
     return res.status(400).json({ error: 'Invalid branch selection.' });
+  }
+  if (!isSuperAdmin(req.user) && !['Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'].includes(role)) {
+    return res.status(403).json({ error: 'Admins may create staff accounts only.' });
   }
 
   try {
@@ -5279,8 +5437,8 @@ app.patch('/api/admin/users/:id/details', authenticate, requireAdmin, async (req
     const currentResult = await pool.query(
       `SELECT user_id, full_name, username, email, branch, role, status
        FROM users
-       WHERE user_id = $1 AND branch = $2`,
-      [id, req.user.branch]
+       WHERE user_id = $1 AND ($2::text IS NULL OR branch = $2)`,
+      [id, isSuperAdmin(req.user) ? null : req.user.branch]
     );
 
     if (currentResult.rowCount === 0) {
@@ -5288,6 +5446,9 @@ app.patch('/api/admin/users/:id/details', authenticate, requireAdmin, async (req
     }
 
     const currentUser = currentResult.rows[0];
+    if (!canManageTarget(req.user, currentUser)) {
+      return res.status(403).json({ error: 'You cannot manage administrator accounts.' });
+    }
     if (
       currentUser.full_name === fullName &&
       currentUser.email === email
@@ -5312,9 +5473,9 @@ app.patch('/api/admin/users/:id/details', authenticate, requireAdmin, async (req
       `UPDATE users
        SET full_name = $1,
            email = $2
-       WHERE user_id = $3 AND branch = $4
+       WHERE user_id = $3 AND ($4::text IS NULL OR branch = $4)
        RETURNING user_id, full_name, username, email, branch, role, status, must_change_password, created_at`,
-      [fullName, email, id, req.user.branch]
+      [fullName, email, id, isSuperAdmin(req.user) ? null : req.user.branch]
     );
 
     const updatedUser = updated.rows[0];
@@ -5369,7 +5530,8 @@ app.post('/api/audit-logs', authenticate, async (req, res) => {
       targetType,
       action,
       reason,
-      details
+      details,
+      branch: req.user.branch
     });
     return res.status(201).json({ message: 'Audit log recorded' });
   } catch (err) {
@@ -5380,11 +5542,19 @@ app.post('/api/audit-logs', authenticate, async (req, res) => {
 
 app.get('/api/audit-logs', authenticate, requireAdmin, async (req, res) => {
   try {
+    const branchFilter = isSuperAdmin(req.user)
+      ? (req.query.branch ? normalizeBranch(req.query.branch) : null)
+      : req.user.branch;
+    if (branchFilter && !ALLOWED_BRANCHES.includes(branchFilter)) {
+      return res.status(400).json({ error: 'Invalid branch filter' });
+    }
     const result = await pool.query(
-      `SELECT id, actor_id, actor_name, target_id, target_name, target_type, action, reason, details, created_at
+      `SELECT id, actor_id, actor_name, target_id, target_name, target_type, action, reason, details, branch, created_at
        FROM audit_logs
+       WHERE ($1::text IS NULL OR branch = $1 OR (branch IS NULL AND $1 IS NULL))
        ORDER BY created_at DESC, id DESC
-       LIMIT 500`
+       LIMIT 500`,
+      [branchFilter]
     );
     return res.json({ auditLogs: result.rows });
   } catch (err) {
@@ -5400,9 +5570,11 @@ app.post('/api/admin/users/:id/approve', authenticate, requireAdmin, async (req,
     const update = await pool.query(
       `UPDATE users
        SET status = 'Active'
-       WHERE user_id = $1 AND branch = $2
+       WHERE user_id = $1
+         AND ($2::text IS NULL OR branch = $2)
+         AND ($3::boolean OR role NOT IN ('Admin', 'Super Admin'))
        RETURNING user_id, full_name, email, username, branch, status, role, must_change_password, created_at`,
-      [id, req.user.branch]
+      [id, isSuperAdmin(req.user) ? null : req.user.branch, isSuperAdmin(req.user)]
     );
 
     if (update.rowCount === 0) {
@@ -5441,8 +5613,8 @@ app.post('/api/admin/users/:id/reject', authenticate, requireAdmin, async (req, 
     const current = await pool.query(
       `SELECT user_id, full_name, email, branch, role, status
        FROM users
-       WHERE user_id = $1 AND branch = $2`,
-      [id, req.user.branch]
+       WHERE user_id = $1 AND ($2::text IS NULL OR branch = $2)`,
+      [id, isSuperAdmin(req.user) ? null : req.user.branch]
     );
 
     if (current.rowCount === 0) {
@@ -5450,14 +5622,20 @@ app.post('/api/admin/users/:id/reject', authenticate, requireAdmin, async (req, 
     }
 
     const previous = current.rows[0];
-    if (previous.role === 'Admin' && previous.status === 'Active') {
+    if (req.user.id === previous.user_id) {
+      return res.status(403).json({ error: 'You cannot deactivate your own account.' });
+    }
+    if (!canManageTarget(req.user, previous)) {
+      return res.status(403).json({ error: 'You cannot manage administrator accounts.' });
+    }
+    if (previous.role === 'Super Admin' && previous.status === 'Active') {
       const adminCount = await pool.query(
-        `SELECT COUNT(*)::int AS count FROM users WHERE role = 'Admin' AND status = 'Active'`
+        `SELECT COUNT(*)::int AS count FROM users WHERE role = 'Super Admin' AND status = 'Active'`
       );
 
       if ((adminCount.rows[0]?.count || 0) <= 1) {
         return res.status(400).json({
-          error: 'Cannot deactivate this account: At least one active Admin / Owner must remain in the system.'
+          error: 'At least one active Super Admin must remain in StoreSync.'
         });
       }
     }
@@ -5465,9 +5643,9 @@ app.post('/api/admin/users/:id/reject', authenticate, requireAdmin, async (req, 
     const update = await pool.query(
       `UPDATE users
        SET status = 'Inactive', token_version = COALESCE(token_version, 0) + 1
-       WHERE user_id = $1 AND branch = $2
+       WHERE user_id = $1 AND ($2::text IS NULL OR branch = $2)
        RETURNING user_id, full_name, email, username, branch, status, role, must_change_password, created_at`,
-      [id, req.user.branch]
+      [id, isSuperAdmin(req.user) ? null : req.user.branch]
     );
 
     const user = update.rows[0];
@@ -5511,8 +5689,8 @@ app.post('/api/admin/users/:id/role', authenticate, requireAdmin, async (req, re
     const userResult = await pool.query(
       `SELECT user_id, full_name, email, username, branch, role, status
        FROM users
-       WHERE user_id = $1 AND branch = $2`,
-      [id, req.user.branch]
+       WHERE user_id = $1`,
+      [id]
     );
 
     if (userResult.rowCount === 0) {
@@ -5520,17 +5698,26 @@ app.post('/api/admin/users/:id/role', authenticate, requireAdmin, async (req, re
     }
 
     const targetUser = userResult.rows[0];
+    if (req.user.id === targetUser.user_id) {
+      return res.status(403).json({ error: 'You cannot change your own role.' });
+    }
+    if (!canManageTarget(req.user, targetUser)) {
+      return res.status(403).json({ error: 'You cannot manage administrator accounts.' });
+    }
+    if (!isSuperAdmin(req.user) && !['Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff'].includes(newRole)) {
+      return res.status(403).json({ error: 'Admins may assign staff roles only.' });
+    }
     if (targetUser.role === newRole) {
       return res.status(400).json({ error: 'User already has this role' });
     }
 
-    if (targetUser.role === 'Admin' && newRole !== 'Admin') {
+    if (targetUser.role === 'Super Admin' && newRole !== 'Super Admin') {
       const adminCount = await pool.query(
-        `SELECT COUNT(*)::int AS count FROM users WHERE role = 'Admin' AND status = 'Active'`
+        `SELECT COUNT(*)::int AS count FROM users WHERE role = 'Super Admin' AND status = 'Active'`
       );
       if ((adminCount.rows[0]?.count || 0) <= 1) {
         return res.status(400).json({
-          error: 'Cannot change role: At least one Admin / Owner is required to manage the system.'
+          error: 'At least one active Super Admin must remain in StoreSync.'
         });
       }
     }
@@ -5563,7 +5750,7 @@ app.post('/api/admin/users/:id/role', authenticate, requireAdmin, async (req, re
     return res.json({
       message: 'User role updated',
       user: updatedUser,
-      selfDemoted: req.user.id === updatedUser.user_id && newRole !== 'Admin'
+      selfDemoted: false
     });
   } catch (err) {
     console.error('Update role error:', err);
@@ -5571,7 +5758,7 @@ app.post('/api/admin/users/:id/role', authenticate, requireAdmin, async (req, re
   }
 });
 
-app.post('/api/admin/users/:id/branch', authenticate, requireAdmin, async (req, res) => {
+app.post('/api/admin/users/:id/branch', authenticate, requireSuperAdmin, async (req, res) => {
   const { id } = req.params;
   const newBranch = normalizeBranch(req.body.branch);
 
@@ -5583,8 +5770,8 @@ app.post('/api/admin/users/:id/branch', authenticate, requireAdmin, async (req, 
     const userResult = await pool.query(
       `SELECT user_id, full_name, email, username, branch, role, status
        FROM users
-       WHERE user_id = $1 AND branch = $2`,
-      [id, req.user.branch]
+       WHERE user_id = $1`,
+      [id]
     );
 
     if (userResult.rowCount === 0) {
@@ -5769,6 +5956,7 @@ app.get('/api/inventory', authenticate, async (req, res) => {
          bi.min_stock_level,
          bi.lead_time_days,
          bi.safety_stock,
+         bi.review_period_days,
          bi.average_daily_sales,
          bi.average_daily_sales_mode,
          bi.manual_average_daily_sales,
@@ -5907,6 +6095,7 @@ app.post('/api/inventory/change-requests', authenticate, async (req, res) => {
          bi.min_stock_level,
          bi.lead_time_days,
          bi.safety_stock,
+         bi.review_period_days,
          bi.average_daily_sales,
          bi.average_daily_sales_mode,
          bi.manual_average_daily_sales,
@@ -6097,6 +6286,7 @@ app.get('/api/archive', authenticate, async (req, res) => {
          min_stock_level,
          lead_time_days,
          safety_stock,
+         review_period_days,
          average_daily_sales,
          average_daily_sales_mode,
          manual_average_daily_sales,
@@ -8447,6 +8637,12 @@ app.post('/api/inventory', authenticate, requireAdmin, async (req, res) => {
     requireOfficialInventoryCostPrice(costPrice);
     const leadTimeDays = parseOptionalNonNegativeInteger(lead_time_days, 'Supplier lead time', { max: 365 });
     const safetyStock = parseOptionalNonNegativeInteger(safety_stock, 'Safety stock', { max: 100000 });
+    const reviewPeriodDays = review_period_days === undefined || review_period_days === null || review_period_days === ''
+      ? 30
+      : parseOptionalNonNegativeInteger(review_period_days, 'Review period', { max: 365 });
+    if (!Number.isInteger(reviewPeriodDays) || reviewPeriodDays <= 0) {
+      throw Object.assign(new Error('Review period must be a positive whole number of days.'), { statusCode: 400 });
+    }
     const averageDailySalesMode = normalizeAverageDailySalesMode(average_daily_sales_mode);
     const manualAverageDailySales = averageDailySalesMode === 'manual'
       ? parseOptionalNonNegativeDecimal(manual_average_daily_sales ?? average_daily_sales, 'Manual average daily sales', { max: 100000 })
@@ -8558,14 +8754,15 @@ app.post('/api/inventory', authenticate, requireAdmin, async (req, res) => {
          min_stock_level,
          lead_time_days,
          safety_stock,
+         review_period_days,
          average_daily_sales,
          average_daily_sales_mode,
          manual_average_daily_sales,
          average_daily_sales_override_reason,
          status
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
-       RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, review_period_days, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
       [
         productId,
         req.user.branch,
@@ -8573,6 +8770,7 @@ app.post('/api/inventory', authenticate, requireAdmin, async (req, res) => {
         minStockLevel,
         leadTimeDays,
         safetyStock,
+        reviewPeriodDays,
         averageDailySales,
         averageDailySalesMode,
         manualAverageDailySales,
@@ -8595,6 +8793,7 @@ app.post('/api/inventory', authenticate, requireAdmin, async (req, res) => {
          bi.min_stock_level,
          bi.lead_time_days,
          bi.safety_stock,
+         bi.review_period_days,
          bi.average_daily_sales,
          bi.average_daily_sales_mode,
          bi.manual_average_daily_sales,
@@ -9081,6 +9280,12 @@ app.put('/api/inventory/:id', authenticate, async (req, res) => {
     const nextSafetyStock = safety_stock === undefined
       ? inventoryRow.safety_stock
       : parseOptionalNonNegativeInteger(safety_stock, 'Safety stock', { max: 100000 });
+    const nextReviewPeriodDays = review_period_days === undefined
+      ? Number(inventoryRow.review_period_days || 30)
+      : parseOptionalNonNegativeInteger(review_period_days, 'Review period', { max: 365 });
+    if (!Number.isInteger(nextReviewPeriodDays) || nextReviewPeriodDays <= 0) {
+      throw Object.assign(new Error('Review period must be a positive whole number of days.'), { statusCode: 400 });
+    }
     const nextAverageDailySalesMode = average_daily_sales_mode === undefined
       ? normalizeAverageDailySalesMode(inventoryRow.average_daily_sales_mode)
       : normalizeAverageDailySalesMode(average_daily_sales_mode);
@@ -9147,6 +9352,7 @@ app.put('/api/inventory/:id', authenticate, async (req, res) => {
     const reorderPlanningChanged =
       normalizeNullableNumber(inventoryRow.lead_time_days) !== normalizeNullableNumber(nextLeadTimeDays) ||
       normalizeNullableNumber(inventoryRow.safety_stock) !== normalizeNullableNumber(nextSafetyStock) ||
+      normalizeNullableNumber(inventoryRow.review_period_days || 30) !== normalizeNullableNumber(nextReviewPeriodDays) ||
       normalizeNullableNumber(inventoryRow.average_daily_sales) !== normalizeNullableNumber(nextAverageDailySales) ||
       normalizeAverageDailySalesMode(inventoryRow.average_daily_sales_mode) !== nextAverageDailySalesMode ||
       normalizeNullableNumber(inventoryRow.manual_average_daily_sales) !== normalizeNullableNumber(nextManualAverageDailySales) ||
@@ -9379,20 +9585,22 @@ app.put('/api/inventory/:id', authenticate, async (req, res) => {
            min_stock_level = $3,
            lead_time_days = $4,
            safety_stock = $5,
-           average_daily_sales = $6,
-           average_daily_sales_mode = $11,
-           manual_average_daily_sales = $12,
-           average_daily_sales_override_reason = $13,
-           status = $7,
-           last_updated = CASE WHEN $10 THEN ${PHILIPPINE_NOW_SQL} ELSE last_updated END
-       WHERE inventory_id = $8 AND branch = $9
-       RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
+           review_period_days = $6,
+           average_daily_sales = $7,
+           average_daily_sales_mode = $12,
+           manual_average_daily_sales = $13,
+           average_daily_sales_override_reason = $14,
+           status = $8,
+           last_updated = CASE WHEN $11 THEN ${PHILIPPINE_NOW_SQL} ELSE last_updated END
+       WHERE inventory_id = $9 AND branch = $10
+       RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, review_period_days, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
       [
         targetProductId,
         nextQuantity,
         nextMinStockLevel,
         nextLeadTimeDays,
         nextSafetyStock,
+        nextReviewPeriodDays,
         nextAverageDailySales,
         status,
         id,
@@ -9423,6 +9631,7 @@ app.put('/api/inventory/:id', authenticate, async (req, res) => {
          bi.min_stock_level,
          bi.lead_time_days,
          bi.safety_stock,
+         bi.review_period_days,
          bi.average_daily_sales,
          bi.average_daily_sales_mode,
          bi.manual_average_daily_sales,
@@ -9652,7 +9861,7 @@ app.delete('/api/inventory/:id', authenticate, requireAdmin, async (req, res) =>
          archive_reason_note,
          archived_by
        )
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23)`,
       [
         archivedItem.inventory_id,
         archivedItem.product_id,
@@ -9667,6 +9876,7 @@ app.delete('/api/inventory/:id', authenticate, requireAdmin, async (req, res) =>
         archivedItem.min_stock_level,
         archivedItem.lead_time_days,
         archivedItem.safety_stock,
+        archivedItem.review_period_days,
         archivedItem.average_daily_sales,
         archivedItem.average_daily_sales_mode,
         archivedItem.manual_average_daily_sales,
@@ -9834,19 +10044,21 @@ app.post('/api/archive/:id/restore', authenticate, requireAdmin, async (req, res
              min_stock_level = $2,
              lead_time_days = $3,
              safety_stock = $4,
-             average_daily_sales = $5,
-             average_daily_sales_mode = $9,
-             manual_average_daily_sales = $10,
-             average_daily_sales_override_reason = $11,
-             status = $6,
+             review_period_days = $5,
+             average_daily_sales = $6,
+             average_daily_sales_mode = $10,
+             manual_average_daily_sales = $11,
+             average_daily_sales_override_reason = $12,
+             status = $7,
              last_updated = ${PHILIPPINE_NOW_SQL}
-         WHERE inventory_id = $7 AND branch = $8
-         RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
+         WHERE inventory_id = $8 AND branch = $9
+         RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, review_period_days, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
         [
           archivedItem.stock_level,
           archivedItem.min_stock_level,
           archivedItem.lead_time_days,
           archivedItem.safety_stock,
+          archivedItem.review_period_days || 30,
           archivedItem.average_daily_sales,
           computeInventoryStatus(Number(archivedItem.stock_level || 0), getEffectiveReorderThreshold(archivedItem)),
           activeItem.inventory_id,
@@ -9866,6 +10078,7 @@ app.post('/api/archive/:id/restore', authenticate, requireAdmin, async (req, res
            min_stock_level,
            lead_time_days,
            safety_stock,
+           review_period_days,
            average_daily_sales,
            average_daily_sales_mode,
            manual_average_daily_sales,
@@ -9873,8 +10086,8 @@ app.post('/api/archive/:id/restore', authenticate, requireAdmin, async (req, res
            status,
            last_updated
          )
-         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, ${PHILIPPINE_NOW_SQL})
-         RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, ${PHILIPPINE_NOW_SQL})
+         RETURNING inventory_id, product_id, branch, stock_level, min_stock_level, lead_time_days, safety_stock, review_period_days, average_daily_sales, average_daily_sales_mode, manual_average_daily_sales, average_daily_sales_override_reason, status, last_updated`,
         [
           productId,
           archivedItem.branch,
@@ -9882,6 +10095,7 @@ app.post('/api/archive/:id/restore', authenticate, requireAdmin, async (req, res
           archivedItem.min_stock_level,
           archivedItem.lead_time_days,
           archivedItem.safety_stock,
+          archivedItem.review_period_days || 30,
           archivedItem.average_daily_sales,
           normalizeAverageDailySalesMode(archivedItem.average_daily_sales_mode),
           archivedItem.manual_average_daily_sales,
@@ -9970,7 +10184,7 @@ app.post('/api/archive/:id/restore', authenticate, requireAdmin, async (req, res
 
 // Backups are admin-only downloads with metadata and audit/system logs so a
 // reviewer can prove when a full database export was generated.
-app.get('/api/maintenance/backup', authenticate, requireAdmin, async (req, res) => {
+app.get('/api/maintenance/backup', authenticate, requireSuperAdmin, async (req, res) => {
   const dbUrl = process.env.DATABASE_URL;
   if (!dbUrl) {
     return res.status(500).json({ error: 'DATABASE_URL not set' });
@@ -10257,7 +10471,7 @@ function cleanExportDate(value, label) {
   return text;
 }
 
-app.get('/api/maintenance/selective-export', authenticate, requireAdmin, async (req, res) => {
+app.get('/api/maintenance/selective-export', authenticate, requireSuperAdmin, async (req, res) => {
   try {
     const datasetKey = String(req.query.dataset || 'inventory').trim();
     const definition = SELECTIVE_EXPORT_DEFINITIONS[datasetKey];
@@ -10343,7 +10557,7 @@ app.get('/api/maintenance/selective-export', authenticate, requireAdmin, async (
   }
 });
 
-app.post('/api/maintenance/clear-logs', authenticate, requireAdmin, async (req, res) => {
+app.post('/api/maintenance/clear-logs', authenticate, requireSuperAdmin, async (req, res) => {
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
@@ -10398,7 +10612,7 @@ app.post('/api/maintenance/clear-logs', authenticate, requireAdmin, async (req, 
   }
 });
 
-app.post('/api/maintenance/optimize', authenticate, requireAdmin, async (req, res) => {
+app.post('/api/maintenance/optimize', authenticate, requireSuperAdmin, async (req, res) => {
   const tables = [
     'schema_migrations',
     'invoice_number_sequences',
@@ -10448,7 +10662,7 @@ app.post('/api/maintenance/optimize', authenticate, requireAdmin, async (req, re
 
 // Integrity checks compare official records against expected business rules:
 // stock status, transaction totals, item links, payment fields, and audit data.
-app.post('/api/maintenance/integrity-check', authenticate, requireAdmin, async (req, res) => {
+app.post('/api/maintenance/integrity-check', authenticate, requireSuperAdmin, async (req, res) => {
   try {
     const scopeBranches = ALLOWED_BRANCHES;
     const scopeBranchLabel = scopeBranches.join(', ');

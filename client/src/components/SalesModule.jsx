@@ -16,7 +16,7 @@ import { Badge } from './ui/badge';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from './ui/dialog';
 import { binarySearch, mergeSort } from '../utils/algorithms';
 import { createNumericInputGuards } from '../utils/numericInputGuards';
-import { canRecordSales, isAdminRole } from '../utils/roles';
+import { canRecordSales, isAdministrativeRole } from '../utils/roles';
 import { clearFormDraft, formatDraftSavedAt, loadFormDraft, saveFormDraft } from '../utils/formDrafts';
 import { isCancelledSale, isPendingPaymentSale, isRefundSalesRecord } from '../utils/salesTransactionStatus';
 
@@ -443,7 +443,7 @@ const downloadSaleTransactionSummary = sale => {
     title: `${documentNumber} ${documentName}`,
     subject: isRefund ? 'Customer refund transaction receipt' : 'Sales transaction invoice-style receipt',
     author: sale.soldByName || 'System',
-    creator: 'E.M. Cayetano Trading POS-Integrated Inventory System'
+    creator: 'StoreSync POS-Integrated Inventory System'
   });
 
   doc.setDrawColor(17, 24, 39);
@@ -1293,7 +1293,7 @@ export function SalesModule({ user }) {
   const [isClearItemsConfirmOpen, setIsClearItemsConfirmOpen] = useState(false);
   const [recoverableSalesDraft, setRecoverableSalesDraft] = useState(null);
   const [salesDraftStatus, setSalesDraftStatus] = useState('');
-  const canCancelSales = isAdminRole(user?.role);
+  const canCancelSales = isAdministrativeRole(user?.role);
   const canProcessSales = canRecordSales(user?.role);
   const canRefundSales = canProcessSales;
   const canVerifyBankTransferPayments = canProcessSales;

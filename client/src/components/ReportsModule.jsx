@@ -21,7 +21,7 @@ import autoTable from 'jspdf-autotable';
 import { PageHeader } from './PageHeader';
 import { formatDateTime, formatPurchaseDocumentLabel, formatPurchasePaymentTerms } from '../utils/format';
 import { getStockMovementReasonLabel } from '../utils/stockMovementReasons';
-import { canAccessReportType, getDefaultReportTypeForRole, getReportTypeOptionsForRole, isAdminRole } from '../utils/roles';
+import { canAccessReportType, getDefaultReportTypeForRole, getReportTypeOptionsForRole, isAdministrativeRole } from '../utils/roles';
 import { getProductProfitability, getProfitabilitySummary } from '../utils/profitability';
 import { isCompletedSaleTransaction, isCancelledSale } from '../utils/salesTransactionStatus';
 import {
@@ -668,7 +668,7 @@ export function ReportsModule({
   );
 
   const openConvertUntrackedItemDialog = item => {
-    if (!isAdminRole(user?.role)) {
+    if (!isAdministrativeRole(user?.role)) {
       toast.info('Only Admin / Owner accounts can add reviewed manual items to Inventory.');
       return;
     }
@@ -1587,7 +1587,7 @@ export function ReportsModule({
       title: `EMC ${reportType.toUpperCase()} Report`,
       subject: 'Inventory Management Report',
       author: user.fullName,
-      creator: 'E.M. Cayetano Trading Inventory System'
+      creator: 'StoreSync Retail Inventory System'
     });
 
     // Header
@@ -2247,7 +2247,7 @@ export function ReportsModule({
       doc.text(`Page ${i} of ${pageCount}`, pageCenter, pageHeight - 12, {
         align: 'center'
       });
-      doc.text('E.M. Cayetano Trading - Inventory Management System', pageCenter, pageHeight - 7, {
+      doc.text('StoreSync - Retail Inventory System', pageCenter, pageHeight - 7, {
         align: 'center'
       });
     }
@@ -5165,11 +5165,11 @@ export function ReportsModule({
                                 variant="outline"
                                 className="reports-review-button"
                                 onClick={() => openConvertUntrackedItemDialog(item)}
-                                disabled={!isAdminRole(user?.role) || item.reviewStatus === 'tracked'}
+                                disabled={!isAdministrativeRole(user?.role) || item.reviewStatus === 'tracked'}
                                 title={
                                   item.reviewStatus === 'tracked'
                                     ? `Already tracked as ${item.activeInventoryMatch?.name || 'an inventory item'}`
-                                    : isAdminRole(user?.role)
+                                    : isAdministrativeRole(user?.role)
                                       ? 'Review and add this manual item to Inventory'
                                       : 'Only Admin / Owner can add items to Inventory'
                                 }
@@ -5210,7 +5210,7 @@ export function ReportsModule({
                           variant="outline"
                           className="reports-review-button mt-3 w-full justify-center"
                           onClick={() => openConvertUntrackedItemDialog(item)}
-                          disabled={!isAdminRole(user?.role) || item.reviewStatus === 'tracked'}
+                          disabled={!isAdministrativeRole(user?.role) || item.reviewStatus === 'tracked'}
                         >
                           <PackagePlus className="mr-2 h-4 w-4" />
                           {item.reviewStatus === 'tracked' ? 'Already in Inventory' : 'Review for Inventory'}
@@ -6436,4 +6436,3 @@ export function ReportsModule({
     }, item.status)), /*#__PURE__*/React.createElement(TableCell, null, formatDateTime(item.lastUpdated))))))));
   }))));
 }
-

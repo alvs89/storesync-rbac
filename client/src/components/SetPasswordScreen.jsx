@@ -21,7 +21,7 @@ import {
 } from '../utils/verificationCode';
 import { PASSWORD_REQUIREMENTS, validatePasswordPolicy } from '../utils/passwordPolicy';
 
-const emcLogoSrc = "/emc-logo.png";
+const emcLogoSrc = "/storesync-logo.svg";
 const EXPIRY_TOLERANCE_MS = 15000; // 15s grace to match backend acceptance.
 const EXPIRED_MESSAGE = "Your code is no longer valid. Please click the resend button.";
 const RESEND_WAIT_DESCRIPTION = 'Please wait for the resend code timer to finish before requesting another code.';
@@ -351,8 +351,8 @@ const SetPasswordScreen = () => {
         <Card className="w-full max-w-lg rounded-3xl shadow-2xl border border-gray-200 bg-white">
           <CardContent className="px-12 py-10 space-y-8">
             <div className="flex justify-center mb-4">
-              <div className="bg-[#FFFF00]/20 border border-[#FFFF00]/60 p-4 rounded-full">
-                <ShieldCheck className="w-10 h-10 text-[#FF0000]" />
+              <div className="bg-[#2563EB]/10 border border-[#2563EB]/30 p-4 rounded-full">
+                <ShieldCheck className="w-10 h-10 text-[#2563EB]" />
               </div>
             </div>
 
@@ -382,7 +382,7 @@ const SetPasswordScreen = () => {
                   onPaste={(e) => handleVerificationCodePaste(e, otp, setOtp, {
                     toastId: 'set-password-otp-numeric-only',
                   })}
-                  className="rounded-xl border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm"
+                  className="rounded-xl border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm"
                   maxLength={VERIFICATION_CODE_LENGTH}
                   required
                 />
@@ -398,7 +398,7 @@ const SetPasswordScreen = () => {
                     value={newPassword}
                     onChange={(e) => handlePasswordFieldChange(setNewPassword, 'set-password-new-max-length')(e.target.value)}
                     autoComplete="new-password"
-                    className="rounded-xl border-gray-300 pr-12 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm"
+                    className="rounded-xl border-gray-300 pr-12 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm"
                     required
                   />
                   <button
@@ -422,7 +422,7 @@ const SetPasswordScreen = () => {
                     value={confirmPassword}
                     onChange={(e) => handlePasswordFieldChange(setConfirmPassword, 'set-password-confirm-max-length')(e.target.value)}
                     autoComplete="new-password"
-                    className="rounded-xl border-gray-300 pr-12 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm"
+                    className="rounded-xl border-gray-300 pr-12 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm"
                     required
                   />
                   <button
@@ -450,7 +450,7 @@ const SetPasswordScreen = () => {
 
               <Button
                 type="submit"
-                className="w-full py-6 rounded-xl bg-[#FFFF00] hover:bg-[#e6e600] text-black shadow-lg transition-all duration-300"
+                className="w-full py-6 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-lg transition-all duration-300"
                 disabled={!otp || !newPassword || !confirmPassword || loading}
               >
                 {loading ? "Submitting..." : "Reset Password"}
@@ -479,14 +479,14 @@ const SetPasswordScreen = () => {
 
       <div className="auth-gradient-pane flex-1 hidden lg:flex flex-col justify-center items-start bg-transparent p-16 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-30">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-[#FFFF00] rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#FF0000] rounded-full blur-3xl" />
+          <div className="absolute top-10 right-10 w-72 h-72 bg-[#2DD4BF]/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#2563EB]/20 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-xl space-y-8 relative z-10">
           <div className="inline-block">
             <h2 className="text-5xl mb-2 text-gray-900">Set A New Password</h2>
-            <div className="h-1 w-32 bg-gradient-to-r from-[#FFFF00] to-[#FF0000] rounded-full" />
+            <div className="h-1 w-32 bg-gradient-to-r from-[#2563EB] to-[#14B8A6] rounded-full" />
           </div>
 
           <p className="text-xl text-gray-700 leading-relaxed">

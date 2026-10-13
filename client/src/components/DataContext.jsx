@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, useCallback, useMemo } 
 import axios from "axios";
 import { apiUrl } from "../utils/api";
 import { formatArchiveReferenceId, formatItemCode } from "../utils/itemCodes";
-import { canPerformInventoryMovement, canRecordSales, isAdminRole } from "../utils/roles";
+import { canPerformInventoryMovement, canRecordSales, isAdministrativeRole } from "../utils/roles";
 import { isPendingPaymentSale } from "../utils/salesTransactionStatus";
 
 const DataContext = createContext(undefined);
@@ -195,7 +195,7 @@ const buildSystemEventAlert = event => {
 const generateSystemAlerts = (summary, role) => {
   const alerts = [];
 
-  if (isAdminRole(role)) {
+  if (isAdministrativeRole(role)) {
     if (summary.lastBackupAt) {
       const backupTime = new Date(summary.lastBackupAt).getTime();
       const ageDays = Math.floor((Date.now() - backupTime) / (1000 * 60 * 60 * 24));
@@ -342,7 +342,7 @@ const getApprovedRequestInventoryId = (request, inventory) => {
 // requests so requesters receive professional feedback without keeping reviewed
 // items inside the pending request tracker.
 const generateReviewedInventoryRequestAlerts = (requests, inventory, role) => {
-  if (isAdminRole(role) || !canPerformInventoryMovement(role)) return [];
+  if (isAdministrativeRole(role) || !canPerformInventoryMovement(role)) return [];
 
   return (requests || [])
     .filter(request => ['approved', 'rejected'].includes(String(request.status || '').toLowerCase()))
@@ -456,11 +456,15 @@ export function DataProvider({ children }) {
           reorderLevel: p.min_stock_level,
           leadTimeDays: normalizeOptionalNumber(p.lead_time_days),
           safetyStock: normalizeOptionalNumber(p.safety_stock),
+          reviewPeriodDays: normalizeOptionalNumber(p.review_period_days ?? 30),
           averageDailySales: normalizeOptionalNumber(p.average_daily_sales),
           averageDailySalesMode: p.average_daily_sales_mode || 'auto',
           manualAverageDailySales: normalizeOptionalNumber(p.manual_average_daily_sales),
           averageDailySalesOverrideReason: p.average_daily_sales_override_reason || '',
           recommendedReorderPoint: normalizeOptionalNumber(p.recommended_reorder_point),
+          orderUpToLevel: normalizeOptionalNumber(p.order_up_to_level),
+          recommendedOrderQuantity: normalizeOptionalNumber(p.suggested_order_quantity),
+          needsReorder: Boolean(p.needs_reorder),
           activeLowStockThreshold: getEffectiveLowStockThreshold(p),
           suggestedOrderQuantity: normalizeOptionalNumber(p.suggested_order_quantity),
           status: p.status || computeStockStatusFromLevels(p.stock_level, getEffectiveLowStockThreshold(p)),
@@ -511,11 +515,15 @@ export function DataProvider({ children }) {
           reorderLevel: p.min_stock_level,
           leadTimeDays: normalizeOptionalNumber(p.lead_time_days),
           safetyStock: normalizeOptionalNumber(p.safety_stock),
+          reviewPeriodDays: normalizeOptionalNumber(p.review_period_days ?? 30),
           averageDailySales: normalizeOptionalNumber(p.average_daily_sales),
           averageDailySalesMode: p.average_daily_sales_mode || 'auto',
           manualAverageDailySales: normalizeOptionalNumber(p.manual_average_daily_sales),
           averageDailySalesOverrideReason: p.average_daily_sales_override_reason || '',
           recommendedReorderPoint: normalizeOptionalNumber(p.recommended_reorder_point),
+          orderUpToLevel: normalizeOptionalNumber(p.order_up_to_level),
+          recommendedOrderQuantity: normalizeOptionalNumber(p.suggested_order_quantity),
+          needsReorder: Boolean(p.needs_reorder),
           activeLowStockThreshold: getEffectiveLowStockThreshold(p),
           suggestedOrderQuantity: normalizeOptionalNumber(p.suggested_order_quantity),
           status: p.status || computeStockStatusFromLevels(p.stock_level, getEffectiveLowStockThreshold(p)),
@@ -907,14 +915,14 @@ export function DataProvider({ children }) {
   }, [fetchPurchaseTransactions]);
 
   useEffect(() => {
-    const intervalMs = isAdminRole(activeUserRole) ? 10000 : 30000;
+    const intervalMs = isAdministrativeRole(activeUserRole) ? 10000 : 30000;
     const id = setInterval(refreshSystemSummary, intervalMs);
 
     return () => clearInterval(id);
   }, [activeUserRole, refreshSystemSummary]);
 
   useEffect(() => {
-    if (!isAdminRole(activeUserRole)) return undefined;
+    if (!isAdministrativeRole(activeUserRole)) return undefined;
 
     const refreshAdminAlerts = () => {
       refreshSystemSummary();
@@ -941,7 +949,7 @@ export function DataProvider({ children }) {
 
     const refreshApprovalRequests = () => {
       fetchInventoryChangeRequests();
-      if (!isAdminRole(activeUserRole)) {
+      if (!isAdministrativeRole(activeUserRole)) {
         fetchInventory({ showLoading: false });
       }
     };
@@ -952,7 +960,7 @@ export function DataProvider({ children }) {
     };
 
     refreshApprovalRequests();
-    const intervalId = setInterval(refreshApprovalRequests, isAdminRole(activeUserRole) ? 15000 : 10000);
+    const intervalId = setInterval(refreshApprovalRequests, isAdministrativeRole(activeUserRole) ? 15000 : 10000);
     window.addEventListener("inventory-change-request-submitted", refreshApprovalRequests);
     window.addEventListener("focus", refreshApprovalRequests);
     window.addEventListener("storage", handleStorage);
@@ -1080,6 +1088,7 @@ export function DataProvider({ children }) {
         min_stock_level: item.reorderLevel,
         lead_time_days: item.leadTimeDays,
         safety_stock: item.safetyStock,
+        review_period_days: item.reviewPeriodDays,
         average_daily_sales_mode: item.averageDailySalesMode || "auto",
         manual_average_daily_sales: item.manualAverageDailySales,
         average_daily_sales_override_reason: item.averageDailySalesOverrideReason,
@@ -1120,6 +1129,7 @@ export function DataProvider({ children }) {
                 reorderLevel: nextReorderLevel,
                 leadTimeDays: updates.leadTimeDays ?? it.leadTimeDays,
                 safetyStock: updates.safetyStock ?? it.safetyStock,
+                reviewPeriodDays: updates.reviewPeriodDays ?? it.reviewPeriodDays,
                 averageDailySales: updates.averageDailySales ?? it.averageDailySales,
                 averageDailySalesMode: updates.averageDailySalesMode ?? it.averageDailySalesMode,
                 manualAverageDailySales: updates.manualAverageDailySales ?? it.manualAverageDailySales,
@@ -1148,6 +1158,7 @@ export function DataProvider({ children }) {
           min_stock_level: updates.reorderLevel,
           lead_time_days: updates.leadTimeDays,
           safety_stock: updates.safetyStock,
+          review_period_days: updates.reviewPeriodDays,
           average_daily_sales_mode: updates.averageDailySalesMode,
           manual_average_daily_sales: updates.manualAverageDailySales,
           average_daily_sales_override_reason: updates.averageDailySalesOverrideReason,

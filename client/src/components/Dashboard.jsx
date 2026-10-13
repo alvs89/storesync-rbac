@@ -31,9 +31,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from './ui/tooltip';
 import { toast } from 'sonner';
 import { useData } from './DataContext';
 import { PageHeader } from './PageHeader';
-import { ROLE_VALUES, canAccessScreen, canPerformInventoryMovement, canRecordSales, isAdminRole, normalizeRole } from '../utils/roles';
+import { ROLE_VALUES, canAccessScreen, canPerformInventoryMovement, canRecordSales, isAdministrativeRole, normalizeRole } from '../utils/roles';
 import { getProfitabilitySummary } from '../utils/profitability';
 import { isCompletedSaleTransaction } from '../utils/salesTransactionStatus';
+import { buildPurchaseDraftFromReorderGroup, savePurchaseDraft } from '../utils/purchaseDrafts';
 
 const formatCurrency = value =>
   new Intl.NumberFormat(undefined, {
@@ -225,7 +226,7 @@ export function Dashboard({
   } = useData();
 
   const role = normalizeRole(user?.role);
-  const isAdmin = isAdminRole(role);
+  const isAdmin = isAdministrativeRole(role);
   const canUseSales = canRecordSales(role);
   const canUseInventoryMovement = canPerformInventoryMovement(role);
   const isCombinedSalesInventory = role === ROLE_VALUES.SALES_INVENTORY_STAFF;
@@ -258,6 +259,51 @@ export function Dashboard({
     missingSupplierItems.length > 0 ? `${missingSupplierItems.length} missing supplier` : '',
     missingPriceItems.length > 0 ? `${missingPriceItems.length} missing SRP` : ''
   ].filter(Boolean);
+  const suggestedReplenishmentItems = inventory
+    .filter(item => item.needsReorder || Number(item.quantity || 0) <= 0)
+    .map(item => ({
+      ...item,
+      recommendedQuantity: Math.max(0, Number(item.recommendedOrderQuantity ?? item.suggestedOrderQuantity ?? 0)),
+      reorderPoint: item.recommendedReorderPoint,
+      orderUpToLevel: item.orderUpToLevel
+    }))
+    .filter(item => item.recommendedQuantity > 0 || Number(item.quantity || 0) <= 0)
+    .slice(0, 8);
+
+  const addReplenishmentToPurchase = item => {
+    if (!canUsePurchases) {
+      toast.warning('Purchase access is required.', {
+        description: 'Your role cannot create purchase receiving worksheets.'
+      });
+      return;
+    }
+
+    const purchaseDraft = buildPurchaseDraftFromReorderGroup({
+      supplier: item.supplierName,
+      items: [{
+        ...item,
+        quantity: item.availableQuantity ?? item.quantity ?? 0,
+        neededQuantity: item.recommendedQuantity,
+        costPrice: item.costPrice
+      }],
+      getPreparedQuantity: () => item.recommendedQuantity,
+      branch: activeBranch || user?.branch,
+      user
+    });
+
+    if (!purchaseDraft.supplierName || purchaseDraft.items.length === 0) {
+      toast.warning('Supplier information is required.', {
+        description: 'Add a supplier to this inventory item before creating a purchase worksheet.'
+      });
+      return;
+    }
+
+    savePurchaseDraft(purchaseDraft);
+    toast.success('Item added to Purchases.', {
+      description: `${item.recommendedQuantity} units are ready in the receiving worksheet.`
+    });
+    onNavigate('purchases');
+  };
   React.useEffect(() => {
     let midnightTimer;
 
@@ -1125,6 +1171,52 @@ export function Dashboard({
           <SummaryCard key={card.label} {...card} />
         ))}
       </div>
+    </section>
+  );
+
+  const replenishmentSection = (
+    <section className="dashboard-panel" aria-label="Suggested replenishment items">
+      <div className="dashboard-panel-header">
+        <div className="min-w-0">
+          <h2 className="dashboard-panel-title">Suggested Replenishment</h2>
+          <p className="dashboard-panel-subtitle">ROP indicates when to reorder. OUT indicates the target level and recommended quantity.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => onNavigate('inventory')}>Review Inventory</Button>
+      </div>
+      {suggestedReplenishmentItems.length === 0 ? (
+        <div className="dashboard-empty-state">No items currently require intelligent replenishment attention.</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[760px] text-sm">
+            <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+              <tr>
+                <th className="px-4 py-3">Item</th>
+                <th className="px-4 py-3">Available Stock</th>
+                <th className="px-4 py-3">ROP Alert Level</th>
+                <th className="px-4 py-3">OUT Target</th>
+                <th className="px-4 py-3">Recommended Qty</th>
+                <th className="px-4 py-3 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100">
+              {suggestedReplenishmentItems.map(item => (
+                <tr key={item.id}>
+                  <td className="px-4 py-3 font-semibold text-slate-900">{item.name}</td>
+                  <td className="px-4 py-3 text-slate-700">{Number(item.availableQuantity ?? item.quantity ?? 0)} units</td>
+                  <td className="px-4 py-3 text-amber-700">{item.reorderPoint ?? '—'} units</td>
+                  <td className="px-4 py-3 text-blue-700">{item.orderUpToLevel ?? '—'} units</td>
+                  <td className="px-4 py-3 font-bold text-slate-900">{item.recommendedQuantity} units</td>
+                  <td className="px-4 py-3 text-right">
+                    <Button size="sm" onClick={() => addReplenishmentToPurchase(item)} disabled={!canUsePurchases}>
+                      Add to Purchase
+                    </Button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </section>
   );
 
@@ -2386,6 +2478,7 @@ export function Dashboard({
       />
 
       <div className={`dashboard-content ${isSalesEncoder ? 'dashboard-content-sales-encoder' : ''} ${isCombinedSalesInventory ? 'dashboard-content-combined' : ''}`}>
+        {isInventoryAuthorizedView && replenishmentSection}
         {!isInventoryStaff && (
           <section className="dashboard-panel dashboard-sales-filter-panel" aria-label="Sales date filter">
             <div className={`dashboard-sales-filter-row ${salesPeriod === 'day' ? 'is-date-mode' : ''}`}>

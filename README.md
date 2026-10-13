@@ -28,7 +28,7 @@ The current implementation focuses on:
 - Axios for API requests
 - jsPDF and jsPDF AutoTable for report export
 
-### Backend
+### Backend (not required for the prototype)
 
 - Node.js
 - Express.js
@@ -37,7 +37,7 @@ The current implementation focuses on:
 - Bcrypt password hashing
 - Nodemailer for email-based OTP and account notices
 
-### Database
+### Database (not required for the prototype)
 
 - PostgreSQL
 - Neon as an optional hosted PostgreSQL platform for development and deployment
@@ -91,6 +91,42 @@ Install these before running the project:
 - PostgreSQL database, preferably Neon
 
 ## Local Setup
+
+## Prototype-only mode
+
+The current demonstration build runs entirely in the browser. It does not
+require Node.js server startup, PostgreSQL, email, or a `.env` file. Data is
+seeded on first launch and all changes are persisted in the browser's
+`localStorage`.
+
+Run the frontend only:
+
+```powershell
+cd "C:\Users\Alvin Guillermo\em-cayetano-store-management-system\client"
+npm install
+npm run dev
+```
+
+Open the Vite URL, normally `http://localhost:5173`.
+
+Prototype login:
+
+```text
+Username: admin
+Password: admin123
+Branch: Main Branch
+```
+
+To reset the demonstration data, open the browser developer console and run:
+
+```js
+localStorage.removeItem("storesync_prototype_data_v1");
+location.reload();
+```
+
+The backend and PostgreSQL setup below are retained only as reference for the
+earlier full-stack implementation and are not needed to demonstrate the
+prototype.
 
 ### 1. Clone the Repository
 

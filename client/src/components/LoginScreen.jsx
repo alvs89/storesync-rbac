@@ -17,8 +17,9 @@ import { toast } from "sonner";
 
 import { Link, useNavigate } from 'react-router-dom';
 import { apiUrl } from "../utils/api";
+import { isSuperAdminRole } from "../utils/roles";
 
-const emcLogoSrc = "/emc-logo.png";
+const emcLogoSrc = "/storesync-logo.svg";
 const LOGIN_BACKGROUND_CLASS = "login-screen-active";
 
 /**
@@ -114,21 +115,31 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
         const assigned = await fetchAssignedBranchForCredentials(cleanUsername, password);
         if (!isActive) return;
 
-        if (assigned.branch) {
-          setBranch(assigned.branch);
-          setAutoSelectedBranch(assigned.branch);
+        if (assigned.role && isSuperAdminRole(assigned.role)) {
+          const resolvedBranch = "Manggahan";
+          setBranch(resolvedBranch);
+          setAutoSelectedBranch("");
+          setIsAssignedBranchLocked(false);
+          setAssignedBranchNotice(`Active branch: ${resolvedBranch}. Super Admin may switch branches.`);
+          setIsBranchSelectionReady(true);
+        } else if (assigned.branch || assigned.role) {
+          const resolvedBranch = assigned.branch || "Main Branch";
+          setBranch(resolvedBranch);
+          setAutoSelectedBranch(resolvedBranch);
           setIsAssignedBranchLocked(assigned.branchLocked);
           setIsBranchSelectionReady(true);
-          setAssignedBranchNotice(`${assigned.branch} branch selected from your account.`);
+          setAssignedBranchNotice(`${resolvedBranch} branch selected from your account.`);
         } else {
           setAutoSelectedBranch("");
           setIsAssignedBranchLocked(false);
           setIsBranchSelectionReady(true);
           setAssignedBranchNotice("Select the branch you want to use.");
         }
-      } catch {
+      } catch (error) {
         if (isActive) {
-          setAssignedBranchNotice("Unable to verify login details.");
+          setAssignedBranchNotice(
+            error?.response?.data?.error || "Unable to verify login details."
+          );
           setIsBranchSelectionReady(false);
           setIsAssignedBranchLocked(false);
           setBranch("");
@@ -232,12 +243,16 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
       try {
         setIsCheckingAssignedBranch(true);
         const assigned = await fetchAssignedBranchForCredentials(username.trim(), password);
-        if (assigned.branch) {
-          loginBranch = assigned.branch;
-          setBranch(assigned.branch);
-          setAutoSelectedBranch(assigned.branch);
+        if (assigned.role && isSuperAdminRole(assigned.role)) {
+          loginBranch = branch || "Manggahan";
+          setIsAssignedBranchLocked(false);
+          setAssignedBranchNotice(`Active branch: ${loginBranch}.`);
+        } else if (assigned.branch || assigned.role) {
+          loginBranch = assigned.branch || "Main Branch";
+          setBranch(loginBranch);
+          setAutoSelectedBranch(loginBranch);
           setIsAssignedBranchLocked(assigned.branchLocked);
-          setAssignedBranchNotice(`${assigned.branch} branch selected from your account.`);
+          setAssignedBranchNotice(`${loginBranch} branch selected from your account.`);
         } else {
           loginBranch = branch;
           setAutoSelectedBranch("");
@@ -326,8 +341,12 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
   const branchNoticeText = isCheckingAssignedBranch
     ? "Checking branch..."
     : assignedBranchNotice || (!hasCredentialsForBranchCheck ? "Enter username and password first." : "");
-  const isBranchNoticeError = branchNoticeText === "Unable to verify login details.";
   const isBranchNoticeNeutral = branchNoticeText === "Enter username and password first.";
+  const isBranchNoticeError = Boolean(
+    branchNoticeText
+    && !isBranchNoticeNeutral
+    && /invalid|unable|error|failed|required/i.test(branchNoticeText)
+  );
 
   return (
     <div className="login-page auth-gradient-page min-h-screen flex">
@@ -344,11 +363,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           min-height: 100vh;
           margin: 0;
           padding: 0;
-          background-color: #fff7ed !important;
+          background-color: #eff6ff !important;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-            linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+            linear-gradient(145deg, #f8fbff 0%, #eff6ff 52%, #ecfeff 100%) !important;
           background-repeat: no-repeat !important;
           background-size: cover !important;
         }
@@ -360,11 +379,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           min-height: 100svh;
           min-height: 100vh;
           overflow-x: hidden;
-          background-color: #fff7ed !important;
+          background-color: #eff6ff !important;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-            linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+            linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%) !important;
           background-repeat: no-repeat !important;
           background-size: cover !important;
         }
@@ -378,11 +397,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           margin: 0 !important;
           padding: 0 !important;
           overflow-x: hidden;
-          background-color: #fff7ed !important;
+          background-color: #eff6ff !important;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-            linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+            linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%) !important;
           background-repeat: no-repeat !important;
           background-size: cover !important;
         }
@@ -397,11 +416,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           overflow-x: hidden;
           overflow-y: auto;
           isolation: isolate;
-          background-color: #fff7ed !important;
+          background-color: #eff6ff !important;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-            linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+            linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%) !important;
           background-repeat: no-repeat !important;
           background-size: cover !important;
         }
@@ -412,11 +431,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           inset: 0;
           z-index: -1;
           pointer-events: none;
-          background-color: #fff7ed;
+          background-color: #eff6ff;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-            linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%);
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+            linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%);
           background-repeat: no-repeat;
           background-size: cover;
         }
@@ -434,7 +453,7 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
             height: 3px;
             margin: 0.75rem auto 0;
             border-radius: 999px;
-            background: linear-gradient(90deg, #ffff00, #ff0000);
+            background: linear-gradient(90deg, #2563eb, #14b8a6);
           }
 
           .login-mobile-copy {
@@ -474,11 +493,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
             width: 100%;
             margin: 0;
             padding: 0;
-            background-color: #fff7ed !important;
+            background-color: #eff6ff !important;
             background-image:
-              radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-              radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
-              linear-gradient(145deg, #fffbeb 0%, #fff7ed 48%, #fee2e2 100%) !important;
+              radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+              radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
+              linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%) !important;
             background-repeat: no-repeat !important;
             background-size: cover !important;
           }
@@ -559,7 +578,7 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
             height: 3px;
             margin: 0.55rem auto 0;
             border-radius: 999px;
-            background: linear-gradient(90deg, #ffff00, #ff0000);
+            background: linear-gradient(90deg, #2563eb, #14b8a6);
           }
 
           .login-form {
@@ -669,12 +688,12 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
           <CardContent className="login-card-content px-12 py-10 space-y-8">
             <div className="login-brand">
               <div className="flex justify-center mb-4">
-                <img src={emcLogoSrc} alt="EMC Logo" className="login-logo w-24 h-24 object-contain" />
+                <img src={emcLogoSrc} alt="StoreSync logo" className="login-logo w-24 h-24 object-contain" />
               </div>
 
               <div className="text-center space-y-2">
-                <h2 className="login-title text-3xl text-gray-900">E.M. Cayetano Trading</h2>
-                <p className="login-subtitle text-lg text-gray-600">Inventory Management System</p>
+                <h2 className="login-title text-3xl text-gray-900">StoreSync</h2>
+                <p className="login-subtitle text-lg text-gray-600">Retail Inventory System</p>
                 <span className="login-brand-rule" aria-hidden="true" />
                 <p className="login-mobile-copy">
                   Welcome back! Sign in to continue managing your inventory with ease.
@@ -682,7 +701,7 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
               </div>
             </div>
 
-            <form onSubmit={handleLogin} className="login-form space-y-6">
+            <form onSubmit={handleLogin} autoComplete="off" className="login-form space-y-6">
               <div className="login-field space-y-2">
                 <Label htmlFor="username" className="text-gray-800">Username</Label>
                 <div className="relative">
@@ -691,9 +710,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
                     id="username"
                     type="text"
                     placeholder="Enter your username"
+                    autoComplete="new-password"
+                    name="prototype-login-username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="login-field-control rounded-xl border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm"
+                    className="login-field-control rounded-xl border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm"
                   />
                 </div>
               </div>
@@ -706,9 +727,11 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
                     id="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    autoComplete="new-password"
+                    name="prototype-login-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="login-field-control login-password-input rounded-xl border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm pr-10"
+                    className="login-field-control login-password-input rounded-xl border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm pr-10"
                   />
                   <button
                     type="button"
@@ -744,11 +767,12 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
                   >
                     <SelectTrigger
                       id="branch"
-                      className="login-field-control rounded-xl border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-700 disabled:opacity-100"
+                      className="login-field-control rounded-xl border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-700 disabled:opacity-100"
                     >
                       <SelectValue placeholder="Select branch" />
                     </SelectTrigger>
                     <SelectContent>
+                      <SelectItem value="Main Branch">Main Branch</SelectItem>
                       <SelectItem value="Manggahan">Manggahan</SelectItem>
                       <SelectItem value="San Rafael">San Rafael</SelectItem>
                     </SelectContent>
@@ -774,8 +798,12 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
 
               <Button
                 type="submit"
-                className="login-button w-full py-6 rounded-xl bg-[#FFFF00] hover:bg-[#e6e600] text-black shadow-lg transition-all duration-300"
+                className="login-button w-full py-6 rounded-xl bg-[#2563EB] hover:bg-[#1D4ED8] text-white shadow-lg transition-all duration-300"
                 disabled={isLoggingIn || isCheckingAssignedBranch}
+                style={{
+                  backgroundColor: isLoggingIn || isCheckingAssignedBranch ? "#94A3B8" : "#2563EB",
+                  color: "#FFFFFF",
+                }}
               >
                 {isLoggingIn || isCheckingAssignedBranch ? (
                   <>
@@ -802,18 +830,18 @@ export function LoginScreen({ onLogin, onNavigateTo2FA, onForgotPassword }) {
 
       <div className="auth-gradient-pane flex-1 hidden lg:flex flex-col justify-center items-start bg-transparent p-16 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full opacity-30">
-          <div className="absolute top-10 right-10 w-72 h-72 bg-[#FFFF00] rounded-full blur-3xl" />
-          <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#FF0000] rounded-full blur-3xl" />
+          <div className="absolute top-10 right-10 w-72 h-72 bg-[#2DD4BF]/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-20 left-10 w-96 h-96 bg-[#2563EB]/20 rounded-full blur-3xl" />
         </div>
 
         <div className="max-w-xl space-y-8 relative z-10">
           <div className="inline-block">
-            <h2 className="text-5xl mb-2 text-gray-900">E.M. Cayetano Trading</h2>
-            <div className="h-1 w-32 bg-gradient-to-r from-[#FFFF00] to-[#FF0000] rounded-full" />
+            <h2 className="text-5xl mb-2 text-gray-900">StoreSync</h2>
+            <div className="h-1 w-32 bg-gradient-to-r from-[#2563EB] to-[#14B8A6] rounded-full" />
           </div>
 
           <p className="text-xl text-gray-700 leading-relaxed">
-            Established in 2012, E.M. Cayetano Trading provides quality hardware and construction supplies, including cement,
+            StoreSync helps retail teams manage inventory, replenishment, and daily stock operations with clarity,
             plywood, nails, hammers, steel bars, and more. Serving customers from our Manggahan and San Rafael branches in
             Rodriguez, Rizal.
           </p>

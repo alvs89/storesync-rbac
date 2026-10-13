@@ -45,7 +45,7 @@ import { DataProvider, useData } from "./components/DataContext";
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import { apiUrl } from './utils/api';
 import { PASSWORD_REQUIREMENTS, validatePasswordPolicy } from './utils/passwordPolicy';
-import { canAccessScreen, getRoleLabel, isAdminRole, normalizeRole } from './utils/roles';
+import { canAccessScreen, getRoleLabel, isAdministrativeRole, isSuperAdminRole, normalizeRole } from './utils/roles';
 import { LoginScreen } from "./components/LoginScreen";
 import { TwoFactorAuthScreen } from "./components/TwoFactorAuthScreen";
 import ForgotPasswordScreen from './components/ForgotPasswordScreen';
@@ -63,7 +63,7 @@ import { SearchModule } from "./components/SearchModule";
 import { HelpModule } from "./components/HelpModule";
 import { AlertsModule } from "./components/AlertsModule";
 
-const emcLogoSrc = "/emc-logo.png"; // Place the logo file in public/emc-logo.png
+const emcLogoSrc = "/storesync-logo.svg";
 const emptyPasswordChangeForm = {
   currentPassword: "",
   newPassword: "",
@@ -82,7 +82,7 @@ const AUTH_EMPLOYEE_IDLE_TIMEOUT_MS = 30 * 60 * 1000;
 const AUTH_IDLE_WARNING_MS = 60 * 1000;
 const AUTH_ACTIVITY_EVENTS = ['click', 'keydown', 'mousemove', 'touchstart', 'focus'];
 const getIdleTimeoutMsForRole = role => (
-  isAdminRole(role) ? AUTH_ADMIN_IDLE_TIMEOUT_MS : AUTH_EMPLOYEE_IDLE_TIMEOUT_MS
+  isAdministrativeRole(role) ? AUTH_ADMIN_IDLE_TIMEOUT_MS : AUTH_EMPLOYEE_IDLE_TIMEOUT_MS
 );
 const formatDurationMinutes = ms => {
   const minutes = Math.max(1, Math.round(ms / (60 * 1000)));
@@ -141,6 +141,7 @@ function AppContent() {
     localStorage.removeItem('user');
     return null;
   });
+  const [activeBranchScope, setActiveBranchScope] = useState(() => localStorage.getItem("active_branch") || "");
   const [pendingUser, setPendingUser] = useState(null);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const [hasShownInvalidationToast, setHasShownInvalidationToast] = useState(false);
@@ -330,7 +331,16 @@ function AppContent() {
     setIsMobileSidebarOpen(false);
   };
 
-  const activeBranch = localStorage.getItem('active_branch') || currentUser?.branch || '';
+  const activeBranch = isSuperAdminRole(currentUser?.role)
+    ? (activeBranchScope || currentUser?.branch || '')
+    : (currentUser?.branch || '');
+  const changeActiveBranch = branch => {
+    if (!isSuperAdminRole(currentUser?.role) || !["Manggahan", "San Rafael"].includes(branch)) return;
+    localStorage.setItem("active_branch", branch);
+    setActiveBranchScope(branch);
+    window.dispatchEvent(new CustomEvent("storesync-branch-changed", { detail: { branch } }));
+    window.location.reload();
+  };
   const currentPageTitle = getScreenTitle(currentScreen);
 
   // Keep unauthenticated browser entry points on the login page without breaking 2FA.
@@ -815,20 +825,23 @@ function AppContent() {
             {!isSidebarCollapsed && (
               <img
                 src={emcLogoSrc}
-                alt="EMC Logo"
+                alt="StoreSync logo"
                 className="w-16 h-16 object-contain transition-all"
               />
             )}
             {!isSidebarCollapsed && (
               <div>
-              <h1 className="text-gray-900">E.M. Cayetano</h1>
-              <p className="text-xs text-gray-600">Inventory System</p>
+              <h1 className="text-gray-900">StoreSync</h1>
+              <p className="text-xs text-gray-600">Retail Inventory System</p>
             </div>
             )}
           </div>
         </header>
 
-        <section className={`${isSidebarCollapsed ? "p-3" : "p-4"} border-b border-gray-200 bg-gradient-to-br from-yellow-50 to-white`} aria-label="User details">
+        <section
+          className={`${isSidebarCollapsed ? "p-3" : "p-4"} border-b border-blue-100 bg-gradient-to-br from-blue-50 via-white to-teal-50`}
+          aria-label="User details"
+        >
           <div className={`flex items-center ${isSidebarCollapsed ? "justify-center" : "gap-3"}`}>
             <UserInitialAvatar user={currentUser} size={isSidebarCollapsed ? "sm" : "md"} />
             {!isSidebarCollapsed && (
@@ -839,9 +852,24 @@ function AppContent() {
             )}
           </div>
           {!isSidebarCollapsed && (
-            <p className="mt-2 truncate whitespace-nowrap text-xs text-gray-600">
-              Branch: {activeBranch || currentUser.branch}
-            </p>
+            isSuperAdminRole(currentUser.role) ? (
+              <label className="mt-2 flex items-center gap-2 text-xs text-gray-700">
+                <span className="whitespace-nowrap">Active Branch</span>
+                <select
+                  value={activeBranch}
+                  onChange={event => changeActiveBranch(event.target.value)}
+                  className="min-w-0 flex-1 rounded border border-blue-200 bg-white px-1.5 py-1 text-xs text-gray-800"
+                  aria-label="Active Branch"
+                >
+                  <option value="Manggahan">Manggahan</option>
+                  <option value="San Rafael">San Rafael</option>
+                </select>
+              </label>
+            ) : (
+              <p className="mt-2 truncate whitespace-nowrap text-xs text-gray-600">
+                Branch: {activeBranch || currentUser.branch}
+              </p>
+            )
           )}
         </section>
 
@@ -914,15 +942,17 @@ function AppContent() {
 
           <Separator className="my-3" />
 
-          {isAdminRole(currentUser.role) && (
+          {isAdministrativeRole(currentUser.role) && (
             <>
-              <NavItem
-                icon={<Settings className="w-5 h-5" />}
-                label="Maintenance"
-                active={currentScreen === "maintenance"}
-                onClick={() => navigateTo("maintenance")}
-                collapsed={isSidebarCollapsed}
-              />
+              {canAccessScreen(currentUser.role, "maintenance") && (
+                <NavItem
+                  icon={<Settings className="w-5 h-5" />}
+                  label="Maintenance"
+                  active={currentScreen === "maintenance"}
+                  onClick={() => navigateTo("maintenance")}
+                  collapsed={isSidebarCollapsed}
+                />
+              )}
               <NavItem
                 icon={<Users className="w-5 h-5" />}
                 label="User Management"
@@ -1097,11 +1127,11 @@ function AppContent() {
         {canAccessScreen(currentUser.role, "reports") && renderScreenPane("reports", <ReportsModule user={currentUser} onNavigate={navigateTo} />)}
         {canAccessScreen(currentUser.role, "sales") && renderScreenPane("sales", <SalesModule user={currentUser} />)}
         {canAccessScreen(currentUser.role, "purchases") && renderScreenPane("purchases", <PurchasesModule user={currentUser} onNavigate={navigateTo} />)}
-        {isAdminRole(currentUser.role) && currentScreen === "maintenance" && (
+        {canAccessScreen(currentUser.role, "maintenance") && currentScreen === "maintenance" && (
           <MaintenanceModule onNavigate={navigateTo} user={currentUser} />
         )}
-        {isAdminRole(currentUser.role) && renderScreenPane("user-management", <UserManagementModule />)}
-        {isAdminRole(currentUser.role) && renderScreenPane("audit-trail", <AuditTrailModule user={currentUser} />)}
+        {canAccessScreen(currentUser.role, "user-management") && renderScreenPane("user-management", <UserManagementModule />)}
+        {canAccessScreen(currentUser.role, "audit-trail") && renderScreenPane("audit-trail", <AuditTrailModule user={currentUser} />)}
         {renderScreenPane("search", <SearchModule user={currentUser} onNavigate={navigateTo} />)}
         {renderScreenPane("help", <HelpModule user={currentUser} />)}
         {renderScreenPane("alerts", <AlertsModule user={currentUser} onNavigate={navigateTo} />)}
@@ -1162,12 +1192,15 @@ function UserInitialAvatar({ user, size = "md" }) {
   return (
     <span className="relative inline-flex shrink-0 overflow-visible rounded-full">
       <Avatar
-        className={`${selectedSize.avatar} overflow-visible rounded-full border border-white bg-gradient-to-br from-yellow-100 via-[#FFE16A] to-[#DFA800] p-[2px] shadow-[0_7px_16px_rgba(202,138,4,0.24)] ring-1 ring-yellow-400/55`}
+        className={`${selectedSize.avatar} overflow-visible rounded-full border border-white p-[2px] shadow-[0_7px_16px_rgba(15,118,110,0.24)] ring-1 ring-[#2DD4BF]/70`}
+        style={{
+          background: "linear-gradient(135deg, #0F2A43 0%, #2563EB 52%, #0F766E 100%)",
+        }}
       >
         <AvatarFallback
-          className={`${selectedSize.text} h-full w-full rounded-full border border-yellow-200/80 bg-gradient-to-br from-[#FFF7B8] via-[#FFE066] to-[#F0B20A] font-bold text-gray-950 shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(120,53,15,0.13)]`}
+          className={`${selectedSize.text} h-full w-full rounded-full border border-white/80 font-bold text-[#0F2A43] shadow-[inset_0_1px_2px_rgba(255,255,255,0.9),inset_0_-2px_4px_rgba(15,42,67,0.16)]`}
           style={{
-            background: "linear-gradient(135deg, #FFF3A3 0%, #FFE15A 48%, #F3B30B 100%)",
+            background: "linear-gradient(135deg, #FFFFFF 0%, #E0F2FE 52%, #CCFBF1 100%)",
           }}
         >
           {getInitials(user)}
@@ -1205,9 +1238,9 @@ function MobileTopBar({ title, unreadAlertCount, onOpenSidebar, onAlertsClick })
       </button>
 
       <div className="flex min-w-0 flex-1 items-center gap-2 px-2">
-        <img src={emcLogoSrc} alt="EMC Logo" className="h-8 w-8 shrink-0 object-contain" />
+        <img src={emcLogoSrc} alt="StoreSync logo" className="h-8 w-8 shrink-0 object-contain" />
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-gray-900">E.M. Cayetano</p>
+          <p className="truncate text-sm font-semibold text-gray-900">StoreSync</p>
           <p className="truncate text-xs text-gray-500">{title}</p>
         </div>
       </div>
@@ -1271,12 +1304,15 @@ function MobileSidebarDrawer({
           >
             <X className="h-5 w-5" />
           </button>
-          <img src={emcLogoSrc} alt="EMC Logo" className="mx-auto h-16 w-16 object-contain" />
-          <h1 className="mt-3 text-base font-semibold text-gray-900">E.M. Cayetano</h1>
-          <p className="text-xs text-gray-600">Inventory System</p>
+          <img src={emcLogoSrc} alt="StoreSync logo" className="mx-auto h-16 w-16 object-contain" />
+          <h1 className="mt-3 text-base font-semibold text-gray-900">StoreSync</h1>
+          <p className="text-xs text-gray-600">Retail Inventory System</p>
         </header>
 
-        <section className="mx-5 mb-4 mt-6 rounded-xl border border-yellow-100 bg-gradient-to-br from-yellow-50 to-white p-4 shadow-sm" aria-label="User details">
+        <section
+          className="mx-5 mb-4 mt-6 rounded-xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-teal-50 p-4 shadow-sm"
+          aria-label="User details"
+        >
           <div className="flex items-center gap-3">
             <UserInitialAvatar user={currentUser} size="lg" />
             <div className="min-w-0">
@@ -1303,9 +1339,11 @@ function MobileSidebarDrawer({
 
           <Separator className="my-4" />
 
-          {isAdminRole(currentUser.role) && (
+          {isAdministrativeRole(currentUser.role) && (
             <>
-              <MobileNavItem icon={<Settings className="h-5 w-5" />} label="Maintenance" active={currentScreen === "maintenance"} onClick={() => onNavigate("maintenance")} />
+              {canAccessScreen(currentUser.role, "maintenance") && (
+                <MobileNavItem icon={<Settings className="h-5 w-5" />} label="Maintenance" active={currentScreen === "maintenance"} onClick={() => onNavigate("maintenance")} />
+              )}
               <MobileNavItem icon={<Users className="h-5 w-5" />} label="User Management" active={currentScreen === "user-management"} onClick={() => onNavigate("user-management")} />
               <MobileNavItem icon={<ShieldCheck className="h-5 w-5" />} label="Audit Trail" active={currentScreen === "audit-trail"} onClick={() => onNavigate("audit-trail")} />
             </>
@@ -1332,10 +1370,10 @@ function MobileSidebarDrawer({
   );
 }
 
-const SIDEBAR_ACTIVE_BG = "#FF6B00";
+const SIDEBAR_ACTIVE_BG = "#2563EB";
 const SIDEBAR_ACTIVE_TEXT = "#FFFFFF";
-const SIDEBAR_ACTIVE_RING = "rgba(255, 107, 0, 0.38)";
-const SIDEBAR_ACTIVE_SHADOW = "0 10px 22px rgba(255, 107, 0, 0.24)";
+const SIDEBAR_ACTIVE_RING = "rgba(37, 99, 235, 0.38)";
+const SIDEBAR_ACTIVE_SHADOW = "0 10px 22px rgba(37, 99, 235, 0.24)";
 
 function MobileNavItem({ icon, label, active, onClick, badge }) {
   return (

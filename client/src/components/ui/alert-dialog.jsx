@@ -52,7 +52,7 @@ function AlertDialogHeader({
   showBrand = true,
   ...props
 }) {
-  const brandTitle = "E.M. Cayetano Trading";
+  const brandTitle = "StoreSync";
   const brandSubtitle = "Inventory Management System";
 
   return /*#__PURE__*/React.createElement("div", _extends({
@@ -112,4 +112,3 @@ const AlertDialogCancel = /*#__PURE__*/React.forwardRef(({
 }, props)));
 AlertDialogCancel.displayName = AlertDialogPrimitive.Cancel.displayName;
 export { AlertDialog, AlertDialogPortal, AlertDialogOverlay, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogAction, AlertDialogCancel };
-

@@ -18,7 +18,7 @@ import { useData } from "./DataContext";
 import { PageHeader } from "./PageHeader";
 import { mergeSort } from "../utils/algorithms";
 import { getEmailTypoSuggestion } from "../utils/emailValidation";
-import { ROLE_OPTIONS, getRoleLabel, isAdminRole, normalizeRole } from "../utils/roles";
+import { ROLE_OPTIONS, getRoleLabel, isAdministrativeRole, isSuperAdminRole, normalizeRole } from "../utils/roles";
 
 const sanitizePersonNameInput = value => String(value ?? "").replace(/[^A-Za-zÀ-ÖØ-öø-ÿÑñ .'-]/g, "");
 const sanitizeUsernameInput = value => String(value ?? "").replace(/[^A-Za-z0-9._-]/g, "");
@@ -69,6 +69,9 @@ export function UserManagementModule() {
       return {};
     }
   })();
+  const assignableRoleOptions = isSuperAdminRole(sessionUser?.role)
+    ? ROLE_OPTIONS
+    : ROLE_OPTIONS.filter(option => ["Sales Encoder", "Inventory Staff", "Sales Encoder + Inventory Staff"].includes(option.value));
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [isEditAccountDialogOpen, setIsEditAccountDialogOpen] = useState(false);
@@ -505,7 +508,7 @@ export function UserManagementModule() {
       </SelectTrigger>
       <SelectContent>
         <SelectItem value={ROLE_FILTER_ALL}>All Roles</SelectItem>
-        {ROLE_OPTIONS.map(option => (
+        {assignableRoleOptions.map(option => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
           </SelectItem>
@@ -2452,7 +2455,7 @@ export function UserManagementModule() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {ROLE_OPTIONS.map(option => (
+                      {assignableRoleOptions.map(option => (
                         <SelectItem key={option.value} value={option.value}>
                           {option.label}
                         </SelectItem>
@@ -2746,7 +2749,7 @@ export function UserManagementModule() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {ROLE_OPTIONS.map(option => (
+                    {assignableRoleOptions.map(option => (
                       <SelectItem key={option.value} value={option.value}>
                         {option.label}
                       </SelectItem>
@@ -2777,9 +2780,9 @@ export function UserManagementModule() {
             <AlertDialogHeader showBrand={false}>
               <AlertDialogTitle>Confirm Role Change</AlertDialogTitle>
               <AlertDialogDescription>
-                {isAdminRole(newRole) && !isAdminRole(selectedUser?.role) ? (
+                {isAdministrativeRole(newRole) && !isAdministrativeRole(selectedUser?.role) ? (
                   <>Are you sure you want to promote <strong className="text-gray-900">{selectedUser?.fullName}</strong> to Admin / Owner?</>
-                ) : selectedUser && sessionUser?.id === selectedUser.id && !isAdminRole(newRole) ? (
+                ) : selectedUser && sessionUser?.id === selectedUser.id && !isAdministrativeRole(newRole) ? (
                   <>You are changing your own role from <strong className="text-gray-900">Admin / Owner</strong> to <strong className="text-gray-900">{getRoleLabel(newRole)}</strong>. You will lose administrative access and will be logged out immediately after this change.</>
                 ) : (
                   <>Are you sure you want to change <strong className="text-gray-900">{selectedUser?.fullName}</strong>'s role from{' '}
@@ -2789,7 +2792,7 @@ export function UserManagementModule() {
               </AlertDialogDescription>
               {renderChangePreview("Role", getRoleLabel(selectedUser?.role), getRoleLabel(newRole), "red")}
 
-              {selectedUser && sessionUser?.id === selectedUser.id && !isAdminRole(newRole) && (
+              {selectedUser && sessionUser?.id === selectedUser.id && !isAdministrativeRole(newRole) && (
                 <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
                   <p className="font-medium text-amber-900">What happens after you confirm</p>
                   <ul className="mt-2 list-disc space-y-1 pl-4">

@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(50) UNIQUE NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
-    role VARCHAR(30) CHECK (role IN ('Admin', 'Sales Encoder', 'Inventory Staff')) NOT NULL,
+    role VARCHAR(40) CHECK (role IN ('Super Admin', 'Admin', 'Sales Encoder', 'Inventory Staff', 'Sales Encoder + Inventory Staff')) NOT NULL,
     branch VARCHAR(50),
     status VARCHAR(20) DEFAULT 'Active',
     must_change_password BOOLEAN DEFAULT false,
@@ -76,6 +76,7 @@ CREATE TABLE IF NOT EXISTS branch_inventory (
     min_stock_level INTEGER DEFAULT 5,
     lead_time_days INTEGER,
     safety_stock INTEGER,
+    review_period_days INTEGER DEFAULT 30,
     average_daily_sales NUMERIC(10,2),
     average_daily_sales_mode VARCHAR(20) DEFAULT 'auto',
     manual_average_daily_sales NUMERIC(10,2),
@@ -245,6 +246,7 @@ CREATE TABLE IF NOT EXISTS archived_inventory (
     min_stock_level INTEGER DEFAULT 5,
     lead_time_days INTEGER,
     safety_stock INTEGER,
+    review_period_days INTEGER DEFAULT 30,
     average_daily_sales NUMERIC(10,2),
     average_daily_sales_mode VARCHAR(20) DEFAULT 'auto',
     manual_average_daily_sales NUMERIC(10,2),
@@ -272,6 +274,7 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     action TEXT,
     reason TEXT,
     details JSONB DEFAULT '{}'::jsonb,
+    branch VARCHAR(50),
     created_at TIMESTAMP DEFAULT (CURRENT_TIMESTAMP AT TIME ZONE 'Asia/Manila')
 );
 
@@ -335,16 +338,16 @@ ON system_logs (created_at)
 WHERE is_security = false AND severity IN ('debug', 'info');
 
 -- 16. INITIAL SEED DATA
--- Creates the first admin account placeholder for initial setup.
+-- Creates the first Super Admin account placeholder for initial setup.
 -- Replace password_hash with a real bcrypt hash before using this SQL directly,
 -- or run reset-admin.js with ADMIN_RESET_PASSWORD configured.
 INSERT INTO users (full_name, username, email, password_hash, role, branch, status, must_change_password)
 VALUES (
-    'System Admin',
+    'System Super Admin',
     'admin',
     'admin@emcayetano.com',
     'PLACEHOLDER_HASH_FOR_DEV',
-    'Admin',
+    'Super Admin',
     'Manggahan',
     'Active',
     false
