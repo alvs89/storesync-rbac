@@ -1264,14 +1264,22 @@ export function Dashboard({
                 <div className="flex min-w-0 items-start gap-3">
                   <span className="rounded-lg bg-blue-100 p-2 text-blue-700"><Lightbulb className="h-4 w-4" /></span>
                   <div className="min-w-0">
-                    <h3 className="font-semibold text-slate-900">{insight.title}</h3>
-                    <p className="mt-1 text-sm text-slate-700">{insight.summary}</p>
+                    <h3 className="font-bold leading-6 text-slate-950">{insight.title}</h3>
+                    <p className="mt-1 text-sm leading-6 text-slate-700">{insight.summary}</p>
                   </div>
                 </div>
-                <Badge className="shrink-0 bg-slate-200 text-slate-700">{insight.priority}</Badge>
+                <Badge className={`shrink-0 border-0 px-2.5 py-1 text-xs font-bold ${
+                  insight.priority === 'Critical' ? 'bg-red-100 text-red-800' :
+                    insight.priority === 'High' ? 'bg-red-100 text-red-800' :
+                      insight.priority === 'Medium' ? 'bg-amber-100 text-amber-800' :
+                        'bg-blue-100 text-blue-800'
+                }`}>{insight.priority}</Badge>
               </div>
               <p className="mt-3 text-xs leading-5 text-slate-600">{insight.evidence}</p>
-              <p className="mt-2 text-sm leading-5 text-slate-800"><span className="font-semibold">Suggested review:</span> {insight.recommendation}</p>
+              <div className="mt-4 border-t border-slate-200 pt-3">
+                <p className="text-sm font-semibold leading-6 text-slate-900">Suggested review</p>
+                <p className="mt-1 text-sm leading-6 text-slate-700">{insight.recommendation}</p>
+              </div>
               <Button size="sm" variant="outline" className="mt-3" onClick={() => navigateToInsightReport(insight)}>Review evidence</Button>
             </div>
           ))}
@@ -2048,6 +2056,9 @@ export function Dashboard({
 
         .dashboard-action-button {
           height: 100%;
+          background: #0f2a43;
+          border-color: #0f2a43;
+          color: #ffffff;
         }
 
         .dashboard-action-button:hover,
@@ -2056,6 +2067,11 @@ export function Dashboard({
           background: #ffffff;
           box-shadow: 0 10px 22px rgba(15, 23, 42, 0.08);
           transform: translateY(-1px);
+        }
+
+        .dashboard-action-button:hover {
+          background: #163b5c;
+          border-color: #163b5c;
         }
 
         .dashboard-action-left {
@@ -2090,6 +2106,12 @@ export function Dashboard({
           font-size: 15px;
           font-weight: 850;
           line-height: 1.18;
+        }
+
+        .dashboard-action-button .dashboard-action-title,
+        .dashboard-action-button .dashboard-action-detail,
+        .dashboard-action-button > svg {
+          color: #ffffff;
         }
 
         .dashboard-action-detail {

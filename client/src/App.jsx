@@ -728,7 +728,7 @@ function AppContent() {
         </form>
         {showPasswordChangeLogoutDialog && (
           <div className="absolute inset-0 flex items-center justify-center bg-slate-950/45 px-4 py-6" style={{ zIndex: 2147483002 }}>
-            <div className="w-full max-w-lg rounded-lg border-2 border-[#FFFF00] bg-white p-6">
+            <div className="w-full max-w-lg rounded-lg border-2 border-[#0F2A43] bg-white p-6">
               <h3 className="text-lg font-semibold text-slate-950">Confirm Logout</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">
                 Are you sure you want to logout? Your temporary password will still need to be changed the next time you sign in.
@@ -997,8 +997,8 @@ function AppContent() {
 
       <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
         <AlertDialogContent
-          className="bg-white rounded-lg border-2 border-[#FFFF00] p-6 shadow-none outline-none ring-0 max-w-lg before:hidden"
-          style={{ borderColor: '#FFFF00' }}
+          className="bg-white rounded-lg border-2 border-[#0F2A43] p-6 shadow-none outline-none ring-0 max-w-lg before:hidden"
+          style={{ borderColor: '#0F2A43' }}
         >
           <AlertDialogHeader showBrand={false}>
             <AlertDialogTitle>Confirm Logout</AlertDialogTitle>
