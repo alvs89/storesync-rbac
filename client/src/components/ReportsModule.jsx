@@ -439,7 +439,9 @@ export function ReportsModule({
     if (isInventorySnapshotReport) return null;
 
     const { start, end } = getReportPeriodBounds();
-    return `${formatReportPeriodDate(start)} – ${formatReportPeriodDate(end)}`;
+    const startLabel = formatReportPeriodDate(start);
+    const endLabel = formatReportPeriodDate(end);
+    return startLabel === endLabel ? startLabel : `${startLabel} – ${endLabel}`;
   };
 
   // Period-based records use transaction dates so sales, purchases, and stock

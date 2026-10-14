@@ -42,7 +42,9 @@ const formatCurrency = value => new Intl.NumberFormat(undefined, { style: 'curre
 const formatPeriod = bounds => {
   if (!bounds?.start || !bounds?.end) return 'Selected period';
   const options = { month: 'long', day: 'numeric', year: 'numeric' };
-  return `${bounds.start.toLocaleDateString('en-US', options)} – ${bounds.end.toLocaleDateString('en-US', options)}`;
+  const startLabel = bounds.start.toLocaleDateString('en-US', options);
+  const endLabel = bounds.end.toLocaleDateString('en-US', options);
+  return startLabel === endLabel ? startLabel : `${startLabel} – ${endLabel}`;
 };
 
 const makeInsight = (data, bounds) => ({ ...data, period: formatPeriod(bounds), targetFilters: data.targetFilters || {} });
