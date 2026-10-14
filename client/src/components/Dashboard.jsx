@@ -1271,7 +1271,7 @@ export function Dashboard({
                 <Badge className={`shrink-0 border-0 px-2.5 py-1 text-xs font-bold ${
                   insight.priority === 'Critical' ? 'bg-red-100 text-red-800' :
                     insight.priority === 'High' ? 'bg-red-100 text-red-800' :
-                      insight.priority === 'Medium' ? 'bg-amber-100 text-amber-800' :
+                      insight.priority === 'Medium' ? 'bg-amber-200 text-amber-900' :
                         'bg-blue-100 text-blue-800'
                 }`}>{insight.priority}</Badge>
               </div>
@@ -1280,7 +1280,9 @@ export function Dashboard({
                 <p className="text-sm font-semibold leading-6 text-slate-900">Suggested review</p>
                 <p className="mt-1 text-sm leading-6 text-slate-700">{insight.recommendation}</p>
               </div>
-              <Button size="sm" variant="outline" className="mt-auto pt-3" onClick={() => navigateToInsightReport(insight)}>Review evidence</Button>
+              <div className="mt-auto pt-4">
+                <Button size="sm" variant="outline" onClick={() => navigateToInsightReport(insight)}>Review Evidence</Button>
+              </div>
             </div>
           ))}
         </div>

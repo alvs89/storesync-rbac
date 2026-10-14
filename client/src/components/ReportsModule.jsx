@@ -4709,7 +4709,7 @@ export function ReportsModule({
                             insight.priority === 'Critical' || insight.priority === 'High'
                               ? 'bg-red-100 text-red-800'
                               : insight.priority === 'Medium'
-                                ? 'bg-amber-100 text-amber-800'
+                                ? 'bg-amber-200 text-amber-900'
                                 : 'bg-blue-100 text-blue-800'
                           }`}>{insight.priority}</Badge>
                         </div>
