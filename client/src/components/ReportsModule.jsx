@@ -2,7 +2,7 @@
 // inventory, supplier reorder preparation, and operational review.
 import React from 'react';
 import { useState, useEffect, useRef } from 'react';
-import { Download, Calendar, TrendingUp, Package, AlertTriangle, RefreshCw, FileText, Info, Wallet, Tag, PackagePlus, ShieldCheck } from 'lucide-react';
+import { Download, Calendar, TrendingUp, Package, AlertTriangle, RefreshCw, FileText, Info, Wallet, Tag, PackagePlus, ShieldCheck, ReceiptText } from 'lucide-react';
 import { sortByNameAsc, sortByQuantityAsc, linearSearchAll } from '../utils/algorithms';
 import { getStockStatusBadgeClass } from '../utils/statusStyles';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
@@ -32,6 +32,7 @@ import {
   sanitizeSupplierInput,
 } from '../utils/suppliers';
 import { buildPurchaseDraftFromReorderGroup, savePurchaseDraft } from '../utils/purchaseDrafts';
+import { generateBusinessInsights } from '../utils/businessInsights';
 
 const isBackdatedRecord = record => {
   if (!record?.createdAt || !record?.encodedAt) return false;
@@ -445,6 +446,19 @@ export function ReportsModule({
   // movements appear in the business period when the activity actually happened.
   const reportMovements = (stockMovements || []).filter(isMovementInReportPeriod);
   const reportSalesTransactions = (salesTransactions || []).filter(isSaleInReportPeriod);
+  const reportInsights = reportType === 'business-insights'
+    ? generateBusinessInsights({
+      sales: reportSalesTransactions,
+      previousSales: (salesTransactions || []).filter(sale => {
+        const date = new Date(sale.createdAt);
+        const previous = getPreviousReportPeriodBounds();
+        return !Number.isNaN(date.getTime()) && date >= previous.start && date <= previous.end;
+      }),
+      allSales: salesTransactions || [],
+      inventory,
+      periodBounds: getReportPeriodBounds()
+    })
+    : [];
   const reportPurchaseTransactions = (purchaseTransactions || []).filter(purchase => {
     const purchaseDate = new Date(purchase.createdAt);
     if (Number.isNaN(purchaseDate.getTime())) return false;
@@ -1370,6 +1384,16 @@ export function ReportsModule({
       ];
     }
 
+    if (reportType === 'business-insights') {
+      const performance = getProfitabilitySummary(reportSalesTransactions);
+      return [
+        { label: 'Sales', value: formatCurrency(performance.totalSales), icon: <Wallet className="w-8 h-8 text-blue-500" />, color: 'border-l-blue-500' },
+        { label: 'Actual Profit', value: formatCurrency(performance.actualProfit), icon: <TrendingUp className="w-8 h-8 text-green-500" />, color: performance.actualProfit >= 0 ? 'border-l-green-500' : 'border-l-red-500' },
+        { label: 'Transactions', value: reportSalesTransactions.filter(isCompletedSaleTransaction).length, icon: <ReceiptText className="w-8 h-8 text-violet-500" />, color: 'border-l-violet-500' },
+        { label: 'Rules Triggered', value: reportInsights.length, icon: <Info className="w-8 h-8 text-amber-500" />, color: reportInsights.length ? 'border-l-amber-500' : 'border-l-teal-500' }
+      ];
+    }
+
     if (reportType === 'supplier-reorder') {
       const selectedGroup = getSelectedSupplierReorderGroup();
       const reorderItems = selectedGroup?.items || [];
@@ -1659,6 +1683,30 @@ export function ReportsModule({
           fillColor: [248, 250, 252]
         }
       });
+    } else if (reportType === 'business-insights') {
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('BUSINESS INSIGHTS', 20, startY);
+      let insightY = startY + 10;
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      if (reportInsights.length === 0) {
+        doc.text('No major business conditions require attention for the selected period.', 20, insightY);
+      } else {
+        reportInsights.forEach(insight => {
+          const lines = doc.splitTextToSize(
+            `${insight.priority} - ${insight.title}\n${insight.summary}\nEvidence: ${insight.evidence}\nRule: ${insight.ruleTriggered}\nSuggested review: ${insight.recommendation}`,
+            pageRight - 40
+          );
+          if (insightY + lines.length * 5 > 275) {
+            doc.addPage();
+            insightY = 20;
+          }
+          doc.setFont('helvetica', 'normal');
+          doc.text(lines, 20, insightY);
+          insightY += lines.length * 5 + 7;
+        });
+      }
     } else if (reportType === 'detailed') {
       const items = getFilteredInventory();
       doc.setFontSize(12);
@@ -4632,6 +4680,62 @@ export function ReportsModule({
           </Card>
         ))}
       </div>
+
+      {reportType === 'business-insights' && (
+        <Card className={`reports-data-card transition-opacity duration-300 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`}>
+          <CardHeader data-card-header>
+            <CardTitle>Business Insights</CardTitle>
+            <CardDescription>Deterministic business decision support based on StoreSync records for {getReportPeriodLabel()}.</CardDescription>
+          </CardHeader>
+          <CardContent data-card-content>
+            <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+              These insights are generated automatically from StoreSync records using predefined business rules. They are not AI-generated predictions.
+            </div>
+            {reportInsights.length === 0 ? (
+              renderReportsEmptyState({
+                icon: Info,
+                title: 'No major business conditions require attention',
+                message: 'The selected period does not meet any configured business insight rules.'
+              })
+            ) : (
+              <div className="grid gap-4">
+                {reportInsights.map(insight => (
+                  <article key={insight.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                    <div className="flex flex-wrap items-start justify-between gap-3">
+                      <div>
+                        <div className="mb-1 flex items-center gap-2">
+                          <h3 className="text-lg font-semibold text-slate-900">{insight.title}</h3>
+                          <Badge variant="outline">{insight.priority}</Badge>
+                        </div>
+                        <p className="text-sm text-slate-700">{insight.summary}</p>
+                      </div>
+                      <Badge className="bg-blue-100 text-blue-800">{insight.type.replace(/-/g, ' ')}</Badge>
+                    </div>
+                    <div className="mt-4 grid gap-4 text-sm md:grid-cols-2">
+                      <div className="rounded-lg bg-slate-50 p-3">
+                        <p className="font-semibold text-slate-900">Evidence</p>
+                        <p className="mt-1 leading-6 text-slate-700">{insight.evidence}</p>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 p-3">
+                        <p className="font-semibold text-slate-900">Rule Triggered</p>
+                        <p className="mt-1 leading-6 text-slate-700">{insight.ruleTriggered}</p>
+                      </div>
+                      <div className="rounded-lg bg-blue-50 p-3">
+                        <p className="font-semibold text-blue-950">Suggested Review</p>
+                        <p className="mt-1 leading-6 text-blue-900">{insight.recommendation}</p>
+                      </div>
+                      <div className="rounded-lg bg-slate-50 p-3">
+                        <p className="font-semibold text-slate-900">Data Period</p>
+                        <p className="mt-1 leading-6 text-slate-700">{insight.period}</p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      )}
 
       {reportType === 'actual-earnings' && (
         <Card className={`reports-data-card transition-opacity duration-300 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`}>

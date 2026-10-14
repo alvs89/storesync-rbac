@@ -7,6 +7,8 @@ import {
   ArrowRight,
   CalendarDays,
   ClipboardCheck,
+  Lightbulb,
+  CheckCircle2,
   FileText,
   HelpCircle,
   Home,
@@ -35,6 +37,7 @@ import { ROLE_VALUES, canAccessScreen, canPerformInventoryMovement, canRecordSal
 import { getProfitabilitySummary } from '../utils/profitability';
 import { isCompletedSaleTransaction } from '../utils/salesTransactionStatus';
 import { buildPurchaseDraftFromReorderGroup, savePurchaseDraft } from '../utils/purchaseDrafts';
+import { generateBusinessInsights } from '../utils/businessInsights';
 
 const formatCurrency = value =>
   new Intl.NumberFormat(undefined, {
@@ -454,6 +457,16 @@ export function Dashboard({
     : 0;
   const dashboardSalesQuantity = getSalesUnits(dashboardSales);
   const previousDashboardSalesQuantity = getSalesUnits(previousDashboardSales);
+  const dashboardInsights = isAdmin
+    ? generateBusinessInsights({
+      sales: dashboardSales,
+      previousSales: previousDashboardSales,
+      allSales: completedSales,
+      inventory,
+      periodBounds: getDashboardSalesBounds(),
+      limit: 5
+    })
+    : [];
   const stockInTodayCount = stockMovementsToday.filter(movement => String(movement.action || '').toLowerCase() === 'stock in').length;
   const stockOutTodayCount = stockMovementsToday.filter(movement => String(movement.action || '').toLowerCase() === 'stock out').length;
   const unitsMovedToday = stockMovementsToday.reduce((sum, movement) => sum + Number(movement.quantityChanged || 0), 0);
@@ -1219,6 +1232,53 @@ export function Dashboard({
       )}
     </section>
   );
+
+  const navigateToInsightReport = insight => {
+    if (insight?.targetReport === 'purchases') {
+      onNavigate('purchases');
+      return;
+    }
+    localStorage.setItem('reports_target_type', insight?.targetReport || 'business-insights');
+    onNavigate('reports');
+  };
+
+  const businessInsightsSection = isAdmin ? (
+    <section className="dashboard-panel" aria-label="Owner Business Insights">
+      <div className="dashboard-panel-header">
+        <div className="min-w-0">
+          <h2 className="dashboard-panel-title">Owner Business Insights</h2>
+          <p className="dashboard-panel-subtitle">Rule-based insights generated from current StoreSync sales, profitability, and inventory data.</p>
+        </div>
+        <Button variant="outline" size="sm" onClick={() => onNavigate('reports')}>View Business Insights</Button>
+      </div>
+      {dashboardInsights.length === 0 ? (
+        <div className="flex items-center gap-3 px-4 py-5 text-sm text-teal-800">
+          <CheckCircle2 className="h-5 w-5 shrink-0" />
+          <span>No major business conditions require attention for the selected period.</span>
+        </div>
+      ) : (
+        <div className="grid gap-3 p-3 md:grid-cols-2">
+          {dashboardInsights.map(insight => (
+            <div key={insight.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex min-w-0 items-start gap-3">
+                  <span className="rounded-lg bg-blue-100 p-2 text-blue-700"><Lightbulb className="h-4 w-4" /></span>
+                  <div className="min-w-0">
+                    <h3 className="font-semibold text-slate-900">{insight.title}</h3>
+                    <p className="mt-1 text-sm text-slate-700">{insight.summary}</p>
+                  </div>
+                </div>
+                <Badge className="shrink-0 bg-slate-200 text-slate-700">{insight.priority}</Badge>
+              </div>
+              <p className="mt-3 text-xs leading-5 text-slate-600">{insight.evidence}</p>
+              <p className="mt-2 text-sm leading-5 text-slate-800"><span className="font-semibold">Suggested review:</span> {insight.recommendation}</p>
+              <Button size="sm" variant="outline" className="mt-3" onClick={() => navigateToInsightReport(insight)}>Review evidence</Button>
+            </div>
+          ))}
+        </div>
+      )}
+    </section>
+  ) : null;
 
   return (
     <div className="dashboard-page min-h-screen bg-gray-50 p-4 md:p-8">
@@ -2567,6 +2627,8 @@ export function Dashboard({
             ))}
           </div>
         </section>
+
+        {businessInsightsSection}
 
         {isSalesEncoder || isCombinedSalesInventory ? (
           <div className={isCombinedSalesInventory ? 'dashboard-combined-work-grid' : 'dashboard-sales-encoder-work-grid'}>
