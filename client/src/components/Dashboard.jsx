@@ -1259,7 +1259,7 @@ export function Dashboard({
       ) : (
         <div className="grid gap-3 p-3 md:grid-cols-2">
           {dashboardInsights.map(insight => (
-            <div key={insight.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div key={insight.id} className="flex h-full flex-col rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                   <span className="rounded-lg bg-blue-100 p-2 text-blue-700"><Lightbulb className="h-4 w-4" /></span>
@@ -1280,7 +1280,7 @@ export function Dashboard({
                 <p className="text-sm font-semibold leading-6 text-slate-900">Suggested review</p>
                 <p className="mt-1 text-sm leading-6 text-slate-700">{insight.recommendation}</p>
               </div>
-              <Button size="sm" variant="outline" className="mt-3" onClick={() => navigateToInsightReport(insight)}>Review evidence</Button>
+              <Button size="sm" variant="outline" className="mt-auto pt-3" onClick={() => navigateToInsightReport(insight)}>Review evidence</Button>
             </div>
           ))}
         </div>

@@ -2971,7 +2971,7 @@ export function ReportsModule({
         .reports-period-control-row [data-reports-control]:focus-within {
           border-color: #ffff00;
           background: #ffffff;
-          box-shadow: 0 0 0 3px rgba(255, 255, 0, 0.24);
+          box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
           outline: none;
         }
 
@@ -3500,7 +3500,7 @@ export function ReportsModule({
         .reports-reorder-quantity-input:focus-visible {
           border-color: #ffff00;
           box-shadow:
-            inset 0 0 0 1px rgba(255, 255, 0, 0.62),
+            inset 0 0 0 1px rgba(37, 99, 235, 0.28),
             0 1px 2px rgba(15, 23, 42, 0.06);
         }
 
@@ -4170,7 +4170,7 @@ export function ReportsModule({
           .reports-date-picker-pill:focus-visible {
             outline: none;
             border-color: #ffff00;
-            box-shadow: 0 0 0 3px rgba(255, 255, 0, 0.24);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
           }
           .reports-date-picker-input {
             width: 150px;
@@ -4189,7 +4189,7 @@ export function ReportsModule({
           .reports-date-picker-input:focus {
             border-color: #ffff00;
             background: #ffffff;
-            box-shadow: 0 0 0 3px rgba(255, 255, 0, 0.24);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
           }
           .reports-date-range-text {
             min-width: 0;
@@ -4480,7 +4480,7 @@ export function ReportsModule({
                   <div className="reports-period-select-field">
                     <label htmlFor="reports-period-select" className="reports-custom-date-label">Period</label>
                     <Select value={reportPeriod} onValueChange={value => setReportPeriod(value)}>
-                      <SelectTrigger id="reports-period-select" data-reports-control className="bg-white border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm">
+                      <SelectTrigger id="reports-period-select" data-reports-control className="bg-white border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -4568,7 +4568,7 @@ export function ReportsModule({
               <div className="flex-1">
                 <label className="text-sm font-medium mb-2 block text-slate-950">Report Type</label>
                 <Select value={reportType} onValueChange={handleReportTypeChange}>
-                  <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00]">
+                  <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
@@ -4584,7 +4584,7 @@ export function ReportsModule({
                 <div className="flex-1">
                   <label className="text-sm font-medium mb-2 block text-slate-950">Filter by Category</label>
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00]">
+                    <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -4604,7 +4604,7 @@ export function ReportsModule({
                     onValueChange={setSelectedReorderSupplier}
                     disabled={getAllSupplierReorderGroups().length === 0}
                   >
-                    <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00]">
+                    <SelectTrigger data-reports-control className="border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]">
                       <SelectValue placeholder="Select supplier" />
                     </SelectTrigger>
                     <SelectContent>
@@ -4688,7 +4688,7 @@ export function ReportsModule({
             <CardDescription>Deterministic business decision support based on StoreSync records for {getReportPeriodLabel()}.</CardDescription>
           </CardHeader>
           <CardContent data-card-content>
-            <div className="mb-5 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
+            <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
               These insights are generated automatically from StoreSync records using predefined business rules. They are not AI-generated predictions.
             </div>
             {reportInsights.length === 0 ? (
@@ -4705,7 +4705,13 @@ export function ReportsModule({
                       <div>
                         <div className="mb-1 flex items-center gap-2">
                           <h3 className="text-lg font-semibold text-slate-900">{insight.title}</h3>
-                          <Badge variant="outline">{insight.priority}</Badge>
+                          <Badge className={`border-0 ${
+                            insight.priority === 'Critical' || insight.priority === 'High'
+                              ? 'bg-red-100 text-red-800'
+                              : insight.priority === 'Medium'
+                                ? 'bg-amber-100 text-amber-800'
+                                : 'bg-blue-100 text-blue-800'
+                          }`}>{insight.priority}</Badge>
                         </div>
                         <p className="text-sm text-slate-700">{insight.summary}</p>
                       </div>
@@ -6326,7 +6332,7 @@ export function ReportsModule({
     value: reportPeriod,
     onValueChange: value => setReportPeriod(value)
   }, /*#__PURE__*/React.createElement(SelectTrigger, {
-    className: "bg-white border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00] shadow-sm",
+    className: "bg-white border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB] shadow-sm",
     "data-reports-control": true
   }, /*#__PURE__*/React.createElement(SelectValue, null)), /*#__PURE__*/React.createElement(SelectContent, null, /*#__PURE__*/React.createElement(SelectItem, {
     value: "daily"
@@ -6353,7 +6359,7 @@ export function ReportsModule({
     value: reportType,
     onValueChange: value => setReportType(value)
   }, /*#__PURE__*/React.createElement(SelectTrigger, {
-    className: "border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00]",
+    className: "border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]",
     "data-reports-control": true
   }, /*#__PURE__*/React.createElement(SelectValue, null)), /*#__PURE__*/React.createElement(SelectContent, null, /*#__PURE__*/React.createElement(SelectItem, {
     value: "summary"
@@ -6371,7 +6377,7 @@ export function ReportsModule({
     value: selectedCategory,
     onValueChange: setSelectedCategory
   }, /*#__PURE__*/React.createElement(SelectTrigger, {
-    className: "border-gray-300 focus:border-[#FFFF00] focus:ring-[#FFFF00]",
+    className: "border-gray-300 focus:border-[#2563EB] focus:ring-[#2563EB]",
     "data-reports-control": true
   }, /*#__PURE__*/React.createElement(SelectValue, null)), /*#__PURE__*/React.createElement(SelectContent, null, /*#__PURE__*/React.createElement(SelectItem, {
     value: "all"

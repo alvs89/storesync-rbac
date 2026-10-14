@@ -748,9 +748,7 @@ body .inventory-inline-draft-button-primary:focus-visible,
   color: #0f172a;
 }
 
-/* App-wide non-button interaction feedback. Keep buttons on their intentional
-   module-specific hover styles, but make fields and selectable surfaces easier
-   to recognize with the EMC yellow cue. */
+/* App-wide non-button interaction feedback uses the StoreSync primary theme. */
 #root :is(input, textarea, [data-slot="select-trigger"]):not(:disabled):not([aria-disabled="true"]) {
   transition:
     background-color 150ms ease,
@@ -760,19 +758,24 @@ body .inventory-inline-draft-button-primary:focus-visible,
 }
 
 #root :is(input, textarea, [data-slot="select-trigger"]):not(:disabled):not([aria-disabled="true"]):hover {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   background-color: #ffffff;
-  box-shadow: inset 0 0 0 1px var(--emc-interactive-yellow-soft);
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.18);
 }
 
 #root :is(input, textarea, [data-slot="select-trigger"]):not(:disabled):not([aria-disabled="true"]):focus,
 #root :is(input, textarea, [data-slot="select-trigger"]):not(:disabled):not([aria-disabled="true"]):focus-visible,
 #root :is(input, textarea, [data-slot="select-trigger"]):not(:disabled):not([aria-disabled="true"])[data-state="open"] {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   outline: none;
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 0, 0.72),
+    inset 0 0 0 2px rgba(37, 99, 235, 0.35),
     0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+#root [data-slot="badge"] {
+  padding: 0.35rem 0.7rem;
+  font-weight: 700;
 }
 
 #root .table-sort-header-button,
@@ -948,9 +951,9 @@ body .inventory-inline-draft-button-primary:focus-visible,
 #root input.actual-transaction-part-input[data-slot="input"]:hover,
 input.actual-transaction-part-input:hover,
 input.actual-transaction-part-input[data-slot="input"]:hover {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   background: #ffffff;
-  box-shadow: inset 0 0 0 1px var(--emc-interactive-yellow-soft);
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.18);
 }
 
 #root input.actual-transaction-part-input:focus,
@@ -961,7 +964,7 @@ input.actual-transaction-part-input:focus,
 input.actual-transaction-part-input:focus-visible,
 input.actual-transaction-part-input[data-slot="input"]:focus,
 input.actual-transaction-part-input[data-slot="input"]:focus-visible {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   background: #ffffff;
   outline: 0;
   outline-color: transparent;
@@ -970,7 +973,7 @@ input.actual-transaction-part-input[data-slot="input"]:focus-visible {
   --tw-ring-offset-shadow: 0 0 #0000;
   --tw-ring-color: transparent;
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 0, 0.72),
+    inset 0 0 0 2px rgba(37, 99, 235, 0.35),
     0 1px 2px rgba(15, 23, 42, 0.06);
 }
 
@@ -1010,16 +1013,16 @@ input.actual-transaction-part-input[data-slot="input"]:focus-visible {
 }
 
 .actual-transaction-date-control:hover {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   background: #ffffff;
-  box-shadow: inset 0 0 0 1px var(--emc-interactive-yellow-soft);
+  box-shadow: inset 0 0 0 1px rgba(37, 99, 235, 0.18);
 }
 
 .actual-transaction-date-control:focus-within {
-  border-color: var(--emc-interactive-yellow);
+  border-color: var(--storesync-blue);
   background: #ffffff;
   box-shadow:
-    inset 0 0 0 2px rgba(255, 255, 0, 0.72),
+    inset 0 0 0 2px rgba(37, 99, 235, 0.35),
     0 1px 2px rgba(15, 23, 42, 0.06);
 }
 

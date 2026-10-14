@@ -1563,7 +1563,7 @@ export function PurchasesModule({ user, onNavigate }) {
           border-color: #ffff00;
           outline: none;
           box-shadow:
-            inset 0 0 0 2px rgba(255, 255, 0, 0.72),
+            inset 0 0 0 2px rgba(37, 99, 235, 0.35),
             0 1px 2px rgba(15, 23, 42, 0.06);
         }
 
@@ -1961,7 +1961,7 @@ export function PurchasesModule({ user, onNavigate }) {
         .purchase-search:focus-within {
           border-color: #ffff00;
           box-shadow:
-            inset 0 0 0 2px rgba(255, 255, 0, 0.74),
+            inset 0 0 0 2px rgba(37, 99, 235, 0.35),
             0 1px 2px rgba(15, 23, 42, 0.06);
         }
 
