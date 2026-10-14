@@ -1259,7 +1259,7 @@ export function Dashboard({
       ) : (
         <div className="grid gap-3 p-3 md:grid-cols-2">
           {dashboardInsights.map(insight => (
-            <div key={insight.id} className="flex h-full flex-col rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <div key={insight.id} className="business-insight-card flex h-full flex-col rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
                   <span className="rounded-lg bg-blue-100 p-2 text-blue-700"><Lightbulb className="h-4 w-4" /></span>
@@ -1268,7 +1268,7 @@ export function Dashboard({
                     <p className="mt-1 text-sm leading-6 text-slate-700">{insight.summary}</p>
                   </div>
                 </div>
-                <Badge className={`shrink-0 border-0 px-2.5 py-1 text-xs font-bold ${
+                <Badge style={insight.priority === 'Medium' ? { backgroundColor: '#fef3c7', color: '#92400e' } : undefined} className={`shrink-0 border-0 px-2.5 py-1 text-xs font-bold ${
                   insight.priority === 'Critical' ? 'bg-red-100 text-red-800' :
                     insight.priority === 'High' ? 'bg-red-100 text-red-800' :
                       insight.priority === 'Medium' ? 'bg-amber-200 text-amber-900' :
@@ -1280,7 +1280,7 @@ export function Dashboard({
                 <p className="text-sm font-semibold leading-6 text-slate-900">Suggested review</p>
                 <p className="mt-1 text-sm leading-6 text-slate-700">{insight.recommendation}</p>
               </div>
-              <div className="mt-auto pt-4">
+              <div className="business-insight-action mt-auto flex min-h-[3.25rem] items-end pt-4">
                 <Button size="sm" variant="outline" onClick={() => navigateToInsightReport(insight)}>Review Evidence</Button>
               </div>
             </div>
@@ -1305,6 +1305,18 @@ export function Dashboard({
         .dashboard-content {
           display: grid;
           gap: 14px;
+        }
+
+        .business-insight-card {
+          position: relative;
+          padding-bottom: 5.25rem;
+        }
+
+        .business-insight-action {
+          position: absolute;
+          right: 1rem;
+          bottom: 1rem;
+          left: 1rem;
         }
 
         .dashboard-panel {

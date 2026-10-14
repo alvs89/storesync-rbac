@@ -4705,7 +4705,7 @@ export function ReportsModule({
                       <div>
                         <div className="mb-1 flex items-center gap-2">
                           <h3 className="text-lg font-semibold text-slate-900">{insight.title}</h3>
-                          <Badge className={`border-0 ${
+                          <Badge style={insight.priority === 'Medium' ? { backgroundColor: '#fef3c7', color: '#92400e' } : undefined} className={`border-0 ${
                             insight.priority === 'Critical' || insight.priority === 'High'
                               ? 'bg-red-100 text-red-800'
                               : insight.priority === 'Medium'
