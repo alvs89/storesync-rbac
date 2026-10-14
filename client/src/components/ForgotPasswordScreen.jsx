@@ -95,8 +95,8 @@ const ForgotPasswordScreen = () => {
           min-height: 100vh;
           background-color: #eff6ff;
           background-image:
-            radial-gradient(circle at 88% 8%, rgba(255, 255, 0, 0.35), transparent 24%),
-            radial-gradient(circle at 0% 100%, rgba(255, 0, 0, 0.13), transparent 28%),
+            radial-gradient(circle at 88% 8%, rgba(45, 212, 191, 0.22), transparent 24%),
+            radial-gradient(circle at 0% 100%, rgba(37, 99, 235, 0.12), transparent 28%),
             linear-gradient(145deg, #f8fbff 0%, #eff6ff 48%, #ecfeff 100%);
           background-repeat: no-repeat;
           background-size: cover;
@@ -116,7 +116,7 @@ const ForgotPasswordScreen = () => {
             height: 3px;
             margin: 0.75rem auto 0;
             border-radius: 999px;
-            background: linear-gradient(90deg, #ffff00, #ff0000);
+            background: linear-gradient(90deg, #2563eb, #14b8a6);
           }
 
           .forgot-mobile-copy {
@@ -200,7 +200,7 @@ const ForgotPasswordScreen = () => {
             height: 3px;
             margin: 0.65rem auto 0;
             border-radius: 999px;
-            background: linear-gradient(90deg, #ffff00, #ff0000);
+            background: linear-gradient(90deg, #2563eb, #14b8a6);
           }
 
           .forgot-mobile-copy {

@@ -2543,7 +2543,7 @@ export function ReportsModule({
         }
 
         .reports-pos-summary-item-due {
-          background: linear-gradient(180deg, #f0fdf4 0%, #ecfdf5 100%);
+          background: linear-gradient(180deg, #eff6ff 0%, #ecfeff 100%);
           box-shadow: inset 3px 0 0 #22c55e;
         }
 
@@ -4423,7 +4423,7 @@ export function ReportsModule({
         <CardContent data-reports-config-content>
           <div className="reports-config-stack space-y-6">
             {!isInventorySnapshotReport && (
-              <div className="reports-period-panel bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border-2 border-[#FFFF00]/30 shadow-sm">
+              <div className="reports-period-panel bg-gradient-to-br from-blue-50 via-white to-teal-50 p-6 rounded-xl border-2 border-blue-200 shadow-sm">
                 <div className="reports-period-label flex items-center gap-3 mb-3">
                   <Calendar className="w-5 h-5 text-[#FF0000]" />
                   <label className="font-semibold text-gray-900">Report Period:</label>
@@ -6207,7 +6207,7 @@ export function ReportsModule({
   }, /*#__PURE__*/React.createElement("div", {
     className: "reports-config-stack space-y-6"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "reports-period-panel bg-gradient-to-br from-yellow-50 to-orange-50 p-6 rounded-xl border-2 border-[#FFFF00]/30 shadow-sm"
+    className: "reports-period-panel bg-gradient-to-br from-blue-50 via-white to-teal-50 p-6 rounded-xl border-2 border-blue-200 shadow-sm"
   }, /*#__PURE__*/React.createElement("div", {
     className: "reports-period-label flex items-center gap-3 mb-3"
   }, /*#__PURE__*/React.createElement(Calendar, {

@@ -9,7 +9,7 @@
   --card-foreground: #1a1a1a;
   --popover: #ffffff;
   --popover-foreground: #1a1a1a;
-  --primary: #1a1a1a;
+  --primary: #0f2a43;
   --primary-foreground: #ffffff;
   --secondary: #f5f5f5;
   --secondary-foreground: #1a1a1a;
@@ -17,7 +17,7 @@
   --muted-foreground: #374151;
   --accent: #f5f5f5;
   --accent-foreground: #1a1a1a;
-  --destructive: #FF0000;
+  --destructive: #0f2a43;
   --destructive-foreground: #ffffff;
   --border: #e5e7eb;
   --input: transparent;
@@ -48,6 +48,43 @@
   --sidebar-accent-foreground: #1a1a1a;
   --sidebar-border: #e5e7eb;
   --sidebar-ring: #2563eb;
+}
+
+/* StoreSync action controls use one consistent branded surface. Semantic
+   status badges remain color-coded, but buttons should not carry legacy
+   red/orange/yellow styling. */
+#root button[data-slot="button"]:not(:disabled),
+#root button[class*="action-button"]:not(:disabled),
+#root button[class*="bg-red-"]:not(:disabled),
+#root button[class*="bg-orange-"]:not(:disabled),
+#root button[class*="bg-yellow-"]:not(:disabled),
+#root button[class*="bg-green-"]:not(:disabled),
+#root button[class*="bg-blue-"]:not(:disabled) {
+  background-color: var(--storesync-navy) !important;
+  background-image: none !important;
+  border-color: var(--storesync-navy) !important;
+  color: #ffffff !important;
+}
+
+#root button[data-slot="button"]:not(:disabled):hover,
+#root button[class*="action-button"]:not(:disabled):hover,
+#root button[class*="bg-red-"]:not(:disabled):hover,
+#root button[class*="bg-orange-"]:not(:disabled):hover,
+#root button[class*="bg-yellow-"]:not(:disabled):hover,
+#root button[class*="bg-green-"]:not(:disabled):hover,
+#root button[class*="bg-blue-"]:not(:disabled):hover {
+  background-color: var(--storesync-blue) !important;
+  border-color: var(--storesync-blue) !important;
+  color: #ffffff !important;
+}
+
+#root button[class*="border-red-"]:not(:disabled),
+#root button[class*="border-orange-"]:not(:disabled),
+#root button[class*="border-yellow-"]:not(:disabled),
+#root button[class*="border-green-"]:not(:disabled) {
+  background-color: var(--storesync-navy) !important;
+  border-color: var(--storesync-navy) !important;
+  color: #ffffff !important;
 }
 
 .search-clear-button {

@@ -7158,7 +7158,7 @@ export function InventoryModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #ECFDF3 0%, #DCFCE7 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #CCFBF1 100%)",
       boxShadow: "inset 0 1px 8px rgba(22, 163, 74, 0.1)"
     }
   }, /*#__PURE__*/React.createElement(PackagePlus, {
@@ -7400,7 +7400,7 @@ export function InventoryModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
       boxShadow: "inset 0 1px 8px rgba(220, 38, 38, 0.1)"
     }
   }, /*#__PURE__*/React.createElement(PackageMinus, {
@@ -7688,7 +7688,7 @@ export function InventoryModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #ECFDF3 0%, #DCFCE7 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #CCFBF1 100%)",
       boxShadow: "inset 0 1px 8px rgba(22, 163, 74, 0.1)"
     }
   }, /*#__PURE__*/React.createElement(PackagePlus, {
@@ -7902,7 +7902,7 @@ export function InventoryModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #FEF2F2 0%, #FEE2E2 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)",
       boxShadow: "inset 0 1px 8px rgba(220, 38, 38, 0.1)"
     }
   }, /*#__PURE__*/React.createElement(PackageMinus, {
@@ -8105,7 +8105,7 @@ export function InventoryModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #F4EEFF 0%, #EFE7FF 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #CCFBF1 100%)",
       boxShadow: "inset 0 1px 8px rgba(109, 63, 191, 0.08)"
     }
   }, /*#__PURE__*/React.createElement(Archive, {

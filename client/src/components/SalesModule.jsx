@@ -4553,7 +4553,7 @@ export function SalesModule({ user }) {
           align-items: center;
           gap: 0.75rem;
           border-bottom: 1px solid #e5e7eb;
-          background: linear-gradient(135deg, #fff1f2 0%, #ffffff 100%);
+          background: linear-gradient(135deg, #EFF6FF 0%, #FFFFFF 100%);
           padding: 1rem;
         }
 

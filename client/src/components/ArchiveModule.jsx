@@ -1213,7 +1213,7 @@ export function ArchiveModule({
       display: "flex",
       alignItems: "center",
       justifyContent: "center",
-      background: "linear-gradient(135deg, #ECFDF3 0%, #DCFCE7 100%)",
+      background: "linear-gradient(135deg, #EFF6FF 0%, #CCFBF1 100%)",
       boxShadow: "inset 0 1px 8px rgba(22, 163, 74, 0.1)"
     }
   }, /*#__PURE__*/React.createElement(ArchiveRestore, {
