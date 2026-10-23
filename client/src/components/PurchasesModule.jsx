@@ -3314,7 +3314,10 @@ export function PurchasesModule({ user, onNavigate }) {
               <div className="purchase-doc-grid">
                 <div className="purchase-doc-column">
                   <Field label="Filter suppliers by product category">
-                    <Select value={supplierCategoryFilter} onValueChange={setSupplierCategoryFilter} disabled={isSaving}>
+                    <Select value={supplierCategoryFilter} onValueChange={value => {
+                      setSupplierCategoryFilter(value);
+                      setSupplierSearchQuery('');
+                    }} disabled={isSaving}>
                       <SelectTrigger className="h-10" aria-label="Filter suppliers by product category">
                         <SelectValue placeholder="All supplier categories" />
                       </SelectTrigger>
@@ -3329,13 +3332,12 @@ export function PurchasesModule({ user, onNavigate }) {
                   </Field>
                   <Field label="Search suppliers by name">
                     <div className="relative">
-                      <Search className="pointer-events-none absolute left-3 top-3 h-4 w-4 text-slate-500" aria-hidden="true" />
                       <Input
                         value={supplierSearchQuery}
                         onChange={event => setSupplierSearchQuery(event.target.value)}
                         placeholder="Type a supplier name"
                         aria-label="Search suppliers by name"
-                        className="h-10 pl-9 pr-9"
+                        className="h-10 pl-3 pr-9"
                         disabled={isSaving}
                       />
                       {supplierSearchQuery && (
@@ -3345,14 +3347,24 @@ export function PurchasesModule({ user, onNavigate }) {
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-slate-500" role="status" aria-live="polite">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                      <p className="text-xs text-slate-500" role="status" aria-live="polite">
                       {visibleSupplierOptions.length} supplier{visibleSupplierOptions.length === 1 ? '' : 's'} found
                       {supplierCategoryFilter === 'all' ? '' : ' for this category'}.
                       {supplierCategoryFilter !== 'all' && supplierName && !inventory.some(item =>
                         String(item.category || 'Uncategorized').trim() === supplierCategoryFilter &&
                         normalizeSupplierForMatch(item.supplierName) === normalizeSupplierForMatch(supplierName)
                       ) ? ' Current selection is retained even if it does not match.' : ''}
-                    </p>
+                      </p>
+                      {(supplierCategoryFilter !== 'all' || supplierSearchQuery) && (
+                        <button type="button" onClick={() => {
+                          setSupplierCategoryFilter('all');
+                          setSupplierSearchQuery('');
+                        }} disabled={isSaving} className="rounded px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
+                          Clear filters
+                        </button>
+                      )}
+                    </div>
                   </Field>
                   <Field label={<>Supplier <RequiredMark /></>}>
                     <div className="purchase-supplier-field-group">
@@ -3382,7 +3394,7 @@ export function PurchasesModule({ user, onNavigate }) {
                           ))}
                           {visibleSupplierOptions.length === 0 && (
                             <div className="px-3 py-2 text-sm text-slate-500" role="status">
-                              No matching suppliers. Change the category or search.
+                              No suppliers match this category and search. Clear filters to see all suppliers.
                             </div>
                           )}
                           <SelectItem value={SUPPLIER_CUSTOM_VALUE}>Other supplier / not listed</SelectItem>
