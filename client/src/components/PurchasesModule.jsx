@@ -3694,9 +3694,6 @@ export function PurchasesModule({ user, onNavigate }) {
                   </div>
                 </div>
 
-                <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900" role="note">
-                  Demo catalog items are shown alongside live inventory. Items marked Demo have no verified stock quantity and cannot be posted as real purchases.
-                </p>
                 <div className="purchase-scroll purchase-inventory-list">
                   <div className="purchase-inventory-head">
                     <span>Inventory Item</span>
