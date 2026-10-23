@@ -290,8 +290,6 @@ export function PurchasesModule({ user, onNavigate }) {
   const { inventory, purchaseTransactions, recordPurchase, updatePurchasePaymentStatus } = useData();
   const [supplierName, setSupplierName] = useState('');
   const [supplierMode, setSupplierMode] = useState('listed');
-  const [supplierCategoryFilter, setSupplierCategoryFilter] = useState('all');
-  const [supplierSearchQuery, setSupplierSearchQuery] = useState('');
   const [documentType, setDocumentType] = useState('DR');
   const [documentTypeNote, setDocumentTypeNote] = useState('');
   const [documentNumber, setDocumentNumber] = useState('');
@@ -357,27 +355,6 @@ export function PurchasesModule({ user, onNavigate }) {
     )],
     [inventory]
   );
-
-  // Derive supplier-category relationships from actual inventory rather than
-  // guessing them from supplier names. A supplier may serve multiple categories.
-  const supplierCategories = useMemo(() => ['all', ...mergeSort(
-    Array.from(new Set(inventory.map(item => String(item.category || 'Uncategorized').trim()))),
-    (a, b) => a.localeCompare(b, undefined, { sensitivity: 'base' })
-  )], [inventory]);
-
-  const visibleSupplierOptions = useMemo(() => {
-    const query = supplierSearchQuery.trim().toLocaleLowerCase();
-    const categorySuppliers = new Set(
-      inventory.filter(item => supplierCategoryFilter === 'all' ||
-        String(item.category || 'Uncategorized').trim() === supplierCategoryFilter)
-        .map(item => normalizeSupplierForMatch(item.supplierName))
-        .filter(Boolean)
-    );
-    return HARDWARE_SUPPLIER_OPTIONS.filter(supplier =>
-      (supplierCategoryFilter === 'all' || categorySuppliers.has(normalizeSupplierForMatch(supplier)) || supplier === supplierName) &&
-      (supplier.toLocaleLowerCase().includes(query) || supplier === supplierName)
-    );
-  }, [inventory, supplierCategoryFilter, supplierName, supplierSearchQuery]);
 
   // The inventory picker can be scoped by supplier to reduce receiving mistakes,
   // but unassigned inventory stays visible so supplier data can be completed.
@@ -3313,59 +3290,6 @@ export function PurchasesModule({ user, onNavigate }) {
             <CardContent className="purchase-card-content">
               <div className="purchase-doc-grid">
                 <div className="purchase-doc-column">
-                  <Field label="Filter suppliers by product category">
-                    <Select value={supplierCategoryFilter} onValueChange={value => {
-                      setSupplierCategoryFilter(value);
-                      setSupplierSearchQuery('');
-                    }} disabled={isSaving}>
-                      <SelectTrigger className="h-10" aria-label="Filter suppliers by product category">
-                        <SelectValue placeholder="All supplier categories" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {supplierCategories.map(category => (
-                          <SelectItem key={category} value={category}>
-                            {category === 'all' ? 'All supplier categories' : category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </Field>
-                  <Field label="Search suppliers by name">
-                    <div className="relative">
-                      <Input
-                        value={supplierSearchQuery}
-                        onChange={event => setSupplierSearchQuery(event.target.value)}
-                        placeholder="Type a supplier name"
-                        aria-label="Search suppliers by name"
-                        className="h-10 pl-3 pr-9"
-                        disabled={isSaving}
-                      />
-                      {supplierSearchQuery && (
-                        <button type="button" onClick={() => setSupplierSearchQuery('')} aria-label="Clear supplier search"
-                          className="absolute right-2 top-2 rounded p-1 text-slate-500 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
-                          <X className="h-4 w-4" />
-                        </button>
-                      )}
-                    </div>
-                    <div className="flex flex-wrap items-center justify-between gap-2">
-                      <p className="text-xs text-slate-500" role="status" aria-live="polite">
-                      {visibleSupplierOptions.length} supplier{visibleSupplierOptions.length === 1 ? '' : 's'} found
-                      {supplierCategoryFilter === 'all' ? '' : ' for this category'}.
-                      {supplierCategoryFilter !== 'all' && supplierName && !inventory.some(item =>
-                        String(item.category || 'Uncategorized').trim() === supplierCategoryFilter &&
-                        normalizeSupplierForMatch(item.supplierName) === normalizeSupplierForMatch(supplierName)
-                      ) ? ' Current selection is retained even if it does not match.' : ''}
-                      </p>
-                      {(supplierCategoryFilter !== 'all' || supplierSearchQuery) && (
-                        <button type="button" onClick={() => {
-                          setSupplierCategoryFilter('all');
-                          setSupplierSearchQuery('');
-                        }} disabled={isSaving} className="rounded px-2 py-1 text-xs font-semibold text-blue-700 hover:bg-blue-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-600">
-                          Clear filters
-                        </button>
-                      )}
-                    </div>
-                  </Field>
                   <Field label={<>Supplier <RequiredMark /></>}>
                     <div className="purchase-supplier-field-group">
                       <Select
@@ -3389,14 +3313,9 @@ export function PurchasesModule({ user, onNavigate }) {
                           <SelectValue placeholder="Select supplier" />
                         </SelectTrigger>
                         <SelectContent>
-                          {visibleSupplierOptions.map(supplier => (
+                          {HARDWARE_SUPPLIER_OPTIONS.map(supplier => (
                             <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
                           ))}
-                          {visibleSupplierOptions.length === 0 && (
-                            <div className="px-3 py-2 text-sm text-slate-500" role="status">
-                              No suppliers match this category and search. Clear filters to see all suppliers.
-                            </div>
-                          )}
                           <SelectItem value={SUPPLIER_CUSTOM_VALUE}>Other supplier / not listed</SelectItem>
                         </SelectContent>
                       </Select>
