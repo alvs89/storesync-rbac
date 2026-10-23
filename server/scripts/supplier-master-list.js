@@ -58,7 +58,38 @@ const getOfficialSupplierName = value => {
   return '';
 };
 
+// Demonstration-only supplier coverage. These are provisional associations
+// for existing catalog SKUs, NOT verified vendor contracts or purchase history.
+// Keep brand-specific assignments intact; confirm against supplier invoices
+// before treating these demo associations as real procurement information.
+const DEMO_PRODUCT_SUPPLIER_OVERRIDES = {
+  'INSULATION FOAM (per meter) -- SINGLE 5MM (manipis)': 'ALVIN B LAVENTE',
+  'INSULATION FOAM (per meter) -- SINGLE 10MM (makapal)': 'ALVIN B LAVENTE',
+  'ORDINARY -- 1/4 L-O': 'CMA COMMERCIAL TRADING CORP',
+  'ORDINARY -- 1/2 L-O (imp)': 'CMA COMMERCIAL TRADING CORP',
+  'PPR PIPE (WHT) -- 1/2"': 'DGM',
+  'PPR PIPE (WHT) -- 3/4"': 'DGM',
+  'FLOURESCENT HOUSING only -- Philips 10w': 'EXCELIN MARKETING OPC',
+  'FLOURESCENT HOUSING only -- Philips 18w': 'EXCELIN MARKETING OPC',
+  'PPR PIPE (WHT) -- 1"': 'HODIENG',
+  'PVC PIPE -- BLUE 1/2': 'HODIENG',
+  'C-PURLINS MANIPIS -- METAL FURRING': 'LPMP TRADING',
+  'C-PURLINS MANIPIS -- METAL STUD': 'LPMP TRADING',
+  'SENEPA -- 1X4X8': 'MAC STEVE MARKETING',
+  'SENEPA -- 1X4X10': 'MAC STEVE MARKETING',
+  'INSULATION FOAM (per Roll) - 50M -- SINGLE 5MM (manipis)': 'ONE SAMEX DEVT CORP',
+  'INSULATION FOAM (per Roll) - 50M -- SINGLE 10MM (makapal)': 'ONE SAMEX DEVT CORP',
+  'ORDINARY -- 3/4 L-O (imp)': 'PHT GEN MDSE',
+  'COLORED GUTTER -- BOX TYPE GUTTER RED/GRN': 'PHT GEN MDSE',
+  'STEEL MATTING -- #10 MANIPIS': 'SAKRETE ENTERPRISES INC',
+  'STEEL MATTING -- #8 SEMI-MAKAPAL': 'SAKRETE ENTERPRISES INC',
+  'COLORED GUTTER -- SPANISH GUTTER RED/GRN': 'WEBERT MARKETING CORP',
+  'COLORED GUTTER -- FLASHING RED/GRN/BLU': 'WEBERT MARKETING CORP'
+};
+
 const getOfficialSupplierForProduct = (item, index = 0) => {
+  const demoSupplier = DEMO_PRODUCT_SUPPLIER_OVERRIDES[String(item?.name || '').trim()];
+  if (demoSupplier) return demoSupplier;
   const name = String(item?.name || '').toUpperCase();
   const category = item?.category || 'Other';
 
@@ -83,6 +114,7 @@ const getOfficialSupplierForProduct = (item, index = 0) => {
 };
 
 module.exports = {
+  DEMO_PRODUCT_SUPPLIER_OVERRIDES,
   OFFICIAL_SUPPLIERS,
   getOfficialSupplierName,
   getOfficialSupplierForProduct,
