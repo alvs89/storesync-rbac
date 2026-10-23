@@ -1,0 +1,3874 @@
+[
+  {
+    "id": "demo-catalog-1",
+    "name": "LONG SPAN -- RED/GRN/BLU 12 - 5 grooves",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0001",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-2",
+    "name": "LONG SPAN -- RED/GRN/BLU 10 - 5 grooves",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0002",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-3",
+    "name": "LONG SPAN -- RED/GRN/BLU 8 - 5 grooves",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0003",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-4",
+    "name": "LONG SPAN -- RIB TYPE SPECIAL CUT (per ft)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0004",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-5",
+    "name": "CORRUGATED - RED/GRN -- RED 12",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0005",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-6",
+    "name": "CORRUGATED - RED/GRN -- RED/GREEN 10",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0006",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-7",
+    "name": "CORRUGATED - RED/GRN -- RED 8",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0007",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-8",
+    "name": "CORRUGATED (G.24) MAKAPAL -- 12",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0008",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-9",
+    "name": "CORRUGATED (G.24) MAKAPAL -- 10",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0009",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-10",
+    "name": "CORRUGATED (G.24) MAKAPAL -- 8",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0010",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-11",
+    "name": "CORRUGATED (G.26) MANIPIS -- 12",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0011",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-12",
+    "name": "CORRUGATED (G.26) MANIPIS -- 10",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0012",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-13",
+    "name": "CORRUGATED (G.26) MANIPIS -- 8",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0013",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-14",
+    "name": "APO -- 12",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0014",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-15",
+    "name": "APO -- 10",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0015",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-16",
+    "name": "APO -- 8",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0016",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-17",
+    "name": "FIBER GLASS -- 12",
+    "category": "Roofing",
+    "supplierName": "CRYSTALITE",
+    "itemCode": "DEMO-0017",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-18",
+    "name": "FIBER GLASS -- 10",
+    "category": "Roofing",
+    "supplierName": "CRYSTALITE",
+    "itemCode": "DEMO-0018",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-19",
+    "name": "FIBER GLASS -- 8",
+    "category": "Roofing",
+    "supplierName": "CRYSTALITE",
+    "itemCode": "DEMO-0019",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-20",
+    "name": "PLAIN SHEET (pang GATE) -- GI 4X8X(1.20mm) G 18",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0020",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-21",
+    "name": "PLAIN SHEET (pang GATE) -- 4x8x (1.00mm) G-16",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0021",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-22",
+    "name": "PLAIN SHEET (pang GATE) -- PLASTIC SHEET WHT (makitid)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0022",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-23",
+    "name": "PLASTIC SHEET 8\" -- WHITE",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0023",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-24",
+    "name": "PLASTIC SHEET 8\" -- GREEN",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0024",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-25",
+    "name": "PLASTIC SHEET 8\" -- BLUE",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0025",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-26",
+    "name": "PLAIN SHEET (G.24) MAKAPAL -- 3X8X24",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0026",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-27",
+    "name": "PLAIN SHEET (G.24) MAKAPAL -- 4X8X24 (XUSI)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0027",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-28",
+    "name": "PLAIN SHEET (G.24) MAKAPAL -- 3X8X24 RED/GRN/BLU",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0028",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-29",
+    "name": "PLAIN SHEET (G.24) MAKAPAL -- 4X8X24 RED/GRN/BLU",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0029",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-30",
+    "name": "PLAIN SHEET (G.26) MANIPIS -- 3X8X26",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0030",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-31",
+    "name": "PLAIN SHEET (G.26) MANIPIS -- 4X8X26",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0031",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-32",
+    "name": "GUTTER -- GUTTER 8X24 MAKAPAL",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0032",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-33",
+    "name": "GUTTER -- FLASHING 8X24 MAKAPAL",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0033",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-34",
+    "name": "GUTTER -- RIDGE ROLL 8X24 MAKAPAL",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0034",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-35",
+    "name": "COLORED GUTTER -- BOX TYPE GUTTER RED/GRN",
+    "category": "Roofing",
+    "supplierName": "PHT GEN MDSE",
+    "itemCode": "DEMO-0035",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-36",
+    "name": "COLORED GUTTER -- SPANISH GUTTER RED/GRN",
+    "category": "Roofing",
+    "supplierName": "WEBERT MARKETING CORP",
+    "itemCode": "DEMO-0036",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-37",
+    "name": "COLORED GUTTER -- STAINLESS GUTTER 16\"",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0037",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-38",
+    "name": "COLORED GUTTER -- FLASHING RED/GRN/BLU",
+    "category": "Roofing",
+    "supplierName": "WEBERT MARKETING CORP",
+    "itemCode": "DEMO-0038",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-39",
+    "name": "COLORED GUTTER -- RIDGEROLL RED/GRN/BLU",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0039",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-40",
+    "name": "INSULATION FOAM (per Roll) - 50M -- SINGLE 5MM (manipis)",
+    "category": "Roofing",
+    "supplierName": "ONE SAMEX DEVT CORP",
+    "itemCode": "DEMO-0040",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-41",
+    "name": "INSULATION FOAM (per Roll) - 50M -- SINGLE 10MM (makapal)",
+    "category": "Roofing",
+    "supplierName": "ONE SAMEX DEVT CORP",
+    "itemCode": "DEMO-0041",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-42",
+    "name": "INSULATION FOAM (per Roll) - 50M -- DOUBLE 5MM (manipis)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0042",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-43",
+    "name": "INSULATION FOAM (per Roll) - 50M -- DOUBLE 10MM (makapal)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0043",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-44",
+    "name": "INSULATION FOAM (per meter) -- SINGLE 5MM (manipis)",
+    "category": "Roofing",
+    "supplierName": "ALVIN B LAVENTE",
+    "itemCode": "DEMO-0044",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-45",
+    "name": "INSULATION FOAM (per meter) -- SINGLE 10MM (makapal)",
+    "category": "Roofing",
+    "supplierName": "ALVIN B LAVENTE",
+    "itemCode": "DEMO-0045",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-46",
+    "name": "INSULATION FOAM (per meter) -- DOUBLE 5MM (manipis)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0046",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-47",
+    "name": "INSULATION FOAM (per meter) -- DOUBLE 10MM (makapal)",
+    "category": "Roofing",
+    "supplierName": "TWINBAR METAL INDUSTRIES INC",
+    "itemCode": "DEMO-0047",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-48",
+    "name": "POLYCARBONATE -- POLYCARBONATE - BROWN",
+    "category": "Roofing",
+    "supplierName": "CRYSTALITE",
+    "itemCode": "DEMO-0048",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-49",
+    "name": "POLYCARBONATE -- POLYCARBONATE - BLUE/WHT",
+    "category": "Roofing",
+    "supplierName": "CRYSTALITE",
+    "itemCode": "DEMO-0049",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-50",
+    "name": "PVC PIPE -- ORANGE 1/2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0050",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-51",
+    "name": "PVC PIPE -- NELTEX 1/2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0051",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-52",
+    "name": "PVC PIPE -- BLUE 1/2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "HODIENG",
+    "itemCode": "DEMO-0052",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-53",
+    "name": "PVC PIPE -- ORANGE 3/4 (unidex)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0053",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-54",
+    "name": "PVC PIPE -- NELTEX 3/4 (unidex)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0054",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-55",
+    "name": "PVC PIPE -- BLUE 3/4 (unidex)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0055",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-56",
+    "name": "PVC PIPE -- ORANGE 3/4 (moldex)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0056",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-57",
+    "name": "PVC PIPE -- ORANGE 3/4 (thunderbolt)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "THUNDER CRACKER MARKETING CORP",
+    "itemCode": "DEMO-0057",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-58",
+    "name": "PVC PIPE -- ORANGE 1",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0058",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-59",
+    "name": "PVC PIPE -- NELTEX 1",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0059",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-60",
+    "name": "PVC PIPE -- BLUE 1",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0060",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-61",
+    "name": "PVC PIPE -- ORANGE 2\" (B10)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0061",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-62",
+    "name": "PVC PIPE -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0062",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-63",
+    "name": "PVC PIPE -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0063",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-64",
+    "name": "PVC PIPE -- ORANGE 3\" (B10)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0064",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-65",
+    "name": "PVC PIPE -- BLACK 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0065",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-66",
+    "name": "PVC PIPE -- NELTEX 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0066",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-67",
+    "name": "PVC PIPE -- ORANGE 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0067",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-68",
+    "name": "PVC PIPE -- BLACK 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0068",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-69",
+    "name": "PVC PIPE -- NELTEX 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0069",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-70",
+    "name": "PVC PIPE -- ORANGE 6\" (B10 FOC)",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0070",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-71",
+    "name": "ELBOW 1/4 90deg -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0071",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-72",
+    "name": "ELBOW 1/4 90deg -- ORANGE 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0072",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-73",
+    "name": "ELBOW 1/4 90deg -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0073",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-74",
+    "name": "ELBOW 1/4 90deg -- BLACK 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0074",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-75",
+    "name": "ELBOW 1/4 90deg -- ORANGE 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0075",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-76",
+    "name": "ELBOW 1/4 90deg -- NELTEX 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0076",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-77",
+    "name": "ELBOW 1/4 90deg -- BLACK 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0077",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-78",
+    "name": "ELBOW 1/4 90deg -- ORANGE 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0078",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-79",
+    "name": "ELBOW 1/4 90deg -- NELTEX 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0079",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-80",
+    "name": "ELBOW 1/8 45deg -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0080",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-81",
+    "name": "ELBOW 1/8 45deg -- ORANGE 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0081",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-82",
+    "name": "ELBOW 1/8 45deg -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0082",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-83",
+    "name": "ELBOW 1/8 45deg -- BLACK 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0083",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-84",
+    "name": "ELBOW 1/8 45deg -- ORANGE 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0084",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-85",
+    "name": "ELBOW 1/8 45deg -- NELTEX 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0085",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-86",
+    "name": "ELBOW 1/8 45deg -- BLACK 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0086",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-87",
+    "name": "ELBOW 1/8 45deg -- ORANGE 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0087",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-88",
+    "name": "ELBOW 1/8 45deg -- NELTEX 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0088",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-89",
+    "name": "ELBOW 1/8 45deg -- ORANGE 6\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0089",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-90",
+    "name": "COUPLING -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0090",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-91",
+    "name": "COUPLING -- ORANGE 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0091",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-92",
+    "name": "COUPLING -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0092",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-93",
+    "name": "COUPLING -- BLACK 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0093",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-94",
+    "name": "COUPLING -- ORANGE 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0094",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-95",
+    "name": "COUPLING -- NELTEX 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0095",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-96",
+    "name": "COUPLING -- BLACK 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0096",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-97",
+    "name": "COUPLING -- ORANGE 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0097",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-98",
+    "name": "COUPLING -- NELTEX 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0098",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-99",
+    "name": "BUSHG REDUCER -- BLACK 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0099",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-100",
+    "name": "BUSHG REDUCER -- ORANGE 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0100",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-101",
+    "name": "BUSHG REDUCER -- NELTEX 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0101",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-102",
+    "name": "BUSHG REDUCER -- BLACK 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0102",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-103",
+    "name": "BUSHG REDUCER -- ORANGE 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0103",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-104",
+    "name": "BUSHG REDUCER -- NELTEX 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0104",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-105",
+    "name": "BUSHG REDUCER -- BLACK 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0105",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-106",
+    "name": "BUSHG REDUCER -- ORANGE 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0106",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-107",
+    "name": "BUSHG REDUCER -- NELTEX 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0107",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-108",
+    "name": "P-TRAP -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0108",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-109",
+    "name": "P-TRAP -- ORANGE 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0109",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-110",
+    "name": "P-TRAP -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0110",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-111",
+    "name": "P-TRAP -- ORANGE 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0111",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-112",
+    "name": "CLEAN OUT -- BLACK 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0112",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-113",
+    "name": "CLEAN OUT -- ORANGE 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0113",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-114",
+    "name": "CLEAN OUT -- NELTEX 2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0114",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-115",
+    "name": "CLEAN OUT -- BLACK 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0115",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-116",
+    "name": "CLEAN OUT -- ORANGE 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0116",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-117",
+    "name": "CLEAN OUT -- NELTEX 3\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0117",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-118",
+    "name": "CLEAN OUT -- BLACK 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0118",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-119",
+    "name": "CLEAN OUT -- ORANGE 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0119",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-120",
+    "name": "CLEAN OUT -- NELTEX 4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0120",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-121",
+    "name": "CLEAN OUT -- BLACK 6\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0121",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-122",
+    "name": "TEE -- BLACK 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0122",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-123",
+    "name": "TEE -- ORANGE 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0123",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-124",
+    "name": "TEE -- NELTEX 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0124",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-125",
+    "name": "TEE -- BLACK 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0125",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-126",
+    "name": "TEE -- ORANGE 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0126",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-127",
+    "name": "TEE -- NELTEX 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0127",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-128",
+    "name": "TEE -- BLACK 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0128",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-129",
+    "name": "TEE -- ORANGE 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0129",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-130",
+    "name": "TEE -- NELTEX 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0130",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-131",
+    "name": "TEE -- BLACK 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0131",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-132",
+    "name": "TEE -- ORANGE 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0132",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-133",
+    "name": "TEE -- NELTEX 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0133",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-134",
+    "name": "TEE -- BLACK 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0134",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-135",
+    "name": "TEE -- ORANGE 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0135",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-136",
+    "name": "TEE -- NELTEX 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0136",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-137",
+    "name": "TEE -- BLACK 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0137",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-138",
+    "name": "TEE -- ORANGE 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0138",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-139",
+    "name": "TEE -- NELTEX 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0139",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-140",
+    "name": "TEE -- BLACK 6X6",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0140",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-141",
+    "name": "WYE -- BLACK 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0141",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-142",
+    "name": "WYE -- ORANGE 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0142",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-143",
+    "name": "WYE -- NELTEX 2X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0143",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-144",
+    "name": "WYE -- BLACK 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0144",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-145",
+    "name": "WYE -- ORANGE 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0145",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-146",
+    "name": "WYE -- NELTEX 3X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0146",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-147",
+    "name": "WYE -- BLACK 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0147",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-148",
+    "name": "WYE -- ORANGE 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0148",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-149",
+    "name": "WYE -- NELTEX 3X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0149",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-150",
+    "name": "WYE -- BLACK 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0150",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-151",
+    "name": "WYE -- ORANGE 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0151",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-152",
+    "name": "WYE -- NELTEX 4X2",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0152",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-153",
+    "name": "WYE -- BLACK 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0153",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-154",
+    "name": "WYE -- ORANGE 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0154",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-155",
+    "name": "WYE -- NELTEX 4X3",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0155",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-156",
+    "name": "WYE -- BLACK 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0156",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-157",
+    "name": "WYE -- ORANGE 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0157",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-158",
+    "name": "WYE -- NELTEX 4X4",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "OPTIMAL TRADING",
+    "itemCode": "DEMO-0158",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-159",
+    "name": "PPR PIPE (WHT) -- 1/2\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "DGM",
+    "itemCode": "DEMO-0159",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-160",
+    "name": "PPR PIPE (WHT) -- 3/4\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "DGM",
+    "itemCode": "DEMO-0160",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-161",
+    "name": "PPR PIPE (WHT) -- 1\"",
+    "category": "PVC Pipe / Fittings",
+    "supplierName": "HODIENG",
+    "itemCode": "DEMO-0161",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-162",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1/2 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0162",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-163",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 3/4 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0163",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-164",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0164",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-165",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 1/4 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0165",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-166",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 1/2 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0166",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-167",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 2 w/ thread - xusi",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0167",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-168",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 3 w/ thread - xusi",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0168",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-169",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1/2 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0169",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-170",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 3/4 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0170",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-171",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0171",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-172",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 1/4 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0172",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-173",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 1 1/2 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0173",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-174",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 2 w/out thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0174",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-175",
+    "name": "G.I PIPE S-20 (MANIPIS) -- 3 w/out thread xusi",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0175",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-176",
+    "name": "G.I PIPE S-20 (MANIPIS) -- CYCLONE WIRE (6ft x 6m) 2inc butas",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0176",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-177",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 1/2 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0177",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-178",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 3/4 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0178",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-179",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 1 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0179",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-180",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 1 1/4 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0180",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-181",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 1 1/2 w/ thread",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0181",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-182",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 2 w/ thread - xusi",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0182",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-183",
+    "name": "G.I PIPE S-40 (MAKAPAL) -- 3 w/ thread - xusi",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0183",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-184",
+    "name": "WIRE -- GI WIRE #16 CHINA 24KLS",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0184",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-185",
+    "name": "WIRE -- GI WIRE #16 LOCAL 35Kls",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0185",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-186",
+    "name": "WIRE -- BARBED WIRE 15KGS",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0186",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-187",
+    "name": "WIRE -- BARBED WIRE 30KGS",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0187",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-188",
+    "name": "WIRE -- CYCLONE WIRE (4ft X 6m) 4inc butas",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0188",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-189",
+    "name": "WIRE -- CYCLONE WIRE (4ft X 6m) 2inc butas",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0189",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-190",
+    "name": "WIRE -- CYCLONE WIRE (6ft x 6m) 4inc butas",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0190",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-191",
+    "name": "TUBULAR (MANIPIS) -- 3/4 x 3/4 (3.6 kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0191",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-192",
+    "name": "TUBULAR (MANIPIS) -- 1X1 (4.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0192",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-193",
+    "name": "TUBULAR (MANIPIS) -- 1X2 (6.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0193",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-194",
+    "name": "TUBULAR (MANIPIS) -- 1 1/2 X 1 1/2 (6.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0194",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-195",
+    "name": "TUBULAR (MANIPIS) -- 2X2 (8.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0195",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-196",
+    "name": "TUBULAR (MANIPIS) -- 2X3 (10.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0196",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-197",
+    "name": "TUBULAR (MANIPIS) -- 2X4 (12.5 kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0197",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-198",
+    "name": "TUBULAR (MANIPIS) -- 2X6 (19kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0198",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-199",
+    "name": "TUBULAR (MAKAPAL) -- 3/4 x 3/4 (4.2kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0199",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-200",
+    "name": "TUBULAR (MAKAPAL) -- 1X1 (5.2 kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0200",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-201",
+    "name": "TUBULAR (MAKAPAL) -- 1X2 (8.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0201",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-202",
+    "name": "TUBULAR (MAKAPAL) -- 1 1/2 X 1 1/2 (8.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0202",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-203",
+    "name": "TUBULAR (MAKAPAL) -- 2X2 (10.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0203",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-204",
+    "name": "TUBULAR (MAKAPAL) -- 2X3 (13.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0204",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-205",
+    "name": "TUBULAR (MAKAPAL) -- 2X4 (14.5kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0205",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-206",
+    "name": "TUBULAR (MAKAPAL) -- 2X6 (22kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0206",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-207",
+    "name": "ANGLE BAR (3/16) MANIPIS -- 1/8 X 1 - Blue",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0207",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-208",
+    "name": "ANGLE BAR (3/16) MANIPIS -- 3/16 X 1 - Red",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0208",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-209",
+    "name": "ANGLE BAR (3/16) MANIPIS -- 3/16 X 1 1/2 - Red",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0209",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-210",
+    "name": "ANGLE BAR (3/16) MANIPIS -- 3/16 X 2 - Red",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0210",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-211",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4 X 1 - Grn",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0211",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-212",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4 X 1 - Org",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0212",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-213",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4 X 1 1/2 - Grn",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0213",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-214",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4 X 1 1/2 - Org",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0214",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-215",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4x2 - Grn",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0215",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-216",
+    "name": "ANGLE BAR 1/4 (MAKAPAL) -- 1/4x2 - Org",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0216",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-217",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 1/2 (green)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0217",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-218",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 3/4 (green)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0218",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-219",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 1 (green)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0219",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-220",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 1 1/2 (green)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0220",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-221",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 2 (green)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0221",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-222",
+    "name": "FLAT BAR (3/16) MANIPIS -- 3/16 X 2 - (blue)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0222",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-223",
+    "name": "FLAT BAR 1/4 (MAKAPAL) -- 1/4 X 1/2 (orange)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0223",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-224",
+    "name": "FLAT BAR 1/4 (MAKAPAL) -- 1/4X3/4 ( orange )",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0224",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-225",
+    "name": "FLAT BAR 1/4 (MAKAPAL) -- 1/4 X 1 (orange)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0225",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-226",
+    "name": "FLAT BAR 1/4 (MAKAPAL) -- 1/4 X 1 1/2 (orange)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0226",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-227",
+    "name": "FLAT BAR 1/4 (MAKAPAL) -- 1/4 X 2 (orange)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0227",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-228",
+    "name": "SQUARE BAR -- 9MM (2.1kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0228",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-229",
+    "name": "SQUARE BAR -- 10MM BLUE",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0229",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-230",
+    "name": "SQUARE BAR -- 12MM RED",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0230",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-231",
+    "name": "ROUND BAR -- 9MM ORG",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0231",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-232",
+    "name": "ROUND BAR -- 10MM WHITE",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0232",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-233",
+    "name": "ROUND BAR -- 12MM BLUE",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0233",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-234",
+    "name": "ROUND BAR -- 16MM",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0234",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-235",
+    "name": "CONDUIT PIPE -- 1/2 (10ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0235",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-236",
+    "name": "CONDUIT PIPE -- 3/4 (10ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0236",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-237",
+    "name": "CONDUIT PIPE -- 1 (10ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0237",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-238",
+    "name": "CONDUIT PIPE -- 1.5 (10ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0238",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-239",
+    "name": "CHROME PIPE -- 1/2 (16ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0239",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-240",
+    "name": "CHROME PIPE -- 3/4 (16ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0240",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-241",
+    "name": "CHROME PIPE -- 1 (16ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0241",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-242",
+    "name": "CHROME PIPE -- GROUNDING ROD (per ft)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0242",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-243",
+    "name": "C-PURLINS MANIPIS -- 2X3 9KG (9.2kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0243",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-244",
+    "name": "C-PURLINS MANIPIS -- 2X4 (10.4kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0244",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-245",
+    "name": "C-PURLINS MANIPIS -- 2X6 (13kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0245",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-246",
+    "name": "C-PURLINS MANIPIS -- METAL FURRING",
+    "category": "Steel",
+    "supplierName": "LPMP TRADING",
+    "itemCode": "DEMO-0246",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-247",
+    "name": "C-PURLINS MANIPIS -- METAL STUD",
+    "category": "Steel",
+    "supplierName": "LPMP TRADING",
+    "itemCode": "DEMO-0247",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-248",
+    "name": "C-PURLINS MANIPIS -- METAL TRACKS",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0248",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-249",
+    "name": "C-PURLINS MAKAPAL -- 2X3 ( standard )",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0249",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-250",
+    "name": "C-PURLINS MAKAPAL -- 2X3 (10.3kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0250",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-251",
+    "name": "C-PURLINS MAKAPAL -- 2X4",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0251",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-252",
+    "name": "C-PURLINS MAKAPAL -- 2X6 (16kg)",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0252",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-253",
+    "name": "C-PURLINS MAKAPAL -- CARRYING CHANNEL",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0253",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-254",
+    "name": "C-PURLINS MAKAPAL -- WALL ANGLE",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0254",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-255",
+    "name": "C-PURLINS MAKAPAL -- WALL CLIP",
+    "category": "Steel",
+    "supplierName": "HYZ STEEL TRADING",
+    "itemCode": "DEMO-0255",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-256",
+    "name": "STEEL MATTING -- #10 MANIPIS",
+    "category": "Steel",
+    "supplierName": "SAKRETE ENTERPRISES INC",
+    "itemCode": "DEMO-0256",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-257",
+    "name": "STEEL MATTING -- #8 SEMI-MAKAPAL",
+    "category": "Steel",
+    "supplierName": "SAKRETE ENTERPRISES INC",
+    "itemCode": "DEMO-0257",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-258",
+    "name": "STEEL MATTING -- #6 MAKAPAL",
+    "category": "Steel",
+    "supplierName": "QUALISTEEL ENTERPRISES",
+    "itemCode": "DEMO-0258",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-259",
+    "name": "QUARTER C -- 8FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0259",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-260",
+    "name": "QUARTER C -- 10FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0260",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-261",
+    "name": "QUARTER C -- 12FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0261",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-262",
+    "name": "HALF ROUND -- 8FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0262",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-263",
+    "name": "HALF ROUND -- 10FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0263",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-264",
+    "name": "HALF ROUND -- 12FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0264",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-265",
+    "name": "CENTER MOULDING -- 8FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0265",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-266",
+    "name": "CENTER MOULDING -- 10FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0266",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-267",
+    "name": "CENTER MOULDING -- 12FT",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0267",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-268",
+    "name": "CORNICE -- 1X2X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0268",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-269",
+    "name": "CORNICE -- 1X2X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0269",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-270",
+    "name": "CORNICE -- 1X2X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0270",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-271",
+    "name": "CORNICE -- 1X3X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0271",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-272",
+    "name": "CORNICE -- 1X3X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0272",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-273",
+    "name": "CORNICE -- 1X3X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0273",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-274",
+    "name": "CORNICE -- 1X4X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0274",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-275",
+    "name": "CORNICE -- 1X4X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0275",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-276",
+    "name": "CORNICE -- 1X4X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0276",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-277",
+    "name": "EDGING / LINING -- 1/2 X1X 8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0277",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-278",
+    "name": "EDGING / LINING -- 1/2 X1X 10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0278",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-279",
+    "name": "EDGING / LINING -- 1/2 X1X 12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0279",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-280",
+    "name": "EDGING / LINING -- 1/2 X2X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0280",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-281",
+    "name": "EDGING / LINING -- 1/2 X2X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0281",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-282",
+    "name": "EDGING / LINING -- 1/2 X2X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0282",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-283",
+    "name": "EDGING / LINING -- 1X1X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0283",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-284",
+    "name": "EDGING / LINING -- 1X1X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0284",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-285",
+    "name": "EDGING / LINING -- 1X1X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0285",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-286",
+    "name": "EDGING / LINING -- 1 1/2 X 2X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0286",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-287",
+    "name": "EDGING / LINING -- 1 1/2 X 2X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0287",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-288",
+    "name": "EDGING / LINING -- 1 1/2 X 2X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0288",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-289",
+    "name": "EDGING / LINING -- 1X2X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0289",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-290",
+    "name": "EDGING / LINING -- 1X2X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0290",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-291",
+    "name": "EDGING / LINING -- 1X2X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0291",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-292",
+    "name": "HARD WOOD -- 2X2X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0292",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-293",
+    "name": "HARD WOOD -- 2X2X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0293",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-294",
+    "name": "HARD WOOD -- 2X2X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0294",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-295",
+    "name": "HARD WOOD -- 2X3X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0295",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-296",
+    "name": "HARD WOOD -- 2X3X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0296",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-297",
+    "name": "HARD WOOD -- 2X3X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0297",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-298",
+    "name": "HARD WOOD -- 2X4X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0298",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-299",
+    "name": "HARD WOOD -- 2X4X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0299",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-300",
+    "name": "SENEPA -- 1X3X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0300",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-301",
+    "name": "SENEPA -- 1X3X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0301",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-302",
+    "name": "SENEPA -- 1X3X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0302",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-303",
+    "name": "SENEPA -- 1X4X8",
+    "category": "Kiln Dry",
+    "supplierName": "MAC STEVE MARKETING",
+    "itemCode": "DEMO-0303",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-304",
+    "name": "SENEPA -- 1X4X10",
+    "category": "Kiln Dry",
+    "supplierName": "MAC STEVE MARKETING",
+    "itemCode": "DEMO-0304",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-305",
+    "name": "SENEPA -- 1X4X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0305",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-306",
+    "name": "SENEPA -- 1X6X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0306",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-307",
+    "name": "SENEPA -- 1X6X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0307",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-308",
+    "name": "SENEPA -- 1X6X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0308",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-309",
+    "name": "SENEPA -- 1X8X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0309",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-310",
+    "name": "SENEPA -- 1X8X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0310",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-311",
+    "name": "SENEPA -- 1X8X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0311",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-312",
+    "name": "SENEPA -- 1X10X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0312",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-313",
+    "name": "SENEPA -- 1X10X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0313",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-314",
+    "name": "SENEPA -- 1X10X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0314",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-315",
+    "name": "SENEPA -- 1X12X8",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0315",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-316",
+    "name": "SENEPA -- 1X12X10",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0316",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-317",
+    "name": "SENEPA -- 1X12X12",
+    "category": "Kiln Dry",
+    "supplierName": "BELJEM CONSTRUCTION SUPPLIES TRADING",
+    "itemCode": "DEMO-0317",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-318",
+    "name": "ORDINARY -- 1/4 L-O",
+    "category": "Plywood",
+    "supplierName": "CMA COMMERCIAL TRADING CORP",
+    "itemCode": "DEMO-0318",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-319",
+    "name": "ORDINARY -- 1/2 L-O (imp)",
+    "category": "Plywood",
+    "supplierName": "CMA COMMERCIAL TRADING CORP",
+    "itemCode": "DEMO-0319",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-320",
+    "name": "ORDINARY -- 3/4 L-O (imp)",
+    "category": "Plywood",
+    "supplierName": "PHT GEN MDSE",
+    "itemCode": "DEMO-0320",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-321",
+    "name": "MARINE -- 1/4 L-M",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0321",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-322",
+    "name": "MARINE -- 1/2 L-M (imp)",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0322",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-323",
+    "name": "MARINE -- 3/4 L-M (imp)",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0323",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-324",
+    "name": "PHENOLIC / SHERA / GYPSUM -- SHERA BOARD 3/16",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0324",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-325",
+    "name": "PHENOLIC / SHERA / GYPSUM -- SHERA BOARD 1/4",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0325",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-326",
+    "name": "PHENOLIC / SHERA / GYPSUM -- PHENOLIC 1/2",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0326",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-327",
+    "name": "PHENOLIC / SHERA / GYPSUM -- PHENOLIC 3/4 Unicorn",
+    "category": "Plywood",
+    "supplierName": "BOWMAN BUILDERS CORP",
+    "itemCode": "DEMO-0327",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-328",
+    "name": "ECO 4 -- 1X2X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0328",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-329",
+    "name": "ECO 4 -- 1X2X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0329",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-330",
+    "name": "ECO 4 -- 1X2X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0330",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-331",
+    "name": "ECO 4 -- 2X2X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0331",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-332",
+    "name": "ECO 4 -- 2X2X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0332",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-333",
+    "name": "ECO 4 -- 2X2X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0333",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-334",
+    "name": "ECO 4 -- 2X3X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0334",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-335",
+    "name": "ECO 4 -- 2X3X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0335",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-336",
+    "name": "ECO 4 -- 2X3X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0336",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-337",
+    "name": "ECO 4 -- 2X4X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0337",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-338",
+    "name": "ECO 4 -- 2X4X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0338",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-339",
+    "name": "ECO 4 -- 2X4X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0339",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-340",
+    "name": "COCO -- 1X2X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0340",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-341",
+    "name": "COCO -- 2X2X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0341",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-342",
+    "name": "COCO -- 2X2X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0342",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-343",
+    "name": "COCO -- 2X2X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0343",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-344",
+    "name": "COCO -- 2X3X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0344",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-345",
+    "name": "COCO -- 2X3X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0345",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-346",
+    "name": "COCO -- 2X3X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0346",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-347",
+    "name": "COCO -- 2X4X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0347",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-348",
+    "name": "COCO -- 2X4X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0348",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-349",
+    "name": "COCO -- 2X4X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0349",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-350",
+    "name": "COCO -- 2X6X8",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0350",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-351",
+    "name": "COCO -- 2X6X10",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0351",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-352",
+    "name": "COCO -- 2X6X12",
+    "category": "Plywood",
+    "supplierName": "WINACE TRADING & CONSTRUCTION SUPPLY",
+    "itemCode": "DEMO-0352",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-353",
+    "name": "PHELPS DODGE -- #14 (2.0) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "PNM MARKETING",
+    "itemCode": "DEMO-0353",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-354",
+    "name": "PHELPS DODGE -- #12 (3.5) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "PNM MARKETING",
+    "itemCode": "DEMO-0354",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-355",
+    "name": "PHELPS DODGE -- #10 (5.5) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "PNM MARKETING",
+    "itemCode": "DEMO-0355",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-356",
+    "name": "PHELPS DODGE -- #8 (8.0) 100m (per box)",
+    "category": "Electricals",
+    "supplierName": "PNM MARKETING",
+    "itemCode": "DEMO-0356",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-357",
+    "name": "ROYU -- #14 (2.0) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0357",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-358",
+    "name": "ROYU -- #12 (3.5) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0358",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-359",
+    "name": "ROYU -- #10 (5.5) 150m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0359",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-360",
+    "name": "ROYU -- #8 (8.0) 100m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0360",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-361",
+    "name": "ROYU -- #14 (2.0) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0361",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-362",
+    "name": "ROYU -- #12 (3.5) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0362",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-363",
+    "name": "ROYU -- #10 (5.5) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0363",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-364",
+    "name": "ROYU -- #8 (8.0) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0364",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-365",
+    "name": "ROYU PDX -- #14 (2.0) 75m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0365",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-366",
+    "name": "ROYU PDX -- #12 (3.5) 75m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0366",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-367",
+    "name": "ROYU PDX -- #10 (5.5) 75m (per box)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0367",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-368",
+    "name": "ROYU PDX -- #14 (2.0) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0368",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-369",
+    "name": "ROYU PDX -- #12 (3.5) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0369",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-370",
+    "name": "ROYU PDX -- #10 (5.5) (per mtr)",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0370",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-371",
+    "name": "POWERFLEX -- #14 (per box)",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0371",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-372",
+    "name": "POWERFLEX -- #12 (per box)",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0372",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-373",
+    "name": "POWERFLEX -- #10 (per box)",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0373",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-374",
+    "name": "PANEL BOX -- Single",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0374",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-375",
+    "name": "PANEL BOX -- 2BR",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0375",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-376",
+    "name": "PANEL BOX -- 4BR",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0376",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-377",
+    "name": "PANEL BOX -- 6BR",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0377",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-378",
+    "name": "PANEL BOX -- 8BR",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0378",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-379",
+    "name": "PANEL BOX -- 10BR",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0379",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-380",
+    "name": "NEMA -- 3R PLUG IN",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0380",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-381",
+    "name": "NEMA -- 3R BOLT ON",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0381",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-382",
+    "name": "NEMA -- 3R BOLT ON ECONOMY",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0382",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-383",
+    "name": "FUSE BOX -- 30A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0383",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-384",
+    "name": "FUSE BOX -- 60A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0384",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-385",
+    "name": "SAFETY BREAKER -- 15A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0385",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-386",
+    "name": "SAFETY BREAKER -- 20A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0386",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-387",
+    "name": "SAFETY BREAKER -- 30A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0387",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-388",
+    "name": "SAFETY BREAKER -- 40A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0388",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-389",
+    "name": "SAFETY BREAKER -- 60A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0389",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-390",
+    "name": "SAFETY BREAKER -- 100A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0390",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-391",
+    "name": "CIRCUIT BREAKER - PLUG IN -- GE 15A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0391",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-392",
+    "name": "CIRCUIT BREAKER - PLUG IN -- Royu 15A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0392",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-393",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 15A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0393",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-394",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 20A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0394",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-395",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 30A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0395",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-396",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 40A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0396",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-397",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 60A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0397",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-398",
+    "name": "CIRCUIT BREAKER BOLT ON -- GE 100A",
+    "category": "Electricals",
+    "supplierName": "BEST POWER TRADING",
+    "itemCode": "DEMO-0398",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-399",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 15A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0399",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-400",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 20A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0400",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-401",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 30A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0401",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-402",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 40A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0402",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-403",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 60A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0403",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-404",
+    "name": "CIRCUIT BREAKER BOLT ON -- Royu 100A",
+    "category": "Electricals",
+    "supplierName": "ROYU",
+    "itemCode": "DEMO-0404",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-405",
+    "name": "FLOURESCENT LAMP only -- Philips 10w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0405",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-406",
+    "name": "FLOURESCENT LAMP only -- Philips 20w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0406",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-407",
+    "name": "FLOURESCENT LAMP only -- Philips 40w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0407",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-408",
+    "name": "FLOURESCENT LAMP only -- Firefly 8w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0408",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-409",
+    "name": "FLOURESCENT HOUSING only -- Philips 10w",
+    "category": "Electricals",
+    "supplierName": "EXCELIN MARKETING OPC",
+    "itemCode": "DEMO-0409",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-410",
+    "name": "FLOURESCENT HOUSING only -- Philips 18w",
+    "category": "Electricals",
+    "supplierName": "EXCELIN MARKETING OPC",
+    "itemCode": "DEMO-0410",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-411",
+    "name": "FLOURESCENT HOUSING only -- Philips 20w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0411",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-412",
+    "name": "FLOURESCENT HOUSING only -- Philips 40w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0412",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-413",
+    "name": "FLOURESCENT LAMP with HOUSING -- Philips 10w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0413",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-414",
+    "name": "FLOURESCENT LAMP with HOUSING -- Philips 20w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0414",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-415",
+    "name": "FLOURESCENT LAMP with HOUSING -- Philips 40w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0415",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-416",
+    "name": "FLOURESCENT LAMP with HOUSING -- Ecolum 8w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0416",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-417",
+    "name": "FLOURESCENT LAMP with HOUSING -- Ecolum 16w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0417",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-418",
+    "name": "CIRCULAR LAMP -- Firefly 22w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0418",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-419",
+    "name": "CIRCULAR LAMP -- Firefly 32w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0419",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-420",
+    "name": "CIRCULAR LAMP -- GE 32w",
+    "category": "Electricals",
+    "supplierName": "FIREFLY",
+    "itemCode": "DEMO-0420",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-421",
+    "name": "BOYSEN - LATEX (STONE) -- B 701 FLAT LATEX WHT 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0421",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-422",
+    "name": "BOYSEN - LATEX (STONE) -- B 701 FLAT LATEX WHT 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0422",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-423",
+    "name": "BOYSEN - LATEX (STONE) -- B 701 FLAT LATEX WHT 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0423",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-424",
+    "name": "BOYSEN - LATEX (STONE) -- B 710 GLOSS LATEX WHT 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0424",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-425",
+    "name": "BOYSEN - LATEX (STONE) -- B 710 GLOSS LATEX WHT 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0425",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-426",
+    "name": "BOYSEN - LATEX (STONE) -- B 710 GLOSS LATEX WHT 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0426",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-427",
+    "name": "BOYSEN - LATEX (STONE) -- B 715 SEMI-GLOSS LATEX WHT 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0427",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-428",
+    "name": "BOYSEN - LATEX (STONE) -- B 715 SEMI-GLOSS LATEX WHT 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0428",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-429",
+    "name": "BOYSEN - LATEX (STONE) -- B 715 SEMI-GLOSS LATEX WHT 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0429",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-430",
+    "name": "BOYSEN - LATEX (STONE) -- #700 CLEAR GLOSS ACRYLIC EMULSION 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0430",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-431",
+    "name": "BOYSEN - LATEX (STONE) -- #700 CLEAR GLOSS ACRYLIC EMULSION 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0431",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-432",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 800 FLAT WALL ENAMEL WHT 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0432",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-433",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 800 FLAT WALL ENAMEL WHT 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0433",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-434",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 800 FLAT WALL ENAMEL WHT 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0434",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-435",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 600 QDE WHT 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0435",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-436",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 600 QDE WHT 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0436",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-437",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 600 QDE WHT 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0437",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-438",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 600 QDE WHT .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0438",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-439",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 690 QDE BLACK 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0439",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-440",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 690 QDE BLACK 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0440",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-441",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 690 QDE BLACK .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0441",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-442",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 680 QDE CHOC BROWN 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0442",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-443",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 680 QDE CHOC BROWN 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0443",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-444",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 680 QDE CHOC BROWN .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0444",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-445",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 676 QDE ORANGE 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0445",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-446",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 676 QDE ORANGE .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0446",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-447",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 671 QDE INTL RED 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0447",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-448",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 671 QDE INTL RED 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0448",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-449",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 671 QDE INTL RED .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0449",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-450",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 661 QDE LEMON YELLOW 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0450",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-451",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 661 QDE LEMON YELLOW .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0451",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-452",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 658 QDE EMERALD GREEN 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0452",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-453",
+    "name": "BOYSEN - ENAMEL (WOOD & STEEL) -- B 658 QDE EMERALD GREEN .25L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0453",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-454",
+    "name": "BOYSEN - ROOF GUARD -- B 2540 PACIFIC BLUE 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0454",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-455",
+    "name": "BOYSEN - ROOF GUARD -- B 2540 PACIFIC BLUE 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0455",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-456",
+    "name": "BOYSEN - ROOF GUARD -- B 2550 BAGUIO GREEN 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0456",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-457",
+    "name": "BOYSEN - ROOF GUARD -- B 2550 BAGUIO GREEN 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0457",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-458",
+    "name": "BOYSEN - ROOF GUARD -- B 2570 SPANISH RED 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0458",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-459",
+    "name": "BOYSEN - ROOF GUARD -- B 2570 SPANISH RED 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0459",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-460",
+    "name": "BOYSEN - LACQUER VARNISH -- #1250 CLEAR GLOSS LACQUER 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0460",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-461",
+    "name": "BOYSEN - LACQUER VARNISH -- #1250 CLEAR GLOSS LACQUER 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0461",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-462",
+    "name": "BOYSEN - LACQUER VARNISH -- #1250 CLEAR GLOSS LACQUER 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0462",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-463",
+    "name": "BOYSEN - WATER PROOFING -- 7760 PLEXIBOND 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0463",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-464",
+    "name": "BOYSEN - WATER PROOFING -- 7760 PLEXIBOND 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0464",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-465",
+    "name": "BOYSEN - WATER PROOFING -- B1705 ACRYTEX PRIMER 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0465",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-466",
+    "name": "PRIMER -- B 305 LACQUER PRIMER SURFACER WHITE 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0466",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-467",
+    "name": "PRIMER -- B 305 LACQUER PRIMER SURFACER WHITE 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0467",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-468",
+    "name": "PRIMER -- B 310 RED OXIDE METAL PRIMER 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0468",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-469",
+    "name": "PRIMER -- B 310 RED OXIDE METAL PRIMER 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0469",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-470",
+    "name": "PRIMER -- B 310 RED OXIDE METAL PRIMER 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0470",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-471",
+    "name": "BOYSEN - PUTTY (MASILYA) -- 7311 MASONRY PUTTY- para sa loob ng concrete walls 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0471",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-472",
+    "name": "BOYSEN - PUTTY (MASILYA) -- 7311 MASONRY PUTTY- para sa loob ng concrete walls 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0472",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-473",
+    "name": "BOYSEN - THINNING SOLVENTS -- B55 EPOXY REDUCER (for epoxy enamel) 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0473",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-474",
+    "name": "BOYSEN - THINNING SOLVENTS -- B1750 ACRYTEX REDUCER (for acrytex) 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0474",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-475",
+    "name": "BOYSEN - THINNING SOLVENTS -- B 50 LACQUER THINNER (for lacquer products) 16L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0475",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-476",
+    "name": "BOYSEN - THINNING SOLVENTS -- B 50 LACQUER THINNER (for lacquer products) 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0476",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-477",
+    "name": "BOYSEN - THINNING SOLVENTS -- B 0340 PAINT THINNER (for QDE) 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0477",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-478",
+    "name": "OTHER BRANDS -- SOILGUARD 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0478",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-479",
+    "name": "OTHER BRANDS -- CHAMP SUPR CLR GLS VARNISH 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0479",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-480",
+    "name": "OTHER BRANDS -- NP SUPR CLR GLS VARNISH 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0480",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-481",
+    "name": "OTHER BRANDS -- POLITUFF 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0481",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-482",
+    "name": "OTHER BRANDS -- POLITUFF 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0482",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-483",
+    "name": "OTHER BRANDS -- LA-10 SPHERO - AUTOMOTIVE LACQUER WHITE 4L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0483",
+    "demoOnly": true
+  },
+  {
+    "id": "demo-catalog-484",
+    "name": "OTHER BRANDS -- LA-10 SPHERO - AUTOMOTIVE LACQUER WHITE 1L",
+    "category": "Paints",
+    "supplierName": "AMULET MARKETING CORP",
+    "itemCode": "DEMO-0484",
+    "demoOnly": true
+  }
+]

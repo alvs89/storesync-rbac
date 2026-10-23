@@ -30,6 +30,7 @@ import {
   isListedSupplier,
   sanitizeSupplierInput,
 } from '../utils/suppliers';
+import demoPurchaseCatalog from '../utils/demoPurchaseCatalog.json';
 
 const emptyPurchaseLine = () => ({
   inventoryId: '',
@@ -232,6 +233,7 @@ const INVENTORY_STATUS_FILTER_OPTIONS = [
 // The manual threshold remains the official alert trigger; recommendations help
 // staff estimate what to receive from suppliers.
 const getPurchaseInventoryStatus = item => {
+  if (item?.demoOnly) return 'Demo Catalog';
   if (item?.status) return item.status;
   const quantity = Number(item?.availableQuantity ?? item?.quantity ?? 0);
   const threshold = Number(item?.activeLowStockThreshold ?? item?.reorderLevel ?? 0);
@@ -241,6 +243,7 @@ const getPurchaseInventoryStatus = item => {
 };
 
 const getPurchaseReorderInfo = item => {
+  if (item?.demoOnly) return { label: 'Demo', tone: 'ok', title: 'Demo catalog item; live stock and reorder details are unavailable.' };
   const quantity = Number(item?.quantity || 0);
   const status = getPurchaseInventoryStatus(item);
   const manualPoint = Number(item?.activeLowStockThreshold ?? item?.reorderLevel ?? 0);
@@ -343,17 +346,29 @@ export function PurchasesModule({ user, onNavigate }) {
     }
   }, [purchaseDraftScope]);
 
+  // Frontend-only catalog supplement: real inventory wins for matching products.
+  // Catalog-only items are explicitly marked and cannot be saved to the backend.
+  const purchaseInventory = useMemo(() => {
+    const existing = new Set(inventory.map(item =>
+      `${normalizeSupplierForMatch(item.supplierName)}|${String(item.category || '').toLowerCase()}|${String(item.name || '').trim().toLowerCase()}`
+    ));
+    const catalogOnly = demoPurchaseCatalog.filter(item => !existing.has(
+      `${normalizeSupplierForMatch(item.supplierName)}|${String(item.category || '').toLowerCase()}|${String(item.name || '').trim().toLowerCase()}`
+    ));
+    return [...inventory, ...catalogOnly];
+  }, [inventory]);
+
   const sortedInventory = useMemo(
-    () => mergeSort([...inventory], (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { numeric: true, sensitivity: 'base' })),
-    [inventory]
+    () => mergeSort([...purchaseInventory], (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { numeric: true, sensitivity: 'base' })),
+    [purchaseInventory]
   );
 
   const inventoryCategories = useMemo(
     () => ['all', ...mergeSort(
-      Array.from(new Set(inventory.map(item => item.category || 'Uncategorized'))),
+      Array.from(new Set(purchaseInventory.map(item => item.category || 'Uncategorized'))),
       (a, b) => String(a).localeCompare(String(b), undefined, { numeric: true, sensitivity: 'base' })
     )],
-    [inventory]
+    [purchaseInventory]
   );
 
   // The inventory picker can be scoped by supplier to reduce receiving mistakes,
@@ -478,9 +493,10 @@ export function PurchasesModule({ user, onNavigate }) {
   }, [highlightedLineIndexes, purchaseLines.length]);
 
   const getInventoryById = inventoryId =>
-    inventory.find(item => String(item.id) === String(inventoryId));
+    purchaseInventory.find(item => String(item.id) === String(inventoryId));
 
   const getDefaultUnitCostForInventoryItem = item => {
+    if (item?.demoOnly) return '';
     const costPrice = Number(item?.costPrice);
     return Number.isFinite(costPrice) && costPrice > 0 ? costPrice.toFixed(2) : '';
   };
@@ -1034,6 +1050,10 @@ export function PurchasesModule({ user, onNavigate }) {
   // Purchase validation protects supplier identity, document metadata, positive
   // receiving quantities/costs, duplicate lines, credit terms, and backdating.
   const validatePurchase = () => {
+    if (selectedLines.some(line => line.item?.demoOnly)) {
+      toast.error('Demo catalog items are preview-only. They cannot be saved as actual supplier deliveries.');
+      return false;
+    }
     if (!supplierName.trim()) {
       toast.error('Select a supplier or choose Other to enter one.');
       return false;
@@ -3674,6 +3694,9 @@ export function PurchasesModule({ user, onNavigate }) {
                   </div>
                 </div>
 
+                <p className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900" role="note">
+                  Demo catalog items are shown alongside live inventory. Items marked Demo have no verified stock quantity and cannot be posted as real purchases.
+                </p>
                 <div className="purchase-scroll purchase-inventory-list">
                   <div className="purchase-inventory-head">
                     <span>Inventory Item</span>
@@ -3691,7 +3714,7 @@ export function PurchasesModule({ user, onNavigate }) {
                     return (
                       <div key={item.id} className={`purchase-inventory-row${isAlreadySelected ? ' is-selected' : ''}`}>
                         <span className="min-w-0">
-                          <span className="block truncate text-sm font-semibold text-slate-900">{item.name}</span>
+                          <span className="block truncate text-sm font-semibold text-slate-900">{item.name}{item.demoOnly ? ' (Demo)' : ''}</span>
                           <span className="purchase-inventory-item-meta">
                             <span>{item.itemCode || 'No item code'}</span>
                             <span className="purchase-mobile-only">&middot;</span>
@@ -3709,7 +3732,7 @@ export function PurchasesModule({ user, onNavigate }) {
                             : stockStatus === 'Low Stock'
                               ? 'purchase-stock-badge purchase-stock-badge-low'
                               : 'purchase-stock-badge'}>
-                            {item.quantity}
+                            {item.demoOnly ? '—' : item.quantity}
                           </Badge>
                         </span>
                         <span className="purchase-reorder-cell">
