@@ -5,7 +5,7 @@
  * and downloadable user manuals. Content is filtered by the signed-in user's
  * role so staff only see guidance for actions they are allowed to perform.
  */
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import jsPDF from 'jspdf';
 import {
   AlertTriangle,
@@ -28,17 +28,29 @@ import {
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from './ui/dialog';
 import { PageHeader } from './PageHeader';
-import { getRoleLabel, isAdministrativeRole, normalizeRole, ROLE_VALUES } from '../utils/roles';
+import { canAccessScreen, getRoleLabel, isAdministrativeRole, normalizeRole, ROLE_OPTIONS, ROLE_VALUES } from '../utils/roles';
 
 // Role groups keep help content aligned with the same access model used by the
 // dashboard, inventory, sales, reports, and maintenance modules.
 const HELP_ROLES = {
-  ALL: [ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_ENCODER, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF],
-  ADMIN: [ROLE_VALUES.ADMIN],
-  SALES: [ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_ENCODER, ROLE_VALUES.SALES_INVENTORY_STAFF],
-  INVENTORY: [ROLE_VALUES.ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF],
+  ALL: ROLE_OPTIONS.map(option => option.value),
+  ADMIN: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN],
+  SUPER_ADMIN: [ROLE_VALUES.SUPER_ADMIN],
+  BRANCH_ADMIN: [ROLE_VALUES.ADMIN],
+  SALES: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_ENCODER, ROLE_VALUES.SALES_INVENTORY_STAFF],
+  INVENTORY: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF],
 };
+
+// Match the navigation permission helpers instead of maintaining a second set
+// of module permissions in the user guide and exported manual.
+const helpModules = [
+  ['dashboard', 'Dashboard'], ['search', 'Search Products'], ['inventory', 'Inventory'],
+  ['archive', 'Archive'], ['reports', 'Reports'], ['sales', 'Sales'], ['purchases', 'Purchases'],
+  ['alerts', 'Alerts'], ['maintenance', 'Maintenance'], ['user-management', 'User Management'],
+  ['audit-trail', 'Audit Trail'], ['help', 'Help'],
+];
 
 // Topic filter options shown in the Help header.
 const topicOptions = [
@@ -91,35 +103,31 @@ const supportContacts = [
 
 // Role-specific summaries explain allowed modules and responsibilities.
 const roleHelpAccess = {
-  [ROLE_VALUES.ADMIN]: {
-    title: 'Admin / Owner Guide',
-    description: 'Complete store management guide for users, inventory, sales, reports, maintenance, and audit review.',
-    modules: [
-      'Dashboard',
-      'Search Products',
-      'Inventory',
-      'Archive',
-      'Reports',
-      'Sales',
-      'Purchases',
-      'Alerts',
-      'Maintenance',
-      'User Management',
-      'Audit Trail',
-      'Help',
-    ],
+  [ROLE_VALUES.SUPER_ADMIN]: {
+    title: 'Super Admin Guide',
+    description: 'System-wide guidance for both branches, branch performance comparisons, account administration, maintenance, and audit review.',
     tasks: [
-      'Manage users, roles, branches, and account access.',
+      'Switch Active Branch between Manggahan and San Rafael to review branch inventory.',
+      'Use Branch Performance Summary on Dashboard and View Branch Comparison to open the same period in Reports.',
+      'Manage inventory master data, reorder planning, sales, purchases, and approval reviews.',
+      'Manage administrative and staff accounts, role assignments, and branch transfers.',
+      'Access Maintenance and Audit Trail; review confirmations before sensitive actions.',
+    ],
+  },
+  [ROLE_VALUES.ADMIN]: {
+    title: 'Admin Guide',
+    description: 'Branch administration guide for inventory, sales, purchases, reports, staff accounts, and audit review.',
+    tasks: [
+      'Manage staff accounts and assign staff roles within the assigned branch; request branch transfers from the Super Admin.',
       'Add and edit inventory items, stock thresholds, categories, supplier details, and approval requests.',
       'Record sales, refunds, cancellations, stock in, stock out, purchases, and delivery receiving.',
       'Review all reports, including Actual Earnings and Sales-Based Stock Movement.',
-      'Use maintenance, backup, restore, data integrity, and audit trail tools.',
+      'Review Audit Trail and use the Restore control in Archive when an item should return to active inventory.',
     ],
   },
   [ROLE_VALUES.SALES_ENCODER]: {
     title: 'Sales Encoder Guide',
     description: 'Sales-focused guide for recording customer transactions and checking item availability.',
-    modules: ['Dashboard', 'Search Products', 'Inventory', 'Sales', 'Alerts', 'Help'],
     tasks: [
       'Search products and check available stock.',
       'Record customer sales using the official Sales Invoice number.',
@@ -131,7 +139,6 @@ const roleHelpAccess = {
   [ROLE_VALUES.INVENTORY_STAFF]: {
     title: 'Inventory Staff Guide',
     description: 'Inventory-focused guide for stock movement, purchases, archive review, and inventory reports.',
-    modules: ['Dashboard', 'Search Products', 'Inventory', 'Archive', 'Reports', 'Purchases', 'Alerts', 'Help'],
     tasks: [
       'Search products and review current stock levels.',
       'Record stock in, stock out, and batch stock adjustments.',
@@ -144,7 +151,6 @@ const roleHelpAccess = {
   [ROLE_VALUES.SALES_INVENTORY_STAFF]: {
     title: 'Sales Encoder + Inventory Staff Guide',
     description: 'Combined guide for staff who record sales and also help with inventory, supplier receiving, and inventory reports when coverage is needed.',
-    modules: ['Dashboard', 'Search Products', 'Inventory', 'Archive', 'Reports', 'Sales', 'Purchases', 'Alerts', 'Help'],
     tasks: [
       'Search products and check available stock.',
       'Record customer sales using the official Sales Invoice number.',
@@ -157,6 +163,36 @@ const roleHelpAccess = {
 
 // FAQ entries are role-scoped because some answers expose admin-only workflows.
 const faqs = [
+  {
+    id: 'branch-performance-comparison',
+    roles: HELP_ROLES.SUPER_ADMIN,
+    question: 'Where can I compare branch performance?',
+    answer: 'On Dashboard, choose Date Range and review Branch Performance Summary. Select View Branch Comparison to open Reports with the same period. In Reports, choose Business Insights for all seven comparison metrics. Sales measures use the selected period; stock figures are current snapshots. Margin differences use percentage points. The comparison updates after local changes and checks for updates every 30 seconds.',
+  },
+  {
+    id: 'supplier-categories',
+    roles: HELP_ROLES.INVENTORY,
+    question: 'How do Supplier Categories filter suppliers?',
+    answer: 'In Purchases, select one or more Supplier Categories above Supplier. A supplier matches when its associated products belong to any selected category. No selection shows all available suppliers. Search categories or suppliers, remove a selection, or use Clear selection. The category filter in Find Items is separate. Other supplier / not listed stays available.',
+  },
+  {
+    id: 'supplier-category-conflict',
+    roles: HELP_ROLES.INVENTORY,
+    question: 'Why does my selected supplier no longer match?',
+    answer: 'Changing Supplier Categories can exclude the selected supplier. The form keeps the supplier and purchase details and shows a warning. Choose a matching supplier or use Clear selection before saving. The form does not silently replace your supplier.',
+  },
+  {
+    id: 'seller-customer-tin',
+    roles: HELP_ROLES.SALES,
+    question: 'Where are the seller and customer TINs shown?',
+    answer: 'Open Sales, select Sales History, expand a completed transaction, then select Receipt to download its PDF. The seller TIN appears directly below E.M. CAYETANO TRADING in the header. The TIN under SOLD TO is the customer TIN, entered through TIN, optional in Sales. Verify seller registration details against the business records before using them on actual invoices.',
+  },
+  {
+    id: 'purchase-preview-items',
+    roles: HELP_ROLES.INVENTORY,
+    question: 'Why can I not save an item marked (Demo)?',
+    answer: 'Items marked (Demo) in Find Items are preview-only catalog entries, not active inventory records. They cannot be saved as actual supplier deliveries. Choose an inventory item or ask an administrator to prepare the appropriate inventory record.',
+  },
   {
     id: 'login-2fa',
     roles: HELP_ROLES.ALL,
@@ -257,13 +293,13 @@ const faqs = [
     id: 'cancel-sale',
     roles: HELP_ROLES.ADMIN,
     question: 'Who can cancel a completed sale?',
-    answer: 'Only an Admin can cancel an entire completed sale. This protects official records and keeps the audit trail clear.',
+    answer: 'Super Admin and Admin accounts can cancel an entire completed sale. Staff roles use Refund Items for eligible customer returns instead of cancelling the entire sale.',
   },
   {
     id: 'add-inventory-item',
     roles: HELP_ROLES.ADMIN,
     question: 'How do I add a new inventory item?',
-    answer: 'Open Inventory, select Add New Item, enter item details, set the stock threshold, review for duplicates, then save.',
+    answer: 'Open Inventory, select Add Item, enter item details, set the stock threshold, review for duplicates, then save.',
   },
   {
     id: 'stock-records',
@@ -335,7 +371,7 @@ const faqs = [
     id: 'actual-earnings',
     roles: HELP_ROLES.ADMIN,
     question: 'Who can see Actual Earnings?',
-    answer: 'Actual Earnings is Admin-only because it includes sales, delivery charges, cost of goods sold, actual profit, and margin values used for business decisions.',
+    answer: 'Super Admin and Admin accounts can open Actual Earnings in Reports. It includes sales, delivery charges, recorded cost of goods sold, Actual Profit, and profit margin. Operating expenses are not deducted from Actual Profit.',
   },
   {
     id: 'delivery-charge-total',
@@ -347,31 +383,31 @@ const faqs = [
     id: 'archive-review',
     roles: HELP_ROLES.INVENTORY,
     question: 'Can I review archived items?',
-    answer: 'Admin and Inventory Staff can review archived items. Restoring an archived item is Admin-only.',
+    answer: 'Super Admin, Admin, Inventory Staff, and combined staff can review Archive. The Restore control is shown to the Admin role.',
   },
   {
     id: 'restore-archive',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.BRANCH_ADMIN,
     question: 'How do I restore an archived item?',
     answer: 'Open Archive, find the item, review its details, then select Restore. The item returns to the active inventory list.',
   },
   {
     id: 'maintenance-purpose',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     question: 'What are the Maintenance tools for?',
-    answer: 'Maintenance tools help an Admin protect records, make safe copies, check for possible data issues, and keep the system running smoothly. They are for system care, not for daily selling or receiving work.',
+    answer: 'Maintenance is available only to Super Admin. It groups Create Backup, Restore Database, Clear System Logs, Optimize Database, and Check Data Integrity controls. Review each operation and its confirmation before proceeding.',
   },
   {
     id: 'system-optimization-scope',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     question: 'What is System Optimization for?',
-    answer: 'Its purpose is to keep saved records easier for the system to read and to help Admin users spot possible record issues. Optimize Database helps both branches load records smoothly, Clear Logs removes old non-critical system notes, and Check Data Integrity reviews Manggahan and San Rafael together.',
+    answer: 'System Optimization groups Super Admin controls for Optimize Database, Clear System Logs, and Check Data Integrity. Check Data Integrity reviews both branches for possible record issues; review the result before deciding what action is appropriate.',
   },
   {
     id: 'maintenance-record-safety',
-    roles: HELP_ROLES.ADMIN,
-    question: 'Will Clear Logs, Optimize Database, or Check Data Integrity delete business records?',
-    answer: 'No. Clear Logs removes only eligible old non-critical system notes. Optimize Database refreshes table information only. Check Data Integrity is read-only and reports issues without repairing, deleting, or overwriting records.',
+    roles: HELP_ROLES.SUPER_ADMIN,
+    question: 'Will Clear System Logs, Optimize Database, or Check Data Integrity delete business records?',
+    answer: 'No. Clear System Logs removes only eligible old non-critical system notes. Optimize Database refreshes table information only. Check Data Integrity is read-only and reports issues without repairing, deleting, or overwriting records.',
   },
   {
     id: 'restore-other-browser',
@@ -381,7 +417,7 @@ const faqs = [
   },
   {
     id: 'backup-restore',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     question: 'What should I remember before restoring a database backup?',
     answer: 'Use only a complete SQL backup generated by this system. Confirm the file before restoring because restore replaces current application records with the selected backup contents.',
   },
@@ -389,7 +425,7 @@ const faqs = [
     id: 'manage-users',
     roles: HELP_ROLES.ADMIN,
     question: 'Who can manage user accounts?',
-    answer: 'Only an Admin can create accounts, assign roles, transfer branches, deactivate users, and update access. When coverage is needed, an Admin can assign the combined Sales Encoder + Inventory Staff role.',
+    answer: 'Admin manages staff accounts in the assigned branch and can select the Sales Encoder, Inventory Staff, or combined role. Super Admin has access to both administrative and staff role assignments and branch transfers.',
   },
 ];
 
@@ -398,6 +434,49 @@ const GUIDE_CARD_PREVIEW_LIMIT = 9;
 
 // Step-by-step guides document the daily workflows each role can perform.
 const guides = [
+  {
+    id: 'branch-comparison-guide',
+    roles: HELP_ROLES.SUPER_ADMIN,
+    title: 'Comparing Branch Performance',
+    summary: 'Compare both branches using the same reporting period.',
+    steps: [
+      'Open Dashboard and choose Date Range.',
+      'Review Sales and Actual Profit for Manggahan and San Rafael in Branch Performance Summary.',
+      'Use Hide sensitive metrics in Quick Summary when financial figures should not be displayed.',
+      'Select View Branch Comparison to open Reports with the same period.',
+      'In Business Insights, review Sales, Actual Profit, Profit Margin, Completed Transactions, Units Sold, Out-of-Stock Items, and Items Requiring Replenishment.',
+      'Read margin differences as percentage points; stock figures are current snapshots, not historical stock counts.',
+      'Use Refresh to request an update or Export PDF after a successful refresh.',
+    ],
+  },
+  {
+    id: 'supplier-category-guide',
+    roles: HELP_ROLES.INVENTORY,
+    title: 'Finding Suppliers by Category',
+    summary: 'Find relevant suppliers before selecting purchase items.',
+    steps: [
+      'Open Purchases and expand Supplier Categories.',
+      'Search categories and check one or more options. Suppliers match any selected category.',
+      'Review the matching supplier count, then open Supplier and search names if needed.',
+      'Check the category labels beneath each supplier name before selecting it.',
+      'Choose associated inventory products in Find Items; its category filter is independent.',
+      'If the supplier no longer matches after a filter change, choose another supplier or use Clear selection. Your purchase details are kept.',
+      'Use Other supplier / not listed when the supplier is not in the list. Review item associations and all transaction details before saving.',
+    ],
+  },
+  {
+    id: 'receipt-tin-guide',
+    roles: HELP_ROLES.SALES,
+    title: 'Finding TIN Details on a Receipt',
+    summary: 'Distinguish the seller header from the customer details.',
+    steps: [
+      'Open Sales and select Sales History.',
+      'Expand a completed transaction and select Receipt.',
+      'Open the downloaded PDF and look below E.M. CAYETANO TRADING for the seller TIN.',
+      'The separate TIN field under SOLD TO belongs to the customer.',
+      'To provide customer TIN details for a sale, use TIN, optional in the Sales form.',
+    ],
+  },
   {
     id: 'daily-start',
     roles: HELP_ROLES.ALL,
@@ -599,7 +678,7 @@ const guides = [
   },
   {
     id: 'restore-archive',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.BRANCH_ADMIN,
     title: 'Restoring Archived Items',
     summary: 'Return an inactive item to active inventory.',
     steps: [
@@ -619,19 +698,19 @@ const guides = [
       'Open User Management.',
       'Review active, pending, or inactive users.',
       'Create or update accounts only for authorized staff.',
-      'Assign the correct role and branch.',
+      'Choose an allowed role; ask the Super Admin when a branch transfer is required.',
       'Deactivate users who should no longer access the system.',
     ],
   },
   {
     id: 'maintenance',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Using Maintenance Tools',
-    summary: 'Run admin-only system checks and data safety tools.',
+    summary: 'Review Super Admin system checks and data safety controls.',
     steps: [
       'Open Maintenance.',
       'Use Backup when a safe copy of system records is needed.',
-      'Use Clear Logs to remove only eligible old non-critical system notes.',
+      'Use Clear System Logs to remove only eligible old non-critical system notes.',
       'Use Optimize Database to refresh application table information for both branches.',
       'Use Check Data Integrity to scan Manggahan and San Rafael for possible record issues.',
       'Read the confirmation message, run only the action needed, and check the result after completion.',
@@ -639,7 +718,7 @@ const guides = [
   },
   {
     id: 'backup-restore-guide',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Backup and Restore',
     summary: 'Protect business records through controlled maintenance actions.',
     steps: [
@@ -667,9 +746,9 @@ const guidelines = [
   { id: 'record-conflict', roles: HELP_ROLES.INVENTORY, text: 'If an item was changed by another user, reload the latest details before saving.' },
   { id: 'approval-review', roles: HELP_ROLES.ADMIN, text: 'Review inventory approval requests carefully before approving or rejecting them.' },
   { id: 'duplicate-items', roles: HELP_ROLES.ADMIN, text: 'Check active and archived records before creating a new inventory item.' },
-  { id: 'backup-file', roles: HELP_ROLES.ADMIN, text: 'Use only complete system-generated SQL backup files when restoring the database.' },
-  { id: 'maintenance-scope', roles: HELP_ROLES.ADMIN, text: 'Use System Optimization to keep saved records easy to load, remove old non-critical system notes, and check both branches for possible record issues.' },
-  { id: 'maintenance-readonly', roles: HELP_ROLES.ADMIN, text: 'Use Data Integrity Check to review possible issues; it reports findings but does not automatically change records.' },
+  { id: 'backup-file', roles: HELP_ROLES.SUPER_ADMIN, text: 'Use only complete system-generated SQL backup files when restoring the database.' },
+  { id: 'maintenance-scope', roles: HELP_ROLES.SUPER_ADMIN, text: 'Use System Optimization to keep saved records easy to load, remove old non-critical system notes, and check both branches for possible record issues.' },
+  { id: 'maintenance-readonly', roles: HELP_ROLES.SUPER_ADMIN, text: 'Use Data Integrity Check to review possible issues; it reports findings but does not automatically change records.' },
   { id: 'user-access', roles: HELP_ROLES.ADMIN, text: 'Give each staff member only the role and branch access needed for their work.' },
   { id: 'audit-review', roles: HELP_ROLES.ADMIN, text: 'Review audit trail records after sensitive actions such as user updates, cancellations, and maintenance tasks.' },
 ];
@@ -754,9 +833,9 @@ const troubleshooting = [
   },
   {
     id: 'restore-not-available',
-    roles: [ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF],
+    roles: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF],
     title: 'Restore button is not available in Archive',
-    cause: 'Inventory Staff can review archived items, but restoring items is Admin-only.',
+    cause: 'The Restore control in Archive is available to the Admin role.',
     solution: 'Ask an Admin to review and restore the item if it should return to active inventory.',
   },
   {
@@ -768,21 +847,21 @@ const troubleshooting = [
   },
   {
     id: 'restore-failed',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Database restore failed',
     cause: 'The selected SQL file may be incomplete, from another system, or not compatible with the current application schema.',
     solution: 'Use a complete backup generated by this system and confirm the file before restoring again.',
   },
   {
     id: 'maintenance-access',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Maintenance tool did not complete',
     cause: 'The action may need valid confirmation, active connection, or correct system state.',
     solution: 'Review the message shown by the system, run only the required tool, then check the audit trail.',
   },
   {
     id: 'integrity-issues-found',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Data Integrity Check found issues',
     cause: 'The system found records that may need review, such as missing links, invalid saved details, or records that do not match expected rules.',
     solution: 'Read the issue summary, review the affected records carefully, and correct only the records that are confirmed to be wrong. The check itself does not change records.',
@@ -790,7 +869,7 @@ const troubleshooting = [
 ];
 
 const manualIntroduction = {
-  purpose: 'This manual explains how to use the StoreSync retail inventory systemt System during daily store operations. It is written for non-technical users and focuses on the actions available to the signed-in role.',
+  purpose: 'This manual explains how to use the StoreSync retail inventory system during daily store operations. It is written for non-technical users and focuses on the actions available to the signed-in role.',
   overview: [
     'Monitor branch inventory and stock status.',
     'Search products and review item details.',
@@ -960,14 +1039,14 @@ const manualWorkflows = [
     steps: [
       'Open User Management.',
       'Create or select the user account.',
-      'Assign the correct role and branch.',
+      'Choose an allowed role; ask the Super Admin when a branch transfer is required.',
       'Review the change before saving.',
       'Check the account status and audit trail when needed.',
     ],
   },
   {
     id: 'backup-restore-workflow',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'Backup and Restore Workflow',
     steps: [
       'Open Maintenance.',
@@ -979,11 +1058,11 @@ const manualWorkflows = [
   },
   {
     id: 'system-optimization-workflow',
-    roles: HELP_ROLES.ADMIN,
+    roles: HELP_ROLES.SUPER_ADMIN,
     title: 'System Optimization Workflow',
     steps: [
       'Open Maintenance.',
-      'Choose Clear Logs, Optimize Database, or Check Data Integrity based on the result you need.',
+      'Choose Clear System Logs, Optimize Database, or Check Data Integrity based on the result you need.',
       'Read the confirmation message before continuing.',
       'Wait for the success or issue summary message.',
       'Review the audit trail when the action needs follow-up.',
@@ -1008,7 +1087,7 @@ const dataEntryRules = [
   { id: 'staff-item-requests', roles: [ROLE_VALUES.INVENTORY_STAFF, ROLE_VALUES.SALES_INVENTORY_STAFF], text: 'Submit add item or edit item requests only after checking active and archived records.' },
   { id: 'approval-values', roles: HELP_ROLES.ADMIN, text: 'Review previous and new values before approving inventory item requests.' },
   { id: 'product-names', roles: HELP_ROLES.ADMIN, text: 'Use specific product names and avoid duplicate item records.' },
-  { id: 'admin-sensitive', roles: HELP_ROLES.ADMIN, text: 'Review confirmation messages before saving user, maintenance, cancellation, restore, or backup-related actions.' },
+  { id: 'admin-sensitive', roles: HELP_ROLES.ADMIN, text: 'Review confirmation messages before saving account, sale cancellation, or inventory changes.' },
 ];
 
 const securityReminders = [
@@ -1017,8 +1096,8 @@ const securityReminders = [
   { id: 'email-security', roles: HELP_ROLES.ALL, text: 'Keep your email secure because password reset and verification messages may be sent there.' },
   { id: 'report-issue', roles: HELP_ROLES.ALL, text: 'Report suspicious account activity or incorrect access to an Admin.' },
   { id: 'role-control', roles: HELP_ROLES.ADMIN, text: 'Assign the lowest role needed for each staff member to protect business records.' },
-  { id: 'maintenance-care', roles: HELP_ROLES.ADMIN, text: 'Use maintenance and backup tools only when needed and after reading the confirmation message.' },
-  { id: 'restore-care', roles: HELP_ROLES.ADMIN, text: 'Run database restore only when the selected backup should replace the current system records.' },
+  { id: 'maintenance-care', roles: HELP_ROLES.SUPER_ADMIN, text: 'Use maintenance and backup tools only when needed and after reading the confirmation message.' },
+  { id: 'restore-care', roles: HELP_ROLES.SUPER_ADMIN, text: 'Run database restore only when the selected backup should replace the current system records.' },
 ];
 
 const glossaryTerms = [
@@ -1029,10 +1108,10 @@ const glossaryTerms = [
   { term: 'Approval Request', roles: HELP_ROLES.INVENTORY, definition: 'An add item or edit item request prepared for Admin review before it becomes an official inventory change.' },
   { term: 'Audit Trail', roles: HELP_ROLES.ADMIN, definition: 'A record of important user actions, used for accountability and review.' },
   { term: 'Backdated Transaction', roles: HELP_ROLES.SALES, definition: 'A transaction encoded today but dated earlier based on the actual business document date.' },
-  { term: 'Backup', roles: HELP_ROLES.ADMIN, definition: 'A secure SQL copy of system records that can be used for recovery when needed.' },
+  { term: 'Backup', roles: HELP_ROLES.SUPER_ADMIN, definition: 'A secure SQL copy of system records that can be used for recovery when needed.' },
   { term: 'Bank Transfer Pending', roles: HELP_ROLES.SALES, definition: 'A bank transfer sale waiting for payment verification. Its stock is reserved but not yet deducted.' },
-  { term: 'Check Data Integrity', roles: HELP_ROLES.ADMIN, definition: 'A read-only maintenance check that scans both branches for possible record relationship issues.' },
-  { term: 'Clear System Logs', roles: HELP_ROLES.ADMIN, definition: 'A maintenance action that removes eligible old non-critical system notes while keeping business records, security logs, and audit trail records.' },
+  { term: 'Check Data Integrity', roles: HELP_ROLES.SUPER_ADMIN, definition: 'A read-only maintenance check that scans both branches for possible record relationship issues.' },
+  { term: 'Clear System Logs', roles: HELP_ROLES.SUPER_ADMIN, definition: 'A maintenance action that removes eligible old non-critical system notes while keeping business records, security logs, and audit trail records.' },
   { term: 'Low Stock', roles: HELP_ROLES.ALL, definition: 'An item quantity has reached or fallen below its set threshold.' },
   { term: 'Batch Stock Adjustment', roles: HELP_ROLES.INVENTORY, definition: 'A stock update applied to multiple inventory items in one controlled action.' },
   { term: 'Branch', roles: HELP_ROLES.ALL, definition: 'The store location where records and transactions are assigned.' },
@@ -1040,7 +1119,7 @@ const glossaryTerms = [
   { term: 'Category', roles: HELP_ROLES.ALL, definition: 'A product grouping such as roofing, paint, electrical, steel, or plumbing used for searching and reports.' },
   { term: 'Conflict Notice', roles: HELP_ROLES.INVENTORY, definition: 'A message shown when another user changed the same inventory record before the current form was saved.' },
   { term: 'Cost of Goods Sold', roles: HELP_ROLES.ADMIN, definition: 'The saved item cost multiplied by the sold quantity.' },
-  { term: 'Daily Quota', roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_ENCODER], definition: 'The sales target used to compare today\'s sales against the branch goal.' },
+  { term: 'Daily Quota', roles: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_ENCODER], definition: 'The sales target used to compare today\'s sales against the branch goal.' },
   { term: 'Delivery Charge', roles: HELP_ROLES.SALES, definition: 'An added amount charged to the customer when delivery is part of the sale.' },
   { term: 'Discount', roles: HELP_ROLES.SALES, definition: 'An amount deducted from the sale total before payment is completed.' },
   { term: 'Document Number', roles: HELP_ROLES.INVENTORY, definition: 'The supplier document reference used when recording purchases or deliveries.' },
@@ -1050,7 +1129,7 @@ const glossaryTerms = [
   { term: 'Manual Low-Stock Threshold', roles: HELP_ROLES.INVENTORY, definition: 'The item-specific quantity level that triggers a low-stock warning.' },
   { term: 'Non-Inventory Item', roles: HELP_ROLES.SALES, definition: 'An item sold during a transaction but not yet tracked as a regular inventory item.' },
   { term: 'Out of Stock', roles: HELP_ROLES.ALL, definition: 'An item has zero available quantity.' },
-  { term: 'Optimize Database', roles: HELP_ROLES.ADMIN, definition: 'A maintenance action that refreshes application table information so the system can read records efficiently. It does not change saved business records.' },
+  { term: 'Optimize Database', roles: HELP_ROLES.SUPER_ADMIN, definition: 'A maintenance action that refreshes application table information so the system can read records efficiently. It does not change saved business records.' },
   { term: 'Payment Method', roles: HELP_ROLES.SALES, definition: 'The way a customer pays, such as cash, GCash, bank transfer, or another accepted option.' },
   { term: 'Payment Due Date', roles: HELP_ROLES.INVENTORY, definition: 'The date when a credit purchase should be paid based on the supplier payment term.' },
   { term: 'Profit Margin', roles: HELP_ROLES.ADMIN, definition: 'The percentage that compares Actual Profit against Sales for the selected records.' },
@@ -1059,9 +1138,9 @@ const glossaryTerms = [
   { term: 'Refund Transaction', roles: HELP_ROLES.SALES, definition: 'The separate record created when a refund is saved for a completed sale.' },
   { term: 'Report Period', roles: HELP_ROLES.INVENTORY, definition: 'The selected date range used when generating reports.' },
   { term: 'Returned Item Condition', roles: HELP_ROLES.SALES, definition: 'The condition selected during refund processing. Only resalable or unused items can return to sellable stock.' },
-  { term: 'Restore', roles: HELP_ROLES.ADMIN, definition: 'Returning an archived item back to the active inventory list.' },
-  { term: 'Restore Database', roles: HELP_ROLES.ADMIN, definition: 'A maintenance action that replaces current application records with records from a selected system backup file.' },
-  { term: 'Sales-Based Stock Movement', roles: [ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_INVENTORY_STAFF], definition: 'A report that connects completed sales to the stock deductions created by those sales.' },
+  { term: 'Restore', roles: HELP_ROLES.BRANCH_ADMIN, definition: 'Returning an archived item back to the active inventory list.' },
+  { term: 'Restore Database', roles: HELP_ROLES.SUPER_ADMIN, definition: 'A maintenance action that replaces current application records with records from a selected system backup file.' },
+  { term: 'Sales-Based Stock Movement', roles: [ROLE_VALUES.SUPER_ADMIN, ROLE_VALUES.ADMIN, ROLE_VALUES.SALES_INVENTORY_STAFF], definition: 'A report that connects completed sales to the stock deductions created by those sales.' },
   { term: 'Sales Invoice Number', roles: HELP_ROLES.SALES, definition: 'The official number printed on the store Sales Invoice booklet.' },
   { term: 'Sales Invoice Sequence Warning', roles: HELP_ROLES.SALES, definition: 'A warning shown when the entered SI number skips expected booklet numbers.' },
   { term: 'Stock In', roles: HELP_ROLES.INVENTORY, definition: 'Adding quantity to inventory, usually from delivery, sister company transfer, or correction.' },
@@ -1071,10 +1150,10 @@ const glossaryTerms = [
   { term: 'Supplier Reorder Report', roles: HELP_ROLES.INVENTORY, definition: 'A report that helps identify items that may need restocking from suppliers.' },
   { term: 'TIN', roles: HELP_ROLES.SALES, definition: 'The Tax Identification Number entered for customers who need invoice details.' },
   { term: 'Untracked Sales Item', roles: HELP_ROLES.INVENTORY, definition: 'A sold manual item that may need review before becoming a regular inventory record.' },
-  { term: 'User Role', roles: HELP_ROLES.ALL, definition: 'The access level assigned to a user, such as Admin, Sales Encoder, Inventory Staff, or combined Sales Encoder + Inventory Staff access.' },
+  { term: 'User Role', roles: HELP_ROLES.ALL, definition: 'The access level assigned to a user: Super Admin, Admin, Sales Encoder, Inventory Staff, or Sales Encoder + Inventory Staff.' },
 ];
 
-const roleFallback = roleHelpAccess[ROLE_VALUES.INVENTORY_STAFF];
+const roleFallback = { title: 'User Guide', description: 'Guidance for the modules available to your account.', tasks: ['Use the modules available to your role and ask an administrator about account access.'] };
 
 /**
  * Checks whether a help item should be visible for a role.
@@ -1781,9 +1860,17 @@ export function HelpModule({ user }) {
   const [openGuide, setOpenGuide] = useState(null);
   const [openTrouble, setOpenTrouble] = useState(null);
   const [fullView, setFullView] = useState(null);
-  const normalizedRole = normalizeRole(user?.role) || ROLE_VALUES.INVENTORY_STAFF;
+  const fullViewTriggerRef = useRef(null);
+  const openFullView = (view, event) => {
+    fullViewTriggerRef.current = event.currentTarget;
+    setFullView(view);
+  };
+  const normalizedRole = normalizeRole(user?.role);
   const roleLabel = getRoleLabel(normalizedRole);
-  const roleAccess = roleHelpAccess[normalizedRole] || roleFallback;
+  const roleAccess = {
+    ...(roleHelpAccess[normalizedRole] || roleFallback),
+    modules: helpModules.filter(([screen]) => canAccessScreen(normalizedRole, screen)).map(([, label]) => label),
+  };
   const isAdmin = isAdministrativeRole(normalizedRole);
   const normalizedQuery = query.trim().toLowerCase();
 
@@ -1988,7 +2075,7 @@ export function HelpModule({ user }) {
         .help-role-content h2 {
           margin-top: 8px;
           color: #0f172a;
-          font-size: 22px;
+          font-size: 18px;
           font-weight: 850;
           line-height: 1.18;
         }
@@ -2050,6 +2137,11 @@ export function HelpModule({ user }) {
 
         .help-main-grid {
           grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .help-grid.help-grid-single,
+        .help-main-grid.help-main-grid-single {
+          grid-template-columns: minmax(0, 1fr);
         }
 
         .help-guidelines-row {
@@ -2449,18 +2541,11 @@ export function HelpModule({ user }) {
         }
 
         /* Full-view modal shows complete role-filtered content without leaving Help. */
-        .help-fullview-backdrop {
-          position: fixed;
-          inset: 0;
-          z-index: 60;
-          display: grid;
-          place-items: center;
-          background: rgba(15, 23, 42, 0.58);
-          padding: 22px;
-        }
-
-        .help-fullview-panel {
-          width: min(940px, 100%);
+        .help-fullview-panel[data-slot="dialog-content"] {
+          display: block;
+          padding: 0;
+          width: min(940px, calc(100vw - 32px));
+          max-width: calc(100vw - 32px);
           max-height: min(760px, calc(100vh - 44px));
           overflow: auto;
           border-radius: 16px;
@@ -2483,7 +2568,7 @@ export function HelpModule({ user }) {
 
         .help-fullview-header h2 {
           color: #0f172a;
-          font-size: 22px;
+          font-size: 18px;
           font-weight: 850;
           line-height: 1.2;
         }
@@ -2549,7 +2634,7 @@ export function HelpModule({ user }) {
           }
 
           .help-role-content h2 {
-            font-size: 19px;
+            font-size: 18px;
           }
 
           .help-manual-button {
@@ -2578,10 +2663,6 @@ export function HelpModule({ user }) {
 
           .help-guidelines {
             grid-template-columns: 1fr;
-          }
-
-          .help-fullview-backdrop {
-            padding: 12px;
           }
 
           .help-fullview-header,
@@ -2636,7 +2717,7 @@ export function HelpModule({ user }) {
           </div>
 
           <Select value={topic} onValueChange={setTopic}>
-            <SelectTrigger className="help-topic-trigger">
+            <SelectTrigger className="help-topic-trigger" aria-label="Filter help topics">
               <SelectValue placeholder="All Topics" />
             </SelectTrigger>
             <SelectContent>
@@ -2677,12 +2758,13 @@ export function HelpModule({ user }) {
       {!hasAnyResults && (
         <div className="mt-5">
           <EmptyCard />
+          <Button type="button" variant="outline" className="mt-3" onClick={clearSearch}>Clear filters</Button>
         </div>
       )}
 
       {showTopHelpGrid && (
-        <div className="help-grid">
-          <div className="help-main-grid">
+        <div className={`help-grid ${!(showFaqs || showGuides) || !(showTroubleshooting || showContact) ? 'help-grid-single' : ''}`}>
+          {(showFaqs || showGuides) && <div className={`help-main-grid ${!(showFaqs && showGuides) ? 'help-main-grid-single' : ''}`}>
             {showFaqs && (
               <Card className="help-card">
                 <CardContent className="help-card-content">
@@ -2690,18 +2772,18 @@ export function HelpModule({ user }) {
                     icon={<CircleHelp className="h-5 w-5" />}
                     title="Frequently Asked Questions"
                     subtitle="Quick answers based on your role."
-                    onShowAll={() => setFullView('faqs')}
+                    onShowAll={event => openFullView('faqs', event)}
                   />
                   <div className="help-list">
                     {visibleFaqs.slice(0, FAQ_CARD_PREVIEW_LIMIT).map(item => {
                       const isOpen = openFaq === item.id;
                       return (
                         <div key={item.id}>
-                          <button type="button" className="help-row" onClick={() => setOpenFaq(isOpen ? null : item.id)}>
+                          <button type="button" className="help-row" aria-expanded={isOpen} aria-controls={`help-faq-${item.id}`} onClick={() => setOpenFaq(isOpen ? null : item.id)}>
                             <span className="help-row-title">{item.question}</span>
                             <ChevronDown className={`help-chevron ${isOpen ? 'help-chevron-open' : ''}`} />
                           </button>
-                          {isOpen && <div className="help-answer">{item.answer}</div>}
+                          {isOpen && <div id={`help-faq-${item.id}`} className="help-answer">{item.answer}</div>}
                         </div>
                       );
                     })}
@@ -2717,14 +2799,14 @@ export function HelpModule({ user }) {
                     icon={<BookOpen className="h-5 w-5" />}
                     title="Step-by-Step Guides"
                     subtitle="Clear task steps you are allowed to perform."
-                    onShowAll={() => setFullView('guides')}
+                    onShowAll={event => openFullView('guides', event)}
                   />
                   <div className="help-list">
                     {visibleGuides.slice(0, GUIDE_CARD_PREVIEW_LIMIT).map(item => {
                       const isOpen = openGuide === item.id;
                       return (
                         <div key={item.id}>
-                          <button type="button" className="help-guide-row" onClick={() => setOpenGuide(isOpen ? null : item.id)}>
+                          <button type="button" className="help-guide-row" aria-expanded={isOpen} aria-controls={`help-guide-${item.id}`} onClick={() => setOpenGuide(isOpen ? null : item.id)}>
                             <span className="help-guide-icon">
                               {item.id === 'managing-users' ? <UserCog className="h-5 w-5" /> : <FileText className="h-5 w-5" />}
                             </span>
@@ -2735,7 +2817,7 @@ export function HelpModule({ user }) {
                             <ChevronDown className={`help-chevron ${isOpen ? 'help-chevron-open' : ''}`} />
                           </button>
                           {isOpen && (
-                            <div className="help-guide-panel">
+                            <div id={`help-guide-${item.id}`} className="help-guide-panel">
                               <h3>{item.title}</h3>
                               <div className="help-guide-steps">
                                 {item.steps.map((step, index) => (
@@ -2754,9 +2836,9 @@ export function HelpModule({ user }) {
                 </CardContent>
               </Card>
             )}
-          </div>
+          </div>}
 
-          <div className="help-side-grid">
+          {(showTroubleshooting || showContact) && <div className="help-side-grid">
             {showTroubleshooting && (
               <Card className="help-card">
                 <CardContent className="help-card-content">
@@ -2765,20 +2847,20 @@ export function HelpModule({ user }) {
                     tone="amber"
                     title="Troubleshooting"
                     subtitle="Common issues and what to do next."
-                    onShowAll={() => setFullView('troubleshooting')}
+                    onShowAll={event => openFullView('troubleshooting', event)}
                   />
                   <div className="help-list">
                     {visibleTroubleshooting.slice(0, 7).map(item => {
                       const isOpen = openTrouble === item.id;
                       return (
                         <div key={item.id}>
-                          <button type="button" className="help-trouble-row" onClick={() => setOpenTrouble(isOpen ? null : item.id)}>
+                          <button type="button" className="help-trouble-row" aria-expanded={isOpen} aria-controls={`help-trouble-${item.id}`} onClick={() => setOpenTrouble(isOpen ? null : item.id)}>
                             <AlertTriangle className="h-4 w-4 text-orange-500" />
                             <span className="help-row-title">{item.title}</span>
                             <ChevronDown className={`help-chevron ${isOpen ? 'help-chevron-open' : ''}`} />
                           </button>
                           {isOpen && (
-                            <div className="help-trouble-panel">
+                            <div id={`help-trouble-${item.id}`} className="help-trouble-panel">
                               <p><strong>Possible Cause:</strong> {item.cause}</p>
                               <p className="mt-2"><strong>What to do:</strong> {item.solution}</p>
                             </div>
@@ -2799,13 +2881,13 @@ export function HelpModule({ user }) {
                     tone="purple"
                     title="Contact Support"
                     subtitle="Official support information for StoreSync."
-                    onShowAll={() => setFullView('contact')}
+                    onShowAll={event => openFullView('contact', event)}
                   />
                   <SupportContactList />
                 </CardContent>
               </Card>
             )}
-          </div>
+          </div>}
         </div>
       )}
 
@@ -2818,7 +2900,7 @@ export function HelpModule({ user }) {
                 tone="green"
                 title="System Guidelines"
                 subtitle="Simple rules for clean and accurate records."
-                onShowAll={() => setFullView('guidelines')}
+                onShowAll={event => openFullView('guidelines', event)}
               />
               <div className="help-guidelines">
                 {visibleGuidelines.map(item => (
@@ -2833,13 +2915,12 @@ export function HelpModule({ user }) {
         </div>
       )}
 
-      {fullView && (
-        <div className="help-fullview-backdrop" role="dialog" aria-modal="true" aria-label={fullViewTitle}>
-          <div className="help-fullview-panel">
+      <Dialog open={Boolean(fullView)} onOpenChange={open => { if (!open) setFullView(null); }}>
+          <DialogContent className="help-fullview-panel" onCloseAutoFocus={event => { event.preventDefault(); fullViewTriggerRef.current?.focus(); }}>
             <div className="help-fullview-header">
               <div>
-                <h2>{fullViewTitle}</h2>
-                <p>{isAdmin ? 'Complete role-based guidance for your account.' : 'Only topics available to your role are shown here.'}</p>
+                <DialogTitle>{fullViewTitle}</DialogTitle>
+                <DialogDescription>{isAdmin ? 'Complete role-based guidance for your account.' : 'Only topics available to your role are shown here.'}</DialogDescription>
               </div>
               <Button type="button" variant="outline" onClick={() => setFullView(null)}>
                 Close
@@ -2887,9 +2968,8 @@ export function HelpModule({ user }) {
 
               {fullView === 'contact' && <SupportContactList showAction />}
             </div>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+      </Dialog>
     </div>
   );
 }
