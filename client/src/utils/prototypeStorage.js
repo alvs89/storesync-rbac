@@ -14,7 +14,7 @@ const seedData = () => ({
     id: 'demo-admin',
     username: 'admin',
     password: 'admin123',
-    full_name: 'Prototype Super Admin',
+    full_name: 'Super Admin',
     email: 'admin@storesync.local',
     role: 'Super Admin',
     branch: 'Manggahan',
@@ -117,7 +117,7 @@ const seedData = () => ({
     {
       id: 'audit-demo-3',
       actor_id: 'demo-admin',
-      actor_name: 'Prototype Super Admin',
+      actor_name: 'Super Admin',
       target_name: 'Branch Administrator',
       target_type: 'user_account',
       action: 'LOGIN_SUCCESS',
@@ -161,10 +161,11 @@ const readData = () => {
       const existingAdmin = stored.users.find(user => user.username === 'admin');
       if (existingAdmin && existingAdmin.role === 'Admin') {
         existingAdmin.role = 'Super Admin';
-        existingAdmin.full_name = existingAdmin.full_name || 'Prototype Super Admin';
+        existingAdmin.full_name = existingAdmin.full_name || 'Super Admin';
       }
 
       stored.users.forEach(user => {
+        if (user.full_name === 'Prototype Super Admin') user.full_name = 'Super Admin';
         user.branch = normalizeBranch(user.branch);
         if (String(user.status).toLowerCase() === 'active') user.status = 'Active';
         if (String(user.status).toLowerCase() === 'inactive') user.status = 'Inactive';
@@ -496,6 +497,15 @@ const adapter = async config => {
 
 export const enablePrototypeStorage = () => {
   readData();
+  // Refresh the old seeded display name without replacing customized names or
+  // resetting the signed-in account, permissions, or saved application records.
+  try {
+    const savedUser = JSON.parse(localStorage.getItem('user') || 'null');
+    if (savedUser?.full_name === 'Prototype Super Admin') {
+      savedUser.full_name = 'Super Admin';
+      localStorage.setItem('user', JSON.stringify(savedUser));
+    }
+  } catch { /* The normal authentication flow handles invalid session data. */ }
   axios.defaults.adapter = adapter;
   const nativeFetch = window.fetch.bind(window);
   window.fetch = async (input, init = {}) => {
