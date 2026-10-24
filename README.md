@@ -1,427 +1,217 @@
-# E.M. Cayetano Store Management System
+﻿# StoreSync
 
-A web-based inventory management system for E.M. Cayetano Trading. The system helps the store monitor branch inventory, manage stock-in and stock-out transactions, generate reports, track alerts, archive records, and administer user access.
+**Retail Inventory and Store Management System for E.M. Cayetano Trading**
 
-## Project Overview
+StoreSync is a web-based application for managing retail inventory and store operations across the Manggahan and San Rafael branches. It brings inventory monitoring, sales, supplier purchases, replenishment planning, reports, and administrative oversight into a role-based interface.
 
-This project is built for the inventory workflow of E.M. Cayetano Trading. It centralizes product records, branch stock levels, archived items, user accounts, alerts, reports, maintenance tools, audit logs, and stock movement history in one responsive web application.
+## Core Modules
 
-The current implementation focuses on:
+| Module | Capabilities |
+| --- | --- |
+| **Dashboard** | Role-specific summaries, operational alerts, recent activity, and a Super Admin branch performance summary linked to Reports. |
+| **Search Products** | Product lookup and availability checks within the user's branch scope. |
+| **Inventory** | Product records, stock levels, stock-in and stock-out transactions, item approval requests, and archiving. |
+| **Archive** | Archived inventory review, with the Restore control available to the Admin role. |
+| **Sales** | Sales entry, Sales Invoice numbers, payment details, customer information, refunds, administrative cancellation, and PDF receipts. |
+| **Purchases** | Supplier receiving, item quantities and costs, payment terms, transaction details, and supplier-category filtering. |
+| **Reports** | Inventory, replenishment, purchases, stock movements, actual earnings, business insights, and PDF exports, subject to role access. |
+| **Alerts** | Inventory warnings and operational reminders, including supplier payment reminders where applicable. |
+| **Maintenance** | Super Admin access to backup, restore, optimization, integrity checks, and system information. Database operations require the configured backend and PostgreSQL tools. |
+| **User Management** | Account review, activation status, and role administration; Super Admin manages system-wide access and branch transfers. |
+| **Audit Trail** | Review of recorded user actions for administrative accountability. |
+| **Help** | Role-specific FAQs, task guides, troubleshooting, support information, and downloadable PDF user manuals. |
 
-- Real-time inventory and alert updates
-- Branch-level stock status tracking
-- Historical stock movement records
-- Audit logging for important user actions
-- Mobile-responsive layouts across all major pages
-- Admin-controlled user management and maintenance actions
-- PDF report export
+### Supplier Discovery
 
-## Tech Stack
+The **Supplier Categories** multi-select in Purchases narrows the available suppliers using their associated product categories. Multiple selections use OR matching: a supplier qualifies when it offers products in at least one selected category.
 
-### Frontend
+The interface provides category and supplier search, matching supplier counts, category descriptions, and clear filter controls. **Other supplier / not listed** remains available. Supplier filtering is separate from the product category filter, and a conflicting selection requires user review rather than automatic replacement.
 
-- React 19
-- Vite
-- Tailwind CSS and custom responsive CSS
-- Radix UI components
-- Lucide React icons
-- Axios for API requests
-- jsPDF and jsPDF AutoTable for report export
+Supplier-category information comes from associated product records and the purchase catalog available to the interface. Catalog entries marked **(Demo)** are preview items and cannot be saved as actual inventory deliveries.
 
-### Backend (not required for the prototype)
+### Branch Performance Comparison
 
-- Node.js
-- Express.js
-- PostgreSQL database connection using `pg`
-- JWT authentication
-- Bcrypt password hashing
-- Nodemailer for email-based OTP and account notices
+Super Admin can compare both branches in **Reports > Business Insights** and access a compact summary from Dashboard. The comparison includes:
 
-### Database (not required for the prototype)
+- Sales
+- Actual Profit
+- Profit Margin
+- Completed Transactions
+- Units Sold
+- Out-of-Stock Items
+- Items Requiring Replenishment
 
-- PostgreSQL
-- Neon as an optional hosted PostgreSQL platform for development and deployment
+Sales metrics use completed sales for the selected period. Stock metrics represent the current inventory snapshot. Actual Profit uses recorded sale-time costs and excludes operating expenses. Margin differences are expressed in **percentage points**.
 
-## Main Modules
+The comparison checks for updates every 30 seconds and after supported local record changes. Business insights use predefined rules applied to recorded data; they are not AI-generated forecasts.
 
-- **Authentication**: Login, registration, forgot password, password reset, and two-factor verification.
-- **Dashboard**: Inventory summary, alerts overview, quick access modules, recent activity, and system guidelines.
-- **Search Products**: Product lookup with responsive result cards.
-- **Inventory Management**: Add items, update stock, stock-in, stock-out, archive items, sorting, filtering, and responsive mobile cards.
-- **Archive**: View and restore archived inventory records.
-- **Reports**: Summary, detailed inventory, low stock alert, category breakdown, and stock movement history reports with PDF export.
-- **Alerts**: Low-stock, out-of-stock, pending user, and system notifications with read/dismiss controls.
-- **Maintenance**: Backup, restore, optimization actions, data integrity checks, and system information.
-- **User Management**: Approve, deactivate, reactivate, change role, and change branch for users.
+## User Roles and Access
 
-## Project Structure
+All five roles can access **Dashboard**, **Search Products**, **Alerts**, and **Help**. Operational screens and actions depend on the assigned role and branch.
 
-```text
-em-cayetano-store-management-system/
-├── client/
-│   ├── src/
-│   │   ├── components/
-│   │   │   ├── ui/
-│   │   │   ├── Dashboard.jsx
-│   │   │   ├── InventoryModule.jsx
-│   │   │   ├── ReportsModule.jsx
-│   │   │   └── ...
-│   │   ├── styles/
-│   │   ├── utils/
-│   │   ├── App.jsx
-│   │   └── main.jsx
-│   ├── package.json
-│   └── vite.config.js
-├── server/
-│   ├── database.sql
-│   ├── index.js
-│   ├── package.json
-│   └── reset-admin.js
-├── documentation.txt
-└── README.md
-```
+| Role | Additional Access and Responsibilities |
+| --- | --- |
+| **Super Admin** | All modules, both branches, branch comparisons, Maintenance, system-wide user administration, and branch transfers. Individual actions remain subject to their module-specific controls. |
+| **Admin** | Branch-level Inventory, Archive, Reports, Sales, Purchases, User Management, and Audit Trail. Can review inventory requests, restore archived items, and administer staff accounts within the assigned branch. Maintenance is excluded. |
+| **Sales Encoder** | Inventory viewing and Sales, including sales entry and refunds. Inventory management and Reports are excluded. |
+| **Inventory Staff** | Inventory operations, item approval requests, Archive viewing, Purchases, and permitted inventory-related reports. Sales entry and archive restoration are excluded. |
+| **Sales Encoder + Inventory Staff** | Combined sales and inventory responsibilities, Purchases, Archive viewing, and permitted reports, including Sales-Based Stock Movement. Administrative and Maintenance access are excluded. |
 
-## Prerequisites
+The canonical permission definitions are maintained in [`client/src/utils/roles.js`](client/src/utils/roles.js). Help content and PDF manuals reflect these roles.
 
-Install these before running the project:
+## Running the Demonstration
 
-- Node.js 18 or newer
+### Requirements
+
+- Node.js compatible with the Vite 6 toolchain; Node.js 22 is a suitable baseline.
 - npm
 - Git
-- PostgreSQL database, preferably Neon
+- A modern web browser
 
-## Local Setup
+### Installation and Startup
 
-## Prototype-only mode
-
-The current demonstration build runs entirely in the browser. It does not
-require Node.js server startup, PostgreSQL, email, or a `.env` file. Data is
-seeded on first launch and all changes are persisted in the browser's
-`localStorage`.
-
-Run the frontend only:
-
-```powershell
-cd "C:\Users\Alvin Guillermo\em-cayetano-store-management-system\client"
-npm install
+```bash
+git clone https://github.com/alvs89/storesync-rbac.git
+cd storesync-rbac/client
+npm ci
 npm run dev
 ```
 
-Open the Vite URL, normally `http://localhost:5173`.
+Open the URL printed by Vite. The configured development port is **3000**, normally available at `http://localhost:3000`. If that port is occupied, use the address shown in the terminal.
 
-Prototype login:
+### Demonstration Accounts
 
-```text
-Username: admin
-Password: admin123
-Branch: Manggahan
-```
+These credentials belong to the browser-local demonstration dataset. They are not production credentials.
 
-The prototype includes clearly labeled demonstration records for both branches:
-inventory catalog items, sales, purchases, stock movements, replenishment
-requests, users, and audit activity. These records are stored only in the
-browser's `localStorage` and are not actual company records.
+| Username | Password | Role | Assigned Branch |
+| --- | --- | --- | --- |
+| `admin` | `admin123` | Super Admin | Manggahan; can switch active branch |
+| `branchadmin` | `admin123` | Admin | Manggahan |
+| `salesencoder` | `admin123` | Sales Encoder | Manggahan |
+| `inventorystaff` | `admin123` | Inventory Staff | San Rafael |
+| `branchstaff` | `admin123` | Sales Encoder + Inventory Staff | San Rafael |
 
-Additional demo accounts use `admin123`:
+### Data Persistence and Execution Model
 
-```text
-salesencoder / admin123       Sales Encoder, Manggahan
-inventorystaff / admin123     Inventory Staff, San Rafael
-branchstaff / admin123        Sales Encoder + Inventory Staff, San Rafael
-```
+The committed frontend entry point enables a browser-local data adapter through `enablePrototypeStorage()` in [`client/src/main.jsx`](client/src/main.jsx). Demonstration records are initialized locally, and changes persist in the browser's `localStorage` under `storesync_prototype_data_v1`.
 
-To reset the demonstration data, open the browser developer console and run:
+This configuration does not require the Express server, PostgreSQL, SMTP, or environment files for the standard demonstration. Records are specific to the browser profile and origin; they are not synchronized across devices. Included sample records are demonstration data, not verified company transactions.
 
-```js
-localStorage.removeItem("storesync_prototype_data_v1");
+Changing `VITE_API_BASE_URL` alone does **not** switch the frontend to PostgreSQL-backed operation while the local adapter remains enabled. The local adapter is not a substitute for server-side authentication, authorization, email delivery, or database recovery.
+
+To reset only the local demonstration dataset, run the following in the browser developer console. This removes locally entered records in that dataset and recreates the sample records after reload.
+
+```javascript
+localStorage.removeItem('storesync_prototype_data_v1');
 location.reload();
 ```
 
-The backend and PostgreSQL setup below are retained only as reference for the
-earlier full-stack implementation and are not needed to demonstrate the
-prototype.
+## Backend Configuration
 
-### 1. Clone the Repository
+The repository also contains an Express API and PostgreSQL implementation. Running the backend independently requires a database and environment configuration; connecting the frontend requires explicitly disabling the local adapter and verifying the integrated workflow.
 
-```bash
-git clone https://github.com/alvs89/em-cayetano-store-management-system.git
-cd em-cayetano-store-management-system
-```
-
-### 2. Install Backend Dependencies
+From the repository root:
 
 ```bash
 cd server
-npm install
+npm ci
 ```
 
-Create `server/.env`:
+Copy [`server/.env.example`](server/.env.example) to `server/.env` and provide the values required for the intended environment:
 
-```env
-NODE_ENV=development
-PORT=5000
-DATABASE_URL=your_postgresql_connection_string
-JWT_SECRET=your_secure_jwt_secret
-EMAIL_USER=your_email_address
-EMAIL_PASS=your_email_app_password
-EMAIL_FROM=notifications@example.com
-REQUIRE_LOGIN_OTP=true
-# Production only: set the deployed frontend origin, for example https://your-site.example
-CORS_ORIGIN=
-```
+| Variable | Purpose |
+| --- | --- |
+| `DATABASE_URL` | PostgreSQL connection string. |
+| `JWT_SECRET` | Private signing secret for authentication tokens. |
+| `PORT` | API port; the example uses `5000`. |
+| `CORS_ORIGIN` | Permitted deployed frontend origin or comma-separated origins. |
+| `EMAIL_HOST`, `EMAIL_PORT`, `EMAIL_USER`, `EMAIL_PASS`, `EMAIL_FROM` | Email delivery configuration for verification and account notices. |
+| `REQUIRE_LOGIN_OTP` | Login verification setting; the example enables it. |
+| `SYSTEM_LOG_RETENTION_DAYS` | System log retention setting. |
+| `PG_DUMP_PATH`, `PSQL_PATH` | Optional PostgreSQL executable paths for database backup and restore. |
 
-Notes:
-
-- `DATABASE_URL` is required.
-- `JWT_SECRET` should be a strong random string.
-- `EMAIL_USER` and `EMAIL_PASS` are required for OTP and email notifications.
-- `EMAIL_FROM` is the verified sender address shown to users. This can be different from the SMTP username.
-- `REQUIRE_LOGIN_OTP` defaults to `true`. Set it to `false` only for an approved deployment fallback while email delivery is unavailable.
-- Local development accepts `localhost` and `127.0.0.1` frontend origins automatically. Set `CORS_ORIGIN` only for production or a specific shared frontend URL.
-- Do not commit `.env` files.
-
-### 3. Install Frontend Dependencies
-
-```bash
-cd ../client
-npm install
-```
-
-Optional `client/.env`:
-
-```env
-VITE_API_BASE_URL=http://localhost:5000
-VITE_APP_VERSION=1.0.0
-VITE_APP_ENV=Development
-```
-
-All frontend API calls use `VITE_API_BASE_URL`, so update that value when the backend is deployed.
-
-## Deployment Readiness
-
-The project is a two-service web system:
-
-- `client/`: React + Vite static frontend.
-- `server/`: Express.js API connected to PostgreSQL.
-
-For the fastest deployment with minimal server administration, use this setup:
-
-```text
-Frontend: Vercel or Netlify
-Backend: Render Web Service
-Database: Render PostgreSQL, Neon, Supabase PostgreSQL, or another managed PostgreSQL service
-```
-
-Production backend environment variables:
-
-```env
-NODE_ENV=production
-DATABASE_URL=postgresql://username:password@host:5432/database?sslmode=require
-JWT_SECRET=use-a-long-random-production-secret
-CORS_ORIGIN=https://your-frontend-domain.example
-EMAIL_HOST=smtp.resend.com
-EMAIL_PORT=587
-EMAIL_USER=your-email@example.com
-EMAIL_PASS=your-email-app-password
-EMAIL_FROM=notifications@example.com
-REQUIRE_LOGIN_OTP=true
-SYSTEM_LOG_RETENTION_DAYS=30
-```
-
-When `EMAIL_HOST=smtp.resend.com` and `EMAIL_USER=resend`, the backend sends
-through Resend's HTTPS API using `EMAIL_PASS` as the Resend API key. This avoids
-SMTP port timeouts on hosted platforms while keeping the same email variables.
-
-Production frontend environment variables:
-
-```env
-VITE_API_BASE_URL=https://your-backend-domain.example
-VITE_APP_ENV=Production
-VITE_APP_VERSION=1.0.0
-```
-
-Backend hosting settings:
-
-```text
-Root directory: server
-Build command: npm install
-Start command: npm start
-Health check path: /api/health
-```
-
-Frontend hosting settings:
-
-```text
-Root directory: client
-Build command: npm install && npm run build
-Output directory: build
-```
-
-Before deployment, run:
-
-```bash
-cd client
-npm run build
-
-cd ../server
-npm run check
-```
-
-After the production database is prepared, run:
-
-```bash
-cd server
-npm run deploy:verify
-```
-
-Maintenance backup and restore use PostgreSQL command-line tools. If the backend host does not provide `pg_dump` and `psql` on `PATH`, set `PG_DUMP_PATH` and `PSQL_PATH`, or use the database provider's managed backup tools instead.
-
-## Database Setup
-
-The backend includes runtime schema setup in `server/index.js`. When the server starts, it creates or updates the required tables.
-
-The important database tables are:
-
-- `users`
-- `products`
-- `branch_inventory`
-- `archived_inventory`
-- `stock_movements`
-- `audit_logs`
-- `backup_logs`
-
-### Clean Inventory Design
-
-The product catalog and branch stock data are separated:
-
-```text
-products
-- product_id
-- name
-- category
-- created_at
-```
-
-```text
-branch_inventory
-- inventory_id
-- product_id
-- branch
-- stock_level
-- min_stock_level
-- status
-- last_updated
-```
-
-Stock status should come from `branch_inventory`, not `products`.
-
-## Running the Application
-
-Open two terminals.
-
-### Backend
-
-```bash
-cd server
-npm run dev
-```
-
-or:
+Start the API with:
 
 ```bash
 npm start
 ```
 
-The backend runs on:
+For development with automatic restart, use `npm run dev`. The API health endpoint is `/api/health`. Startup includes runtime schema initialization; use a database appropriate to the intended environment.
+
+Frontend API configuration is documented in [`client/.env.example`](client/.env.example). Database-backed hosting also requires server-side role enforcement, email configuration where applicable, and end-to-end verification. A successful frontend build alone does not establish deployment readiness.
+
+## Technology Stack
+
+| Layer | Technologies |
+| --- | --- |
+| Interface | React 19, Vite 6, Tailwind CSS, custom CSS, Radix UI, Lucide React |
+| Requests and exports | Axios, jsPDF, jsPDF AutoTable |
+| Backend | Node.js, Express 5, JWT, bcryptjs, Nodemailer |
+| Database | PostgreSQL through `pg` |
+| Verification | Node.js test runner and Playwright Chromium |
+
+## Repository Structure
 
 ```text
-http://localhost:5000
+client/
+  src/components/     Application modules and shared UI components
+  src/styles/         Shared styling
+  src/utils/          Permissions, calculations, data adapters, and unit tests
+  scripts/            Browser verification scripts
+  vite.config.js      Development server and build configuration
+server/
+  index.js            Express API and runtime database initialization
+  database.sql        Database schema reference
+  scripts/            Data preparation and verification utilities
+README.md
 ```
 
-### Frontend
+## Build and Verification
+
+From `client/`, build the frontend and run the existing unit tests:
 
 ```bash
-cd client
-npm run dev
-```
-
-The Vite development server usually runs on:
-
-```text
-http://localhost:5173
-```
-
-If Vite reports another local URL, such as `http://localhost:3000`, open that URL. The backend accepts local development origins automatically.
-
-## Build Check
-
-Before pushing changes, run:
-
-```bash
-cd client
 npm run build
+node --test src/utils/supplierCategories.test.mjs src/utils/supplierCategoryDemoData.test.mjs src/utils/branchComparison.test.mjs src/utils/branchComparisonEndpoint.test.mjs
 ```
 
-For backend syntax checking:
+The frontend build output is written to `client/build/`.
+
+With the frontend development server running, execute the browser checks from `client/`:
 
 ```bash
-cd server
-node --check index.js
+node scripts/verify-supplier-filter.cjs
+node scripts/verify-supplier-category-coverage.cjs
+node scripts/verify-branch-comparison.cjs
+node scripts/verify-dashboard-branch-summary.cjs
+node scripts/verify-help-module.cjs
 ```
 
-## Default Admin Account
+The browser scripts use Playwright Chromium and isolated browser contexts. If Chromium is unavailable, install it with `npx playwright install chromium`. Their default application URL is `http://127.0.0.1:3000`; set `STORESYNC_URL` when using another address.
 
-Use `server/reset-admin.js` if you need to reset the seeded admin account password in development.
+From `server/`, check API syntax:
 
 ```bash
-cd server
-node reset-admin.js
+npm run check
 ```
 
-Coordinate with the group before changing shared admin credentials.
+Database deployment verification is available through `npm run deploy:verify` in `server/` and requires the intended database configuration. Syntax, unit, and browser checks do not replace verification against a live PostgreSQL deployment.
 
-## Groupmate Development Guide
+## Contribution Guidelines
 
-### Recommended Workflow
+1. Pull the latest changes and create a focused feature or fix branch.
+2. Preserve existing workflows and apply the shared role definitions.
+3. Use consistent interface styling, accessible controls, and responsive layouts.
+4. Run the checks relevant to the change before opening a pull request.
+5. Keep credentials, environment files, dependencies, and generated build artifacts out of commits.
+6. Describe the resulting behavior and verification performed in the pull request.
 
-1. Pull the latest code before starting work.
-2. Create a feature branch for your assigned task.
-3. Keep changes focused on one feature or fix.
-4. Run the frontend build before committing.
-5. Avoid committing generated logs, build outputs, `node_modules`, or `.env` files.
-6. Write clear commit messages.
-7. Push your branch and open a pull request when ready.
-
-### Suggested Branch Names
-
-```text
-feature/inventory-improvements
-feature/reports-export
-fix/mobile-layout
-fix/database-schema
-```
-
-### Commit Message Examples
-
-```text
-Improve mobile dashboard layout
-Add stock movement report
-Fix archive restore validation
-Refine database schema cleanup
-```
-
-## Security Notes
-
-- Never commit `.env` files or database credentials.
-- Use strong JWT secrets in production.
-- Keep Neon credentials private.
-- Admin-only features should remain protected by backend authorization.
-- Audit logs should record important system actions for accountability.
-
-## Group Members
+## Project Team
 
 - Donato, Raymond B.
 - Guillermo, Alvin J.
 - Niez, John Alces B.
 
-Bachelor of Science in Computer Science Students, Technological Institute of the Philippines.
+Bachelor of Science in Computer Science
+
+Technological Institute of the Philippines
