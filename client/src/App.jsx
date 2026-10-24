@@ -1121,10 +1121,10 @@ function AppContent() {
       </AlertDialog>
 
       <main className={mainClassName} aria-live="polite">
-        {renderScreenPane("dashboard", <Dashboard onNavigate={navigateTo} user={currentUser} activeBranch={activeBranch} />)}
+        {renderScreenPane("dashboard", <Dashboard onNavigate={navigateTo} user={currentUser} activeBranch={activeBranch} isActive={currentScreen === 'dashboard'} />)}
         {renderScreenPane("inventory", <InventoryModule user={currentUser} onNavigate={navigateTo} />)}
         {canAccessScreen(currentUser.role, "archive") && renderScreenPane("archive", <ArchiveModule user={currentUser} />)}
-        {canAccessScreen(currentUser.role, "reports") && renderScreenPane("reports", <ReportsModule user={currentUser} onNavigate={navigateTo} />)}
+        {canAccessScreen(currentUser.role, "reports") && renderScreenPane("reports", <ReportsModule user={currentUser} onNavigate={navigateTo} isActive={currentScreen === 'reports'} />)}
         {canAccessScreen(currentUser.role, "sales") && renderScreenPane("sales", <SalesModule user={currentUser} />)}
         {canAccessScreen(currentUser.role, "purchases") && renderScreenPane("purchases", <PurchasesModule user={currentUser} onNavigate={navigateTo} />)}
         {canAccessScreen(currentUser.role, "maintenance") && currentScreen === "maintenance" && (

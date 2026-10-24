@@ -6,7 +6,7 @@
  * making slightly different assumptions about discounts, delivery charges, and
  * historical item costs.
  */
-import { isCancelledSale } from './salesTransactionStatus';
+import { isCancelledSale } from './salesTransactionStatus.js';
 
 const toNumber = value => {
   const numberValue = Number(value || 0);

@@ -1,0 +1,22 @@
+.dashboard-branch-comparison { min-width: 0; }
+.dashboard-branch-comparison .dashboard-panel-header { flex-wrap: wrap; gap: 12px; }
+.dashboard-branch-report-link { max-width: 100%; white-space: normal; text-align: left; }
+.dashboard-branch-comparison-body { display: grid; gap: 12px; padding: 12px 16px 14px; min-width: 0; }
+.dashboard-branch-metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.dashboard-branch-metric-card { padding: 12px 14px; border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; min-width: 0; }
+.dashboard-branch-metric-card h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: #0f172a; }
+.dashboard-branch-metric-card dl { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 0; }
+.dashboard-branch-metric-card dt { font-size: 12px; line-height: 1.4; color: #475569; }
+.dashboard-branch-metric-card dd { margin: 4px 0 0; font-size: 16px; line-height: 1.4; font-weight: 600; font-variant-numeric: tabular-nums; color: #0f172a; overflow-wrap: anywhere; }
+.dashboard-branch-insight { margin: 0; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 8px; background: #eff6ff; color: #1e3a8a; font-size: 14px; line-height: 1.5; }
+.dashboard-branch-insight strong { font-weight: 650; }
+.dashboard-branch-footnote { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px 16px; color: #475569; font-size: 12px; line-height: 1.5; }
+.dashboard-branch-status { margin: 0; padding: 8px 0; font-size: 14px; color: #475569; }
+.dashboard-branch-error { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; padding: 10px 12px; border: 1px solid #fde68a; border-radius: 8px; background: #fffbeb; color: #92400e; font-size: 13px; line-height: 1.5; }
+.dashboard-branch-error p { margin: 0; flex: 1 1 200px; }
+@media (max-width: 640px) {
+  .dashboard-branch-metrics { grid-template-columns: 1fr; gap: 8px; }
+  .dashboard-branch-metric-card { padding: 10px 12px; }
+  .dashboard-branch-metric-card h3 { margin-bottom: 8px; }
+  .dashboard-branch-comparison-body { padding: 12px; }
+}

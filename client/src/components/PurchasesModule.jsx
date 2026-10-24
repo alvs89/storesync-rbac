@@ -4,6 +4,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { CalendarDays, CheckCircle, Clock, FileText, PackagePlus, Plus, Minus, ReceiptText, RefreshCw, Search, Trash2, Truck, Wallet, X, History } from 'lucide-react';
 import { toast } from 'sonner';
 import { PageHeader } from './PageHeader';
+import { PurchaseSupplierFields } from './PurchaseSupplierFields';
+import { buildSupplierCatalog, matchesSupplierCategories, supplierKey } from '../utils/supplierCategories';
 import { useData } from './DataContext';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
@@ -26,7 +28,6 @@ import {
 import {
   HARDWARE_SUPPLIER_OPTIONS,
   SUPPLIER_CUSTOM_VALUE,
-  getSupplierSelectValue,
   isListedSupplier,
   sanitizeSupplierInput,
 } from '../utils/suppliers';
@@ -290,9 +291,10 @@ const getPurchaseReorderInfo = item => {
  * cost/payment history through the shared data provider.
  */
 export function PurchasesModule({ user, onNavigate }) {
-  const { inventory, purchaseTransactions, recordPurchase, updatePurchasePaymentStatus } = useData();
+  const { inventory, loadingInventory, inventoryError, purchaseTransactions, recordPurchase, updatePurchasePaymentStatus } = useData();
   const [supplierName, setSupplierName] = useState('');
   const [supplierMode, setSupplierMode] = useState('listed');
+  const [supplierCategories, setSupplierCategories] = useState([]);
   const [documentType, setDocumentType] = useState('DR');
   const [documentTypeNote, setDocumentTypeNote] = useState('');
   const [documentNumber, setDocumentNumber] = useState('');
@@ -357,6 +359,10 @@ export function PurchasesModule({ user, onNavigate }) {
     ));
     return [...inventory, ...catalogOnly];
   }, [inventory]);
+
+  // Match the same inventory and existing prototype catalog used by the item picker.
+  const supplierCatalog = useMemo(() => buildSupplierCatalog(HARDWARE_SUPPLIER_OPTIONS, purchaseInventory), [purchaseInventory]);
+  const supplierCategoryConflict = supplierMode !== 'custom' && Boolean(supplierName) && !loadingInventory && !inventoryError && !matchesSupplierCategories(supplierCatalog.find(supplier => supplierKey(supplier.name) === supplierKey(supplierName)), supplierCategories);
 
   const sortedInventory = useMemo(
     () => mergeSort([...purchaseInventory], (a, b) => String(a.name || '').localeCompare(String(b.name || ''), undefined, { numeric: true, sensitivity: 'base' })),
@@ -1017,6 +1023,7 @@ export function PurchasesModule({ user, onNavigate }) {
   const resetForm = () => {
     setSupplierName('');
     setSupplierMode('listed');
+    setSupplierCategories([]);
     setDismissedSupplierSuggestionKey('');
     setUseSupplierFilter(true);
     setDocumentType('DR');
@@ -1052,6 +1059,10 @@ export function PurchasesModule({ user, onNavigate }) {
   const validatePurchase = () => {
     if (selectedLines.some(line => line.item?.demoOnly)) {
       toast.error('Demo catalog items are preview-only. They cannot be saved as actual supplier deliveries.');
+      return false;
+    }
+    if (supplierCategoryConflict) {
+      toast.error('Choose a supplier matching the selected categories, or clear the category selection.');
       return false;
     }
     if (!supplierName.trim()) {
@@ -1205,8 +1216,7 @@ export function PurchasesModule({ user, onNavigate }) {
     }
   }, [pendingPurchaseHistoryTarget, sortedPurchases]);
 
-  const supplierSelectValue = getSupplierSelectValue(supplierName, supplierMode);
-  const showCustomSupplierInput = supplierSelectValue === SUPPLIER_CUSTOM_VALUE;
+  const showCustomSupplierInput = supplierMode === 'custom';
   const updateCustomSupplierName = value => {
     const cleaned = sanitizeSupplierInput(value);
     if (cleaned !== value) {
@@ -3310,35 +3320,30 @@ export function PurchasesModule({ user, onNavigate }) {
             <CardContent className="purchase-card-content">
               <div className="purchase-doc-grid">
                 <div className="purchase-doc-column">
-                  <Field label={<>Supplier <RequiredMark /></>}>
+                  <div>
                     <div className="purchase-supplier-field-group">
-                      <Select
-                        value={supplierSelectValue}
-                        onValueChange={value => {
+                      <PurchaseSupplierFields
+                        catalog={supplierCatalog}
+                        selected={supplierCategories}
+                        onCategoriesChange={setSupplierCategories}
+                        supplierName={supplierName}
+                        supplierMode={supplierMode}
+                        conflict={supplierCategoryConflict}
+                        loading={loadingInventory}
+                        error={inventoryError}
+                        disabled={isSaving}
+                        onSupplierChange={value => {
                           if (value === SUPPLIER_CUSTOM_VALUE) {
                             setSupplierMode('custom');
-                            if (isListedSupplier(supplierName)) setSupplierName('');
-                            setDismissedSupplierSuggestionKey('');
-                            setUseSupplierFilter(true);
-                            return;
+                            if (supplierMode !== 'custom') setSupplierName('');
+                          } else {
+                            setSupplierMode('listed');
+                            setSupplierName(value);
                           }
-                          setSupplierMode('listed');
-                          setSupplierName(value);
                           setDismissedSupplierSuggestionKey('');
                           setUseSupplierFilter(true);
                         }}
-                        disabled={isSaving}
-                      >
-                        <SelectTrigger className="h-10">
-                          <SelectValue placeholder="Select supplier" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {HARDWARE_SUPPLIER_OPTIONS.map(supplier => (
-                            <SelectItem key={supplier} value={supplier}>{supplier}</SelectItem>
-                          ))}
-                          <SelectItem value={SUPPLIER_CUSTOM_VALUE}>Other supplier / not listed</SelectItem>
-                        </SelectContent>
-                      </Select>
+                      />
                       {showCustomSupplierInput && (
                         <Input
                           value={supplierName}
@@ -3431,7 +3436,7 @@ export function PurchasesModule({ user, onNavigate }) {
                         </div>
                       )}
                     </div>
-                  </Field>
+                  </div>
                   <Field label="DR/SI No.">
                     <Input value={documentNumber} onChange={event => setDocumentNumber(event.target.value.slice(0, 80))} placeholder="Optional" disabled={isSaving} className="h-10" />
                   </Field>

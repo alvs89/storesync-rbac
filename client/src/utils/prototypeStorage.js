@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { SUPPLIER_CATEGORY_DEMO_PRODUCTS, SUPPLIER_CATEGORY_DEMO_VERSION, addSupplierCategoryDemoProducts } from './supplierCategoryDemoData.js';
 
 const STORAGE_KEY = 'storesync_prototype_data_v1';
 const TOKEN = 'storesync-prototype-token';
@@ -7,6 +8,7 @@ const DEMO_DATA_VERSION = 2;
 
 const seedData = () => ({
   demoDataVersion: DEMO_DATA_VERSION,
+  supplierCategoryDemoVersion: SUPPLIER_CATEGORY_DEMO_VERSION,
   dataClassification: 'DEMONSTRATION DATA - NOT ACTUAL BUSINESS RECORDS',
   users: [{
     id: 'demo-admin',
@@ -55,6 +57,7 @@ const seedData = () => ({
     status: 'Active'
   }],
   products: [
+    ...SUPPLIER_CATEGORY_DEMO_PRODUCTS.map(product => ({ ...product })),
     { id: 'inv-1', name: 'Portland Cement 40kg', category: 'Construction', supplier_name: 'BuildRight Supply', default_selling_price: 285, cost_price: 240, stock_level: 10, min_stock_level: 12, lead_time_days: 7, safety_stock: 3, review_period_days: 5, average_daily_sales: 3, status: 'Low Stock', branch: 'Manggahan', is_demo: true },
     { id: 'inv-2', name: 'GI Roofing Sheet 8ft', category: 'Roofing', supplier_name: 'BuildRight Supply', default_selling_price: 720, cost_price: 610, stock_level: 42, min_stock_level: 10, lead_time_days: 5, safety_stock: 4, review_period_days: 7, average_daily_sales: 2, status: 'In Stock', branch: 'Manggahan', is_demo: true },
     { id: 'inv-3', name: 'PVC Pipe 1/2 inch', category: 'PVC Pipe / Fittings', supplier_name: 'PipeWorks Trading', default_selling_price: 95, cost_price: 70, stock_level: 6, min_stock_level: 8, lead_time_days: 4, safety_stock: 2, review_period_days: 5, average_daily_sales: 1, status: 'Low Stock', branch: 'Manggahan', is_demo: true },
@@ -214,6 +217,8 @@ const readData = () => {
         }
       });
 
+      addSupplierCategoryDemoProducts(stored);
+
       const savedUser = (() => {
         try { return JSON.parse(localStorage.getItem('user') || 'null'); } catch { return null; }
       })();
@@ -240,7 +245,10 @@ const readData = () => {
   return data;
 };
 
-const writeData = data => localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+const writeData = data => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  window.dispatchEvent(new Event('storesync-data-changed'));
+};
 const bodyOf = config => {
   try { return typeof config.data === 'string' ? JSON.parse(config.data) : (config.data || {}); } catch { return {}; }
 };
@@ -304,6 +312,25 @@ const adapter = async config => {
   if (path === '/auth/logout') return response(config, { success: true });
   if (path === '/auth/send-otp' || path === '/auth/verify-otp') return response(config, { success: true, token: TOKEN, user: currentUser, code: '123456' });
 
+  if (path === '/reports/branch-comparison' && method === 'get') {
+    if (!userIsSuperAdmin(currentUser)) return errorResponse(config, 'Super Admin access required', 403);
+    const start = new Date(config.params?.start || url.searchParams.get('start') || '').getTime();
+    const end = new Date(config.params?.end || url.searchParams.get('end') || '').getTime();
+    if (!Number.isFinite(start) || !Number.isFinite(end) || start > end) return errorResponse(config, 'A valid reporting period is required', 400);
+    return response(config, {
+      snapshotAt: new Date().toISOString(),
+      sales: data.sales.filter(sale => {
+        const date = new Date(sale.created_at).getTime();
+        return date >= start && date <= end;
+      }).map(sale => ({
+        branch: sale.branch, created_at: sale.created_at, status: sale.status, transaction_type: sale.transaction_type,
+        subtotal_amount: sale.subtotal_amount, discount_amount: sale.discount_amount, delivery_charge: sale.delivery_charge,
+        totalAmount: sale.total_amount, totalQuantity: sale.total_quantity,
+        items: (sale.items || []).map(item => ({ quantity_sold: item.quantity_sold, unit_cost_at_sale: item.unit_cost_at_sale, cost_subtotal: item.cost_subtotal, subtotal: item.subtotal })),
+      })),
+      products: data.products.map(inventoryRow),
+    });
+  }
   if (path === '/inventory' && method === 'get') {
     return response(config, { products: data.products.filter(item => item.branch === branch).map(inventoryRow) });
   }

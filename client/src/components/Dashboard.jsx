@@ -38,6 +38,7 @@ import { getProfitabilitySummary } from '../utils/profitability';
 import { isCompletedSaleTransaction } from '../utils/salesTransactionStatus';
 import { buildPurchaseDraftFromReorderGroup, savePurchaseDraft } from '../utils/purchaseDrafts';
 import { generateBusinessInsights } from '../utils/businessInsights';
+import { DashboardBranchComparison } from './DashboardBranchComparison';
 
 const formatCurrency = value =>
   new Intl.NumberFormat(undefined, {
@@ -193,7 +194,8 @@ const getStockCountSearchText = item => [
 export function Dashboard({
   onNavigate,
   user,
-  activeBranch
+  activeBranch,
+  isActive = true
 }) {
   const [isStockCountDialogOpen, setIsStockCountDialogOpen] = React.useState(false);
   const [stockCountForm, setStockCountForm] = React.useState({
@@ -2663,6 +2665,16 @@ export function Dashboard({
             ))}
           </div>
         </section>
+
+        {role === ROLE_VALUES.SUPER_ADMIN && <DashboardBranchComparison
+          enabled={isActive}
+          start={getDashboardSalesBounds().start.getTime()}
+          end={getDashboardSalesBounds().end.getTime()}
+          periodLabel={salesPeriodLabel}
+          rangeLabel={salesPeriodRangeLabel}
+          showFinancialValues={showFinancialValues}
+          onViewReport={() => openTargetReport('business-insights', salesReportTarget)}
+        />}
 
         {businessInsightsSection}
 

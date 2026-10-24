@@ -5936,6 +5936,71 @@ app.put('/api/system/daily-sales-target', authenticate, requireAdmin, async (req
   }
 });
 
+// A separate Super Admin snapshot keeps ordinary branch inventory access scoped.
+// Read both datasets in one consistent database snapshot without customer data.
+app.get('/api/reports/branch-comparison', authenticate, requireSuperAdmin, async (req, res) => {
+  const start = new Date(String(req.query.start || ''));
+  const end = new Date(String(req.query.end || ''));
+  if (!Number.isFinite(start.getTime()) || !Number.isFinite(end.getTime()) || start > end) {
+    return res.status(400).json({ error: 'A valid reporting period is required' });
+  }
+  let client;
+  try {
+    client = await pool.connect();
+    await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+    const sales = await client.query(`
+      SELECT st.branch, st.created_at, st.status, st.transaction_type,
+             st.subtotal_amount, st.discount_amount, st.delivery_charge,
+             st.total_amount AS "totalAmount", st.total_quantity AS "totalQuantity",
+             COALESCE(json_agg(json_build_object(
+               'quantity_sold', si.quantity_sold,
+               'unit_cost_at_sale', si.unit_cost_at_sale,
+               'cost_subtotal', si.cost_subtotal,
+               'subtotal', si.subtotal
+             )) FILTER (WHERE si.sales_item_id IS NOT NULL), '[]'::json) AS items
+      FROM sales_transactions st
+      LEFT JOIN sales_items si ON si.sales_transaction_id = st.sales_transaction_id
+      WHERE st.branch IN ('Manggahan', 'San Rafael')
+        AND st.created_at >= $1 AND st.created_at <= $2
+        AND st.status = 'completed' AND st.transaction_type = 'sale'
+      GROUP BY st.sales_transaction_id
+    `, [start.toISOString(), end.toISOString()]);
+    const products = await client.query(`
+      SELECT bi.*,
+             COALESCE(reservations.reserved_stock, 0) AS reserved_stock
+      FROM branch_inventory bi
+      LEFT JOIN (
+        SELECT si.inventory_id, SUM(si.quantity_sold) AS reserved_stock
+        FROM sales_items si
+        INNER JOIN sales_transactions st ON st.sales_transaction_id = si.sales_transaction_id
+        WHERE st.status = 'pending_payment' AND st.transaction_type = 'sale'
+          AND si.is_inventory_item = true AND si.quantity_sold > 0
+        GROUP BY si.inventory_id
+      ) reservations ON reservations.inventory_id = bi.inventory_id
+      WHERE bi.branch IN ('Manggahan', 'San Rafael')
+        AND NOT EXISTS (
+          SELECT 1 FROM archived_inventory ai
+          WHERE ai.product_id = bi.product_id AND ai.branch = bi.branch
+        )
+    `);
+    const timestamp = await client.query('SELECT transaction_timestamp() AS snapshot_at');
+    const snapshot = {
+      sales: sales.rows,
+      products: products.rows.map(row => mapInventoryRow(row)),
+      snapshotAt: timestamp.rows[0].snapshot_at,
+    };
+    await client.query('COMMIT');
+    res.set('Cache-Control', 'no-store');
+    return res.json(snapshot);
+  } catch (error) {
+    if (client) await client.query('ROLLBACK').catch(() => {});
+    console.error('Branch comparison error:', error);
+    return res.status(500).json({ error: 'Unable to load branch comparison' });
+  } finally {
+    if (client) client.release();
+  }
+});
+
 app.get('/api/inventory', authenticate, async (req, res) => {
   try {
     if (!req.user.branch) {
