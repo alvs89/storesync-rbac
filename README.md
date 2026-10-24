@@ -21,7 +21,15 @@ StoreSync is a web-based application for managing retail inventory and store ope
 | **Audit Trail** | Review of recorded user actions for administrative accountability. |
 | **Help** | Role-specific FAQs, task guides, troubleshooting, support information, and downloadable PDF user manuals. |
 
-### Supplier Discovery
+## Operational Workflows
+
+### Inventory and Sales Operations
+
+Store personnel can locate products, review branch availability, and record stock movements according to their assigned permissions. Inventory staff can submit item requests for administrative review, while administrators manage inventory records and review archived items.
+
+Sales personnel record customer transactions using Sales Invoice numbers, item quantities, prices, and payment details. Completed transactions support receipt generation and item refunds. Administrative cancellation and audit records provide oversight of transaction corrections.
+
+### Purchasing and Supplier Discovery
 
 The **Supplier Categories** multi-select in Purchases narrows the available suppliers using their associated product categories. Multiple selections use OR matching: a supplier qualifies when it offers products in at least one selected category.
 
@@ -29,7 +37,9 @@ The interface provides category and supplier search, matching supplier counts, c
 
 Supplier-category information comes from associated product records and the purchase catalog available to the interface. Catalog entries marked **(Demo)** are preview items and cannot be saved as actual inventory deliveries.
 
-### Branch Performance Comparison
+### Reporting and Branch Oversight
+
+Reports organize inventory, purchases, replenishment requirements, stock movements, and financial information according to the user's access level. Period and category controls support focused review, and PDF exports provide documents for operational reporting.
 
 Super Admin can compare both branches in **Reports > Business Insights** and access a compact summary from Dashboard. The comparison includes:
 
@@ -45,6 +55,12 @@ Sales metrics use completed sales for the selected period. Stock metrics represe
 
 The comparison checks for updates every 30 seconds and after supported local record changes. Business insights use predefined rules applied to recorded data; they are not AI-generated forecasts.
 
+### Administration and User Guidance
+
+Account administration follows the system's branch and role boundaries. Administrators review staff access and operational requests, while Super Admin oversees both branches and accesses Maintenance. Audit Trail supports review of recorded actions.
+
+Help provides each role with relevant FAQs, task instructions, troubleshooting, and a downloadable user manual. Search and topic filters help users locate guidance within the application.
+
 ## User Roles and Access
 
 All five roles can access **Dashboard**, **Search Products**, **Alerts**, and **Help**. Operational screens and actions depend on the assigned role and branch.
@@ -59,7 +75,7 @@ All five roles can access **Dashboard**, **Search Products**, **Alerts**, and **
 
 The canonical permission definitions are maintained in [`client/src/utils/roles.js`](client/src/utils/roles.js). Help content and PDF manuals reflect these roles.
 
-## Running the Demonstration
+## Installation and Local Operation
 
 ### Requirements
 
@@ -93,7 +109,7 @@ These credentials belong to the browser-local demonstration dataset. They are no
 
 ### Data Persistence and Execution Model
 
-The committed frontend entry point enables a browser-local data adapter through `enablePrototypeStorage()` in [`client/src/main.jsx`](client/src/main.jsx). Demonstration records are initialized locally, and changes persist in the browser's `localStorage` under `storesync_prototype_data_v1`.
+The frontend entry point enables a browser-local data adapter through `enablePrototypeStorage()` in [`client/src/main.jsx`](client/src/main.jsx). Demonstration records are initialized locally, and changes persist in the browser's `localStorage` under `storesync_prototype_data_v1`.
 
 This configuration does not require the Express server, PostgreSQL, SMTP, or environment files for the standard demonstration. Records are specific to the browser profile and origin; they are not synchronized across devices. Included sample records are demonstration data, not verified company transactions.
 
@@ -208,9 +224,10 @@ Database deployment verification is available through `npm run deploy:verify` in
 
 ## Project Team
 
-- Donato, Raymond B.
 - Guillermo, Alvin J.
-- Niez, John Alces B.
+- Roslin, Kendrick A.
+- Roxas, Mark Kendrick P.
+- Simbulan, Hirondelle D.
 
 Bachelor of Science in Computer Science
 
