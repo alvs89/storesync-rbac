@@ -50,6 +50,26 @@ test('replenishment only fires for top-demand items when stock reaches official 
   assert.equal(insight.metricValues.recommended, 29);
   assert.equal(insight.metricValues.rop, 24);
 });
+test('past reporting periods must not use current stock for replenishment alerts', () => {
+  const historicBounds = { start: new Date(now.getTime() - 120 * day), end: new Date(now.getTime() - 100 * day) };
+  const alerts = generateBusinessInsights({
+    sales: [sale(100, 60, { createdAt: dateOffset(-110) })],
+    inventory: [{ id: '1', name: 'Electrical Wire', availableQuantity: 0, recommendedReorderPoint: 24, recommendedOrderQuantity: 29 }],
+    periodBounds: historicBounds
+  });
+  assert.equal(find(alerts, 'Strong Product Demand'), undefined);
+});
+test('historical stock movements establish evidence of aged zero-sale inventory', () => {
+  const stockMovements = [{ inventoryId: '1', createdAt: dateOffset(-90), action: 'Stock In' }];
+  const alerts = generateBusinessInsights({
+    sales: [], allSales: [], stockMovements,
+    inventory: [{ id: '1', name: 'Electrical Wire', availableQuantity: 85 }],
+    periodBounds: bounds
+  });
+  const slow = find(alerts, 'Slow-Moving Inventory');
+  assert.ok(slow);
+  assert.equal(slow.metricValues.unitsSold, 0);
+});
 test('unknown ROP must not turn into an out-of-stock demand alert', () => {
   assert.equal(find(run([sale(100, 70)], [], [{ id: '1', name: 'Electrical Wire', availableQuantity: 0 }]), 'Strong Product Demand'), undefined);
 });

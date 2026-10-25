@@ -158,23 +158,28 @@ function profitabilityInsights(sales, bounds) {
   return insights;
 }
 
-function inventoryInsights(sales, allSales, inventory, bounds) {
+function inventoryInsights(sales, allSales, inventory, bounds, stockMovements = []) {
   const quantities = new Map();
   sales.forEach(sale => (sale.items || []).forEach(item => {
     const key = item.inventoryId || item.inventory_id;
     if (key) quantities.set(String(key), number(quantities.get(String(key))) + quantity(item));
   }));
   const demandRanked = [...quantities.entries()].sort((a, b) => b[1] - a[1]);
+  const demandRanks = new Map(demandRanked.map(([key], index) => [key, index + 1]));
   const insights = [];
+  // Current stock and ROP can only support present-day decisions, never past-period alerts.
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const currentPeriod = !bounds?.end || bounds.end >= todayStart;
   inventory.forEach(item => {
     const key = String(item.id ?? item.inventoryId ?? '');
     const sold = number(quantities.get(key));
-    const rank = demandRanked.findIndex(([id]) => id === key) + 1;
+    const rank = demandRanks.get(key) ?? 0;
     const available = number(item.availableQuantity ?? item.quantity);
     // Read the official ROP; an absent value is unknown rather than zero.
     const rop = item.recommendedReorderPoint == null ? null : Number(item.recommendedReorderPoint);
     const recommended = number(item.recommendedOrderQuantity ?? item.suggestedOrderQuantity);
-    if (rank > 0 && rank <= BUSINESS_INSIGHT_THRESHOLDS.topDemandRankLimit && Number.isFinite(rop) && rop >= 0 && available <= rop) {
+    if (currentPeriod && rank > 0 && rank <= BUSINESS_INSIGHT_THRESHOLDS.topDemandRankLimit && Number.isFinite(rop) && rop >= 0 && available <= rop) {
       insights.push(makeInsight({
         id: `demand-replenishment-${key}`,
         type: 'inventory-demand',
@@ -195,9 +200,7 @@ function inventoryInsights(sales, allSales, inventory, bounds) {
 
   // Available stock is a current snapshot; never present it as historical stock
   // for an earlier reporting period.
-  const now = new Date();
-  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  if (bounds?.end && bounds.end < todayStart) return insights;
+  if (!currentPeriod) return insights;
   const lookbackEnd = now;
   const lookbackStart = new Date(now);
   lookbackStart.setDate(lookbackStart.getDate() - BUSINESS_INSIGHT_THRESHOLDS.slowMovingLookbackDays);
@@ -219,6 +222,12 @@ function inventoryInsights(sales, allSales, inventory, bounds) {
       const key = item.inventoryId || item.inventory_id;
       if (key) olderObservedIds.add(String(key));
     });
+  });
+  // Prior stock movements also establish branch-level history for never-sold products.
+  stockMovements.forEach(movement => {
+    const when = dateOf(movement.createdAt ?? movement.created_at);
+    const id = movement.inventoryId ?? movement.inventory_id;
+    if (id != null && when && when < lookbackStart) olderObservedIds.add(String(id));
   });
   inventory.filter(item => number(item.availableQuantity ?? item.quantity) > 0).forEach(item => {
     const key = String(item.id ?? item.inventoryId ?? '');
@@ -282,6 +291,7 @@ export function generateBusinessInsights({
   previousSales = [],
   allSales = sales,
   inventory = [],
+  stockMovements = [],
   periodBounds,
   limit
 } = {}) {
@@ -291,7 +301,7 @@ export function generateBusinessInsights({
   const insights = [
     ...salesInsights(completedSales, completedPreviousSales, periodBounds),
     ...profitabilityInsights(completedSales, periodBounds),
-    ...inventoryInsights(completedSales, completedAllSales, inventory, periodBounds),
+    ...inventoryInsights(completedSales, completedAllSales, inventory, periodBounds, stockMovements),
     ...untrackedInsights(completedSales, periodBounds)
   ];
   return sortAndLimitInsights(insights, limit);

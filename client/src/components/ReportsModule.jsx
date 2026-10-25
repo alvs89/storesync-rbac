@@ -474,6 +474,7 @@ export function ReportsModule({
       }),
       allSales: salesTransactions || [],
       inventory,
+      stockMovements,
       periodBounds: getReportPeriodBounds()
     })
     : [];
@@ -4779,6 +4780,16 @@ export function ReportsModule({
                       </div>
                       <Badge className="bg-blue-100 text-blue-800">{insight.type.replace(/-/g, ' ')}</Badge>
                     </div>
+                    {insight.targetReport && insight.targetReport !== 'business-insights' && canAccessReportType(user?.role, insight.targetReport) && (
+                      <div className="mt-3 flex flex-wrap items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
+                        <Button size="sm" variant="outline" onClick={() => {
+                          setFocusedInsightId('');
+                          handleReportTypeChange(insight.targetReport);
+                          if (insight.targetFilters?.category && categoryFilterReportTypes.includes(insight.targetReport)) setSelectedCategory(insight.targetFilters.category);
+                        }}>Open supporting report</Button>
+                        <span className="text-xs text-slate-600">Review original records for {insight.relatedEntityName || insight.title}.</span>
+                      </div>
+                    )}
                     <div className="mt-4 grid gap-4 text-sm md:grid-cols-2">
                       <div className="rounded-lg bg-slate-50 p-3">
                         <p className="font-semibold text-slate-900">Evidence</p>

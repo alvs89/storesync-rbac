@@ -466,6 +466,7 @@ export function Dashboard({
       previousSales: previousDashboardSales,
       allSales: completedSales,
       inventory,
+      stockMovements,
       periodBounds: getDashboardSalesBounds(),
       limit: 5
     })
