@@ -11,7 +11,8 @@ export const BUSINESS_INSIGHT_THRESHOLDS = Object.freeze({
   slowMovingLookbackDays: 60,
   slowMovingMaxUnitsSold: 3,
   recurringUntrackedMinTransactions: 3,
-  topDemandRankLimit: 5
+  topDemandRankLimit: 5,
+  excessStockOutMultiplier: 1.5
 });
 
 const PRIORITY_ORDER = { Critical: 0, High: 1, Medium: 2, Informational: 3 };
@@ -155,6 +156,30 @@ function profitabilityInsights(sales, bounds) {
         targetFilters: { product: product.itemName }
       }, bounds));
     });
+  // Optional low-positive-margin review: only when there are enough products to
+  // compare, the margin is meaningfully low, and another alert has not already
+  // identified this product.
+  const positiveMargins = products.filter(product =>
+    product.totalSales > 0 && product.actualProfit > 0 && product.profitMargin > 0
+  ).sort((a, b) => a.profitMargin - b.profitMargin);
+  const lowest = positiveMargins[0];
+  if (positiveMargins.length >= 3 && lowest.profitMargin < BUSINESS_INSIGHT_THRESHOLDS.lowMarginPercent &&
+      !insights.some(insight => insight.relatedEntityName === lowest.itemName)) {
+    insights.push(makeInsight({
+      id: 'lowest-positive-margin-product',
+      type: 'product-profitability',
+      priority: 'Medium',
+      title: 'Lowest Positive Profit Margin',
+      summary: `${lowest.itemName} recorded the lowest positive profit margin among products sold during the selected period (${lowest.profitMargin.toFixed(1)}%).`,
+      evidence: `Revenue: ${formatCurrency(lowest.totalSales)}. Actual profit: ${formatCurrency(lowest.actualProfit)}. Margin: ${lowest.profitMargin.toFixed(1)}%.`,
+      recommendation: 'Review recorded cost, selling price, and discounts in the supporting transactions.',
+      metricValues: lowest,
+      ruleTriggered: `At least three products recorded positive margins; this product has the lowest positive margin and falls below ${BUSINESS_INSIGHT_THRESHOLDS.lowMarginPercent}%.`,
+      relatedEntityName: lowest.itemName,
+      targetReport: 'actual-earnings',
+      targetFilters: { product: lowest.itemName }
+    }, bounds));
+  }
   return insights;
 }
 
@@ -234,6 +259,28 @@ function inventoryInsights(sales, allSales, inventory, bounds, stockMovements = 
     if (!key || !olderObservedIds.has(key)) return;
     const observed = number(slowQuantities.get(key));
     if (observed > BUSINESS_INSIGHT_THRESHOLDS.slowMovingMaxUnitsSold) return;
+    const availableStock = number(item.availableQuantity ?? item.quantity);
+    const targetStock = item.orderUpToLevel == null ? null : Number(item.orderUpToLevel);
+    const excessStock = Number.isFinite(targetStock) && targetStock > 0 &&
+      availableStock >= targetStock * BUSINESS_INSIGHT_THRESHOLDS.excessStockOutMultiplier;
+    if (excessStock) {
+      insights.push(makeInsight({
+        id: `excess-stock-${key}`,
+        type: 'excess-inventory',
+        priority: 'Medium',
+        title: 'Possible Excess Stock',
+        summary: `${item.name} has ${availableStock} units available against the recorded OUT target of ${targetStock} units, with only ${observed} units sold during the past ${BUSINESS_INSIGHT_THRESHOLDS.slowMovingLookbackDays} days.`,
+        evidence: `Available stock: ${availableStock}. Official OUT: ${targetStock}. Units sold in lookback: ${observed}.`,
+        recommendation: 'Review upcoming purchase quantities before adding more stock.',
+        metricValues: { available: availableStock, out: targetStock, unitsSold: observed },
+        ruleTriggered: `Available stock is at least ${BUSINESS_INSIGHT_THRESHOLDS.excessStockOutMultiplier} times the official OUT and recent sales do not exceed ${BUSINESS_INSIGHT_THRESHOLDS.slowMovingMaxUnitsSold} units, with verified observation history.`,
+        relatedEntityId: item.id,
+        relatedEntityName: item.name,
+        targetReport: 'business-insights',
+        targetFilters: { section: 'excess-inventory' }
+      }, bounds));
+      return;
+    }
     insights.push(makeInsight({
       id: `slow-moving-${key}`,
       type: 'slow-moving-inventory',
@@ -282,7 +329,20 @@ function untrackedInsights(sales, bounds) {
 }
 
 export function sortAndLimitInsights(insights = [], limit) {
-  const sorted = [...insights].sort((a, b) => PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority] || a.title.localeCompare(b.title));
+  // Within each severity, prioritize recorded financial exposure or stock impact.
+  const impact = insight => {
+    const values = insight.metricValues || {};
+    if (typeof values.salesChange === 'number') return Math.abs(values.current?.sales - values.previous?.sales) || 0;
+    if (typeof values.actualProfit === 'number') return Math.abs(values.actualProfit);
+    if (typeof values.totalSales === 'number') return Math.abs(values.totalSales);
+    if (typeof values.available === 'number') return Math.abs(values.available);
+    if (typeof values.transactionCount === 'number') return values.transactionCount;
+    return 0;
+  };
+  const sorted = [...insights].sort((a, b) =>
+    (PRIORITY_ORDER[a.priority] - PRIORITY_ORDER[b.priority]) ||
+    (impact(b) - impact(a)) ||
+    a.title.localeCompare(b.title));
   return typeof limit === 'number' ? sorted.slice(0, limit) : sorted;
 }
 

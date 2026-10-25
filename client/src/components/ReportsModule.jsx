@@ -79,6 +79,16 @@ export function ReportsModule({
     localStorage.removeItem('reports_target_insight_id');
     return id;
   });
+  const [supportingItemFilter, setSupportingItemFilter] = useState('');
+  const matchesSupportingItem = name => !supportingItemFilter ||
+    String(name || '').trim().toLowerCase() === supportingItemFilter.trim().toLowerCase();
+  const clearSupportingFilter = () => { setSupportingItemFilter(''); setCurrentPage(1); };
+  const supportingFilterNotice = supportingItemFilter && (
+    <div className="mb-4 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-blue-200 bg-blue-50 px-3 py-2.5 text-sm text-blue-900" role="status">
+      <span>Showing records for <strong>{supportingItemFilter}</strong></span>
+      <Button size="sm" variant="outline" onClick={clearSupportingFilter}>Show all items</Button>
+    </div>
+  );
   const [selectedReorderSupplier, setSelectedReorderSupplier] = useState('');
   const [reorderQuantities, setReorderQuantities] = useState({});
   const [reorderSelections, setReorderSelections] = useState({});
@@ -225,6 +235,7 @@ export function ReportsModule({
 
   const handleReportTypeChange = value => {
     setReportType(value);
+    setSupportingItemFilter('');
     if (!categoryFilterReportTypes.includes(value)) {
       setSelectedCategory('all');
     }
@@ -1108,11 +1119,9 @@ export function ReportsModule({
   const getEarningsProductRows = (limit = 12) =>
     getProductProfitability(getEarningsSalesTransactions())
       .filter(item => selectedCategory === 'all' || item.category === selectedCategory)
-      .slice(0, limit)
-      .map((item, index) => ({
-        ...item,
-        rank: index + 1
-      }));
+      .map((item, index) => ({ ...item, rank: index + 1 }))
+      .filter(item => matchesSupportingItem(item.itemName))
+      .slice(0, limit);
 
   const formatPercentage = value =>
     `${Number(value || 0).toLocaleString(undefined, {
@@ -1144,6 +1153,7 @@ export function ReportsModule({
       item.reorderReviewSuggested
     ))
       .filter(item => selectedCategory === 'all' || item.category === selectedCategory)
+      .filter(item => matchesSupportingItem(item.name))
       .map(item => {
         const suggestedPoint = getReportSystemSuggestedPoint(item);
         return {
@@ -1357,6 +1367,7 @@ export function ReportsModule({
       }, {});
 
     return Object.values(grouped)
+      .filter(item => matchesSupportingItem(item.itemName))
       .map(item => {
         const activeInventoryMatch = getActiveInventoryMatchForManualItem(item.itemName, item.category);
         return {
@@ -4785,7 +4796,10 @@ export function ReportsModule({
                         <Button size="sm" variant="outline" onClick={() => {
                           setFocusedInsightId('');
                           handleReportTypeChange(insight.targetReport);
-                          if (insight.targetFilters?.category && categoryFilterReportTypes.includes(insight.targetReport)) setSelectedCategory(insight.targetFilters.category);
+                          setSupportingItemFilter(insight.targetFilters?.product || insight.targetFilters?.item || '');
+                          setCurrentPage(1);
+                          // A previous category filter must not hide the selected product.
+                          setSelectedCategory(insight.targetFilters?.category || 'all');
                         }}>Open supporting report</Button>
                         <span className="text-xs text-slate-600">Review original records for {insight.relatedEntityName || insight.title}.</span>
                       </div>
@@ -4823,6 +4837,7 @@ export function ReportsModule({
             <CardDescription>Sales less the cost of goods sold in the selected period.</CardDescription>
           </CardHeader>
           <CardContent data-card-content>
+            {supportingFilterNotice}
             {getEarningsProductRows().length === 0 ? (
               renderReportsEmptyState({
                 icon: Wallet,
@@ -5132,6 +5147,7 @@ export function ReportsModule({
 
       {reportType === 'supplier-reorder' && (
         <div className={`space-y-4 transition-opacity duration-300 ${isRefreshing ? 'opacity-50' : 'opacity-100'}`}>
+          {supportingFilterNotice}
           {getSupplierReorderGroups().length === 0 ? (
             <Card className="reports-data-card">
               <CardContent>
@@ -5299,6 +5315,7 @@ export function ReportsModule({
             <CardDescription>Non-inventory items recorded in sales only - {getUntrackedSalesItems().length} item groups</CardDescription>
           </CardHeader>
           <CardContent>
+            {supportingFilterNotice}
             {(() => {
               const rows = getUntrackedSalesItems();
               const paged = paginateItems(rows);

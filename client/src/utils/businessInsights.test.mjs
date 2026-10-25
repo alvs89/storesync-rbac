@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { generateBusinessInsights, BUSINESS_INSIGHT_THRESHOLDS } from './businessInsights.js';
+import { generateBusinessInsights, BUSINESS_INSIGHT_THRESHOLDS, sortAndLimitInsights } from './businessInsights.js';
 
 const now = new Date();
 const day = 86400000;
@@ -20,10 +20,19 @@ const find = (result, title) => result.find(row => row.title === title);
 const run = (sales = [], previousSales = [], inventory = [], allSales = sales) =>
   generateBusinessInsights({ sales, previousSales, inventory, allSales, periodBounds: bounds });
 
+test('equal-priority insights rank by documented financial impact', () => {
+  const sample = [
+    { id: 'smaller', title: 'A smaller', priority: 'High', metricValues: { actualProfit: -100 } },
+    { id: 'larger', title: 'Z larger', priority: 'High', metricValues: { actualProfit: -1000 } },
+    { id: 'critical', title: 'Critical', priority: 'Critical', metricValues: { actualProfit: -5 } }
+  ];
+  assert.deepEqual(sortAndLimitInsights(sample, 2).map(item => item.id), ['critical', 'larger']);
+});
 test('configured thresholds are deterministic', () => {
   assert.equal(BUSINESS_INSIGHT_THRESHOLDS.significantSalesChangePercent, 10);
   assert.equal(BUSINESS_INSIGHT_THRESHOLDS.slowMovingLookbackDays, 60);
   assert.equal(BUSINESS_INSIGHT_THRESHOLDS.recurringUntrackedMinTransactions, 3);
+  assert.equal(BUSINESS_INSIGHT_THRESHOLDS.excessStockOutMultiplier, 1.5);
 });
 test('significant decline uses completed sales and the correct percentage', () => {
   const insight = find(run([sale(85000, 60000)], [sale(100000, 70000)]), 'Sales Performance Declined');
@@ -80,6 +89,29 @@ test('slow-moving requires evidence of product history before 60-day window', ()
   assert.ok(find(run([recent], [], inventory, [history, recent]), 'Slow-Moving Inventory'));
   assert.ok(find(run([], [], inventory, [history]), 'Slow-Moving Inventory'));
   assert.equal(find(run([recent], [], inventory, [recent]), 'Slow-Moving Inventory'), undefined);
+});
+test('lowest positive-margin review excludes negative-profit products and duplicate top-revenue alerts', () => {
+  const sales = [
+    sale(600, 400, { name: 'Product A', inventoryId: '1' }),
+    sale(500, 350, { name: 'Product B', inventoryId: '2' }),
+    sale(400, 280, { name: 'Product C', inventoryId: '3' }),
+    sale(300, 210, { name: 'Product D', inventoryId: '4' }),
+    sale(200, 130, { name: 'Product E', inventoryId: '5' }),
+    sale(100, 95, { name: 'Product F', inventoryId: '6' })
+  ];
+  const insight = find(run(sales), 'Lowest Positive Profit Margin');
+  assert.ok(insight);
+  assert.equal(insight.relatedEntityName, 'Product F');
+  assert.equal(insight.metricValues.profitMargin, 5);
+});
+test('possible excess stock requires official OUT, low demand, and prior observation history', () => {
+  const history = sale(100, 60, { createdAt: dateOffset(-90) });
+  const inventory = [{ id: '1', name: 'Electrical Wire', availableQuantity: 85, orderUpToLevel: 40 }];
+  const insight = find(run([], [], inventory, [history]), 'Possible Excess Stock');
+  assert.ok(insight);
+  assert.equal(insight.metricValues.out, 40);
+  assert.equal(find(run([], [], inventory, [history]), 'Slow-Moving Inventory'), undefined);
+  assert.equal(find(run([], [], [{ ...inventory[0], orderUpToLevel: null }], [history]), 'Possible Excess Stock'), undefined);
 });
 test('recurring untracked demand counts distinct completed transactions', () => {
   const sales = Array.from({ length: 5 }, (_, i) => sale(100, 60, { id: 'manual-' + i, manual: true, name: 'Marine Plywood' }));
