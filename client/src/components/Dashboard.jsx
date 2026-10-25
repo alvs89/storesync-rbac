@@ -12,6 +12,7 @@ import {
   FileText,
   HelpCircle,
   Home,
+  Info,
   Eye,
   EyeOff,
   Package,
@@ -1245,26 +1246,38 @@ export function Dashboard({
   };
 
   const businessInsightsSection = isAdmin ? (
-    <section className="dashboard-panel" aria-label="Owner Business Insights">
-      <div className="dashboard-panel-header">
+    <section className="dashboard-panel dashboard-business-insights" aria-label="Owner Business Insights">
+      <div className="dashboard-panel-header dashboard-business-insights-header">
         <div className="min-w-0">
-          <h2 className="dashboard-panel-title">Owner Business Insights</h2>
-          <p className="dashboard-panel-subtitle">Rule-based insights generated from current StoreSync sales, profitability, and inventory data.</p>
+          <div className="flex items-center gap-2.5">
+            <span className="dashboard-business-insights-mark" aria-hidden="true"><Lightbulb className="h-4 w-4" /></span>
+            <h2 className="dashboard-panel-title">Owner Business Insights</h2>
+          </div>
+          <p className="dashboard-panel-subtitle">Clear priorities from recorded sales, profitability, and stock activity.</p>
         </div>
-        <Button variant="outline" size="sm" onClick={() => onNavigate('reports')}>View Business Insights</Button>
+        <Button variant="outline" size="sm" onClick={() => openTargetReport('business-insights', salesReportTarget)}>View Business Insights <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" /></Button>
       </div>
       {dashboardInsights.length === 0 ? (
-        <div className="flex items-center gap-3 px-4 py-5 text-sm text-teal-800">
-          <CheckCircle2 className="h-5 w-5 shrink-0" />
-          <span>No major business conditions require attention for the selected period.</span>
+        <div className="dashboard-insights-empty-wrap">
+          <div className="dashboard-insights-empty-icon" aria-hidden="true">
+            {completedSales.length === 0 && inventory.length === 0 ? <Info className="h-6 w-6" /> : <CheckCircle2 className="h-6 w-6" />}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="dashboard-insights-empty-eyebrow">{salesPeriodRangeLabel}</p>
+            <h3 className="dashboard-insights-empty-title">{completedSales.length === 0 && inventory.length === 0 ? 'Waiting for business activity' : 'No priority insights for this period'}</h3>
+            <p className="dashboard-insights-empty-description">{completedSales.length === 0 && inventory.length === 0
+              ? 'Once sales and inventory records are available, rule-based insights will appear here.'
+              : 'No major business conditions require attention based on the available records and configured rules.'}</p>
+          </div>
+          <div className="dashboard-insights-empty-aside">Rule-based review | Updates with your records</div>
         </div>
       ) : (
-        <div className="grid gap-3 p-3 md:grid-cols-2">
+        <div className="grid gap-3 p-3 sm:p-4 lg:grid-cols-2">
           {dashboardInsights.map(insight => (
-            <div key={insight.id} className="business-insight-card flex h-full flex-col rounded-xl border border-slate-200 bg-slate-50 p-4">
+            <article key={insight.id} className="business-insight-card flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
               <div className="flex items-start justify-between gap-3">
                 <div className="flex min-w-0 items-start gap-3">
-                  <span className="rounded-lg bg-blue-100 p-2 text-blue-700"><Lightbulb className="h-4 w-4" /></span>
+                  <span className={`rounded-lg p-2 ${insight.priority === 'Critical' || insight.priority === 'High' ? 'bg-rose-50 text-rose-700' : insight.priority === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`} aria-hidden="true"><Lightbulb className="h-4 w-4" /></span>
                   <div className="min-w-0">
                     <h3 className="font-bold leading-6 text-slate-950">{insight.title}</h3>
                     <p className="mt-1 text-sm leading-6 text-slate-700">{insight.summary}</p>
@@ -1277,15 +1290,19 @@ export function Dashboard({
                         'bg-blue-100 text-blue-800'
                 }`}>{insight.priority}</Badge>
               </div>
-              <p className="mt-3 text-xs leading-5 text-slate-600">{insight.evidence}</p>
+              <div className="mt-4 rounded-lg bg-slate-50 px-3 py-2.5">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-slate-500">Supporting evidence</p>
+                <p className="mt-1 text-sm leading-5 text-slate-700">{insight.evidence}</p>
+              </div>
               <div className="mt-4 border-t border-slate-200 pt-3">
                 <p className="text-sm font-semibold leading-6 text-slate-900">Suggested review</p>
                 <p className="mt-1 text-sm leading-6 text-slate-700">{insight.recommendation}</p>
               </div>
-              <div className="business-insight-action mt-auto flex min-h-[3.25rem] items-end pt-4">
-                <Button size="sm" variant="outline" onClick={() => navigateToInsightReport(insight)}>Review Evidence</Button>
+              <div className="business-insight-action mt-auto flex flex-wrap items-center justify-between gap-2 pt-4">
+                <span className="text-xs text-slate-500">{insight.period}</span>
+                <Button size="sm" variant="outline" onClick={() => navigateToInsightReport(insight)}>Review Evidence <ArrowRight className="ml-1 h-4 w-4" aria-hidden="true" /></Button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       )}
@@ -1309,16 +1326,112 @@ export function Dashboard({
           gap: 14px;
         }
 
+        /* Owner insights: readable at a glance, even when no rule is triggered. */
+        .dashboard-business-insights-header {
+          flex-wrap: wrap;
+          gap: 14px;
+          padding: 18px 20px;
+        }
+
+        .dashboard-business-insights-mark {
+          display: inline-flex;
+          width: 32px;
+          height: 32px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 9px;
+          background: #eaf2fa;
+          color: #17446c;
+          flex-shrink: 0;
+        }
+
+        .dashboard-insights-empty-wrap {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 16px;
+          padding: 22px 24px;
+          background: linear-gradient(110deg, #f8fbfa 0%, #ffffff 62%);
+        }
+
+        .dashboard-insights-empty-icon {
+          display: flex;
+          width: 48px;
+          height: 48px;
+          flex: 0 0 48px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 14px;
+          background: #e3f3eb;
+          color: #18704b;
+        }
+
+        .dashboard-insights-empty-eyebrow {
+          margin-bottom: 4px;
+          color: #64748b;
+          font-size: 12px;
+          font-weight: 600;
+        }
+
+        .dashboard-insights-empty-title {
+          font-size: 15px;
+          font-weight: 750;
+          line-height: 1.4;
+          color: #143327;
+        }
+
+        .dashboard-insights-empty-description {
+          margin-top: 3px;
+          color: #475569;
+          line-height: 1.55;
+          font-size: 13px;
+        }
+
+        .dashboard-insights-empty-aside {
+          margin-left: auto;
+          max-width: 160px;
+          color: #64748b;
+          font-size: 12px;
+          line-height: 1.5;
+          text-align: right;
+        }
+
         .business-insight-card {
-          position: relative;
-          padding-bottom: 5.25rem;
+          min-width: 0;
+          transition: box-shadow 150ms ease, border-color 150ms ease;
+        }
+
+        .business-insight-card:hover {
+          border-color: #cbd5e1;
+          box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
         }
 
         .business-insight-action {
-          position: absolute;
-          right: 1rem;
-          bottom: 1rem;
-          left: 1rem;
+          position: static;
+          border-top: 1px solid #f1f5f9;
+          margin-top: auto;
+        }
+
+        @media (max-width: 640px) {
+          .dashboard-business-insights-header {
+            align-items: stretch;
+            padding: 16px;
+          }
+          .dashboard-business-insights-header > button {
+            width: 100%;
+            justify-content: center;
+          }
+          .dashboard-insights-empty-wrap {
+            align-items: flex-start;
+            padding: 18px 16px;
+            gap: 12px;
+          }
+          .dashboard-insights-empty-aside {
+            flex-basis: 100%;
+            max-width: none;
+            margin-left: 60px;
+            text-align: left;
+          }
         }
 
         .dashboard-panel {
