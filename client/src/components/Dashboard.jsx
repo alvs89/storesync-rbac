@@ -8,6 +8,10 @@ import {
   CalendarDays,
   ClipboardCheck,
   Lightbulb,
+  PackageSearch,
+  TrendingDown,
+  ShieldAlert,
+  BarChart3,
   CheckCircle2,
   FileText,
   HelpCircle,
@@ -1250,8 +1254,8 @@ export function Dashboard({
     <section className="dashboard-panel dashboard-business-insights" aria-label="Owner Business Insights">
       <div className="dashboard-panel-header dashboard-business-insights-header">
         <div className="min-w-0">
-          <div className="flex items-center gap-2.5">
-            <span className="dashboard-business-insights-mark" aria-hidden="true"><Lightbulb className="h-4 w-4" /></span>
+          <div className="dashboard-insights-heading-row">
+            <span className="dashboard-business-insights-mark" aria-hidden="true"><BarChart3 className="h-5 w-5" strokeWidth={2} /></span>
             <h2 className="dashboard-panel-title">Owner Business Insights</h2>
           </div>
           <p className="dashboard-panel-subtitle">Clear priorities from recorded sales, profitability, and stock activity.</p>
@@ -1277,9 +1281,11 @@ export function Dashboard({
           {dashboardInsights.map(insight => (
             <article key={insight.id} className="business-insight-card flex h-full flex-col rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
               <div className="flex items-start justify-between gap-3">
-                <div className="flex min-w-0 items-start gap-3">
-                  <span className={`rounded-lg p-2 ${insight.priority === 'Critical' || insight.priority === 'High' ? 'bg-rose-50 text-rose-700' : insight.priority === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`} aria-hidden="true"><Lightbulb className="h-4 w-4" /></span>
-                  <div className="min-w-0">
+                <div className="dashboard-insight-heading-row min-w-0 flex-1">
+                  <span className={`dashboard-insight-symbol ${insight.priority === 'Critical' || insight.priority === 'High' ? 'bg-rose-50 text-rose-700' : insight.priority === 'Medium' ? 'bg-amber-50 text-amber-700' : 'bg-blue-50 text-blue-700'}`} aria-hidden="true">
+                    {insight.type === 'inventory-demand' ? <PackageSearch className="h-5 w-5" strokeWidth={2} /> : insight.type === 'sales-performance' ? <TrendingDown className="h-5 w-5" strokeWidth={2} /> : insight.type === 'product-profitability' ? <ShieldAlert className="h-5 w-5" strokeWidth={2} /> : <Lightbulb className="h-5 w-5" strokeWidth={2} />}
+                  </span>
+                  <div className="min-w-0 flex-1">
                     <h3 className="font-bold leading-6 text-slate-950">{insight.title}</h3>
                     <p className="mt-1 text-sm leading-6 text-slate-700">{insight.summary}</p>
                   </div>
@@ -1332,6 +1338,36 @@ export function Dashboard({
           flex-wrap: wrap;
           gap: 14px;
           padding: 18px 20px;
+        }
+
+        .dashboard-insights-heading-row {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          min-width: 0;
+        }
+
+        .dashboard-insights-heading-row .dashboard-panel-title {
+          margin: 0;
+          padding: 0;
+          line-height: 1.45;
+        }
+
+        .dashboard-insight-heading-row {
+          display: flex;
+          align-items: flex-start;
+          gap: 16px;
+          min-width: 0;
+        }
+
+        .dashboard-insight-symbol {
+          display: inline-flex;
+          width: 42px;
+          height: 42px;
+          flex: 0 0 42px;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
         }
 
         .dashboard-business-insights-mark {
