@@ -74,6 +74,11 @@ export function ReportsModule({
   const [selectedReportDate, setSelectedReportDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [customStartDate, setCustomStartDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [customEndDate, setCustomEndDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [focusedInsightId, setFocusedInsightId] = useState(() => {
+    const id = localStorage.getItem('reports_target_insight_id') || '';
+    localStorage.removeItem('reports_target_insight_id');
+    return id;
+  });
   const [selectedReorderSupplier, setSelectedReorderSupplier] = useState('');
   const [reorderQuantities, setReorderQuantities] = useState({});
   const [reorderSelections, setReorderSelections] = useState({});
@@ -4737,6 +4742,15 @@ export function ReportsModule({
             <div className="mb-6 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-900">
               These insights are generated automatically from StoreSync records using predefined business rules. They are not AI-generated predictions.
             </div>
+            {focusedInsightId && reportInsights.some(item => item.id === focusedInsightId) && (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-blue-200 bg-blue-50 px-4 py-3">
+                <span className="text-sm text-blue-950">Showing evidence for the insight selected on Dashboard.</span>
+                <Button type="button" variant="outline" size="sm" onClick={() => setFocusedInsightId('')}>View all insights</Button>
+              </div>
+            )}
+            {focusedInsightId && reportInsights.length > 0 && !reportInsights.some(item => item.id === focusedInsightId) && (
+              <p className="mb-4 text-sm text-slate-600" role="status">The selected insight is not available for this period. Showing all available insights.</p>
+            )}
             {reportInsights.length === 0 ? (
               renderReportsEmptyState({
                 icon: Info,
@@ -4745,7 +4759,9 @@ export function ReportsModule({
               })
             ) : (
               <div className="grid gap-4">
-                {reportInsights.map(insight => (
+                {(reportInsights.some(item => item.id === focusedInsightId)
+                  ? reportInsights.filter(item => item.id === focusedInsightId)
+                  : reportInsights).map(insight => (
                   <article key={insight.id} className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div className="flex flex-wrap items-start justify-between gap-3">
                       <div>

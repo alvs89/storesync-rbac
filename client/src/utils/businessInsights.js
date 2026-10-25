@@ -1,5 +1,5 @@
-import { getProductProfitability, getProfitabilitySummary } from './profitability';
-import { isCompletedSaleTransaction } from './salesTransactionStatus';
+import { getProductProfitability, getProfitabilitySummary } from './profitability.js';
+import { isCompletedSaleTransaction } from './salesTransactionStatus.js';
 
 // SYSTEM BUSINESS RULES. These thresholds are deterministic review triggers,
 // not AI-generated values or predictions.
@@ -67,13 +67,13 @@ function salesInsights(currentSales, previousSales, bounds) {
   if (salesChange === null || Math.abs(salesChange) < BUSINESS_INSIGHT_THRESHOLDS.significantSalesChangePercent) return [];
 
   const decline = salesChange < 0;
-  let summary = `Sales ${decline ? 'are' : 'increased'} ${formatPercent(salesChange)} ${decline ? 'lower than' : 'higher than'} the previous period.`;
+  let summary = `Sales ${decline ? 'decreased' : 'increased'} by ${formatPercent(salesChange)} compared with the previous period.`;
   let evidence = `Current sales: ${formatCurrency(current.sales)}. Previous sales: ${formatCurrency(previous.sales)}.`;
   if (transactionChange !== null && Math.abs(transactionChange) >= BUSINESS_INSIGHT_THRESHOLDS.significantSalesChangePercent) {
     evidence += ` Transactions ${transactionChange < 0 ? 'decreased' : 'increased'} by ${formatPercent(transactionChange)}.`;
-  } else if (decline && transactionChange !== null && Math.abs(transactionChange) < BUSINESS_INSIGHT_THRESHOLDS.significantSalesChangePercent) {
+  } else if (decline && transactionChange !== null && current.transactions > 0 && previous.transactions > 0 && current.averageTransactionValue < previous.averageTransactionValue && Math.abs(transactionChange) < BUSINESS_INSIGHT_THRESHOLDS.significantSalesChangePercent) {
     summary += ` Transaction volume remained relatively stable, indicating that average transaction value was lower during this period.`;
-    evidence += ` Transactions changed by ${formatPercent(transactionChange)}.`;
+    evidence += ` Transactions changed by ${formatPercent(transactionChange)}. Average transaction value moved from ${formatCurrency(previous.averageTransactionValue)} to ${formatCurrency(current.averageTransactionValue)}.`;
   }
 
   return [makeInsight({
@@ -171,9 +171,10 @@ function inventoryInsights(sales, allSales, inventory, bounds) {
     const sold = number(quantities.get(key));
     const rank = demandRanked.findIndex(([id]) => id === key) + 1;
     const available = number(item.availableQuantity ?? item.quantity);
-    const rop = number(item.recommendedReorderPoint);
+    // Read the official ROP; an absent value is unknown rather than zero.
+    const rop = item.recommendedReorderPoint == null ? null : Number(item.recommendedReorderPoint);
     const recommended = number(item.recommendedOrderQuantity ?? item.suggestedOrderQuantity);
-    if (rank > 0 && rank <= BUSINESS_INSIGHT_THRESHOLDS.topDemandRankLimit && rop > 0 && available <= rop) {
+    if (rank > 0 && rank <= BUSINESS_INSIGHT_THRESHOLDS.topDemandRankLimit && Number.isFinite(rop) && rop >= 0 && available <= rop) {
       insights.push(makeInsight({
         id: `demand-replenishment-${key}`,
         type: 'inventory-demand',
@@ -192,8 +193,13 @@ function inventoryInsights(sales, allSales, inventory, bounds) {
     }
   });
 
-  const lookbackEnd = bounds?.end || new Date();
-  const lookbackStart = new Date(lookbackEnd);
+  // Available stock is a current snapshot; never present it as historical stock
+  // for an earlier reporting period.
+  const now = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  if (bounds?.end && bounds.end < todayStart) return insights;
+  const lookbackEnd = now;
+  const lookbackStart = new Date(now);
   lookbackStart.setDate(lookbackStart.getDate() - BUSINESS_INSIGHT_THRESHOLDS.slowMovingLookbackDays);
   const lookbackSales = allSales.filter(sale => periodContains(sale, { start: lookbackStart, end: lookbackEnd }));
   const slowQuantities = new Map();
@@ -201,10 +207,24 @@ function inventoryInsights(sales, allSales, inventory, bounds) {
     const key = item.inventoryId || item.inventory_id;
     if (key) slowQuantities.set(String(key), number(slowQuantities.get(String(key))) + quantity(item));
   }));
+
+  // The inventory API does not expose reliable creation dates. Require an
+  // older completed sale as evidence the product existed before the lookback.
+  // Such products can have zero recent sales; new/unobserved items are excluded.
+  const olderObservedIds = new Set();
+  allSales.forEach(sale => {
+    const saleDate = dateOf(sale.createdAt ?? sale.created_at);
+    if (!saleDate || saleDate >= lookbackStart) return;
+    (sale.items || []).forEach(item => {
+      const key = item.inventoryId || item.inventory_id;
+      if (key) olderObservedIds.add(String(key));
+    });
+  });
   inventory.filter(item => number(item.availableQuantity ?? item.quantity) > 0).forEach(item => {
     const key = String(item.id ?? item.inventoryId ?? '');
-    const observed = slowQuantities.get(key);
-    if (observed === undefined || observed > BUSINESS_INSIGHT_THRESHOLDS.slowMovingMaxUnitsSold) return;
+    if (!key || !olderObservedIds.has(key)) return;
+    const observed = number(slowQuantities.get(key));
+    if (observed > BUSINESS_INSIGHT_THRESHOLDS.slowMovingMaxUnitsSold) return;
     insights.push(makeInsight({
       id: `slow-moving-${key}`,
       type: 'slow-moving-inventory',

@@ -1240,8 +1240,8 @@ export function Dashboard({
       onNavigate('purchases');
       return;
     }
-    localStorage.setItem('reports_target_type', insight?.targetReport || 'business-insights');
-    onNavigate('reports');
+    localStorage.setItem('reports_target_insight_id', insight.id);
+    openTargetReport('business-insights', salesReportTarget);
   };
 
   const businessInsightsSection = isAdmin ? (
